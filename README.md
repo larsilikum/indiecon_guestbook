@@ -26,3 +26,37 @@ To start the server run:
 go run server/cmd/api/main.go
 ```
 
+## API Routes
+
+`/api/test`: returns Hello + route
+
+### Planned Routes
+
+This is what I thought we need, might be missing something. If you have suggestions please write them in `:)`
+
+`/api/post`: 
+- GET: returns random leaf node from tree which isn't occupied by another client
+  - no params
+  - return json TBD
+
+`/api/posts`:
+- GET: returns complete tree of posts
+  - no params
+  - return json TBD
+- POST: adds single post to db
+  - body TBD
+
+`/api/posts/{id}`
+- GET: returns post with this id
+  - route param id
+  - return json TBD
+
+`/api/tags`
+- GET: returns all tags
+  - no params
+  - return json TBD
+- POST: adds many tags to the db
+  - body: list of TBD
+
+Don't know if we need a route to get or update a single tag?
+
