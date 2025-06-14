@@ -1,11 +1,15 @@
 package main
 
 import (
+	"img_masters/indie_guestbook/server/internal/database"
 	"log"
 	"net/http"
 )
 
 func main() {
+	defer database.CloseDB()
+
+	database.InitDB()
 	http.HandleFunc("/api/test", testHandler)
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	log.Fatal(http.ListenAndServe(":8080", nil))
