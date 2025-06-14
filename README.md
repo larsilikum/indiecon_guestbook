@@ -18,13 +18,14 @@ brew install go
 
 ### Development Server
 
-Everything in the public directory is served under `localhost:8080/`
-Updates in this server will appear after reloading the route.
+Everything in the `/public` directory is served under `localhost:8080/`
+Updates in the public directory will appear after reloading the route. If you change something in the `/server` directory you need to recompile the code.
 
 To start the server run:
 ```zsh
 go run server/cmd/api/main.go
 ```
+This compiles the code to a temporary executable and runs it
 
 ## API Routes
 
