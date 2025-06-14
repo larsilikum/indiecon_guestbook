@@ -2,15 +2,23 @@ package main
 
 import (
 	"img_masters/indie_guestbook/server/internal/database"
+	"img_masters/indie_guestbook/server/internal/handlers"
 	"log"
 	"net/http"
 )
 
 func main() {
 	defer database.CloseDB()
-
+	// prepare DB
 	database.InitDB()
+	// initialize Tables
+	_, err := database.CreatePostTable()
+	if err != nil {
+		log.Fatalf("Error Creating Post Table, %v", err)
+	}
+
 	http.HandleFunc("/api/test", testHandler)
+	http.HandleFunc("/api/posts", handlers.HandlePosts)
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
