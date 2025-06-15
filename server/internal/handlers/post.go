@@ -11,7 +11,7 @@ import (
 func HandlePosts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		handlePostsPostRequest()
+		handlePostsPostRequest(r)
 	case "GET":
 		handlePostsGetRequest(w)
 	default:
@@ -35,16 +35,20 @@ func handlePostsGetRequest(w http.ResponseWriter) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func handlePostsPostRequest() {
-	p := new(types.Post)
-	p.Author = "test author"
-	p.Type = "text"
-	p.Content = "Lorem ipsum dolor amet sit"
-	p.Blocked = 0
-
-	_, err := database.InsertPost(p)
+func handlePostsPostRequest(r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var p *types.Post
+	err := decoder.Decode(&p)
+	if err != nil {
+		fmt.Printf("Error decoding json: %v", err)
+		return
+	}
+	fmt.Printf("Successfully unmarshaled post from %v", p.Author)
+	// TODO: Sanitize and validate fields!!!!!
+	_, err = database.InsertPost(p)
 	if err != nil {
 		fmt.Printf("Error inserting Post: %v", err)
+		return
 	}
 	fmt.Printf("added Post from %v", p.Author)
 }

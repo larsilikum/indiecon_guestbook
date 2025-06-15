@@ -5,13 +5,14 @@ import (
 )
 
 type Post struct {
-	Id     uint16 `json:"id"`
-	Author string `json:"author"`
-	// Date     time.Time		`json:"date"`
-	// Parent   uint16			`json:"parent_id"`
-	Type    string `json:"type"`
-	Content string `json:"content"`
-	Blocked uint8  `json:"blocked"`
+	Id        uint16 `json:"id"`
+	Author    string `json:"author"`
+	Date      int64  `json:"date"`
+	Parent    uint16 `json:"parent_id"`
+	Type      string `json:"type"`
+	Content   string `json:"content"`
+	Blocked   uint8  `json:"blocked"`
+	BlockTime int64  `json:"block_time"`
 }
 
 type JsonResponse[t any] struct {
