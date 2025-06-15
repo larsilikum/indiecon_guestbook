@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"img_masters/indie_guestbook/server/internal/database"
 	"img_masters/indie_guestbook/server/internal/types"
@@ -10,20 +11,31 @@ import (
 func HandlePosts(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "POST":
-		handlePostPostRequest()
+		handlePostsPostRequest()
 	case "GET":
-		handlePostGetRequest()
+		handlePostsGetRequest(w)
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
 
 }
 
-func handlePostGetRequest() {
+func handlePostsGetRequest(w http.ResponseWriter) {
+	posts, err := database.GetAllPosts()
+	if err != nil {
+		fmt.Printf("Error reading Posts: %v", err)
+		return
+	}
+	response := types.JsonResponse[[]types.Post]{
+		Status: http.StatusOK,
+		Data:   posts,
+	}
 
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
-func handlePostPostRequest() {
+func handlePostsPostRequest() {
 	p := new(types.Post)
 	p.Author = "test author"
 	p.Type = "text"

@@ -36,14 +36,15 @@ func CloseDB() {
 
 func CreatePostTable() (sql.Result, error) {
 	// sql_command := `CREATE TABLE IF NOT EXISTS posts (
-	// 	id 				INTEGER PRIMARY KEY,
-	// 	author 		TEXT NOT NULL,
-	// 	date			INTEGER NOT NULL,
-	// 	children	TEXT,
-	// 	parent		INTEGER NOT NULL,
-	// 	type			TEXT NOT NULL,
-	// 	content		TEXT NOT NULL,
-	// 	blocked		INTEGER
+	// 	id 					INTEGER PRIMARY KEY,
+	// 	author 			TEXT NOT NULL,
+	// 	date				INTEGER NOT NULL,
+	// 	children		TEXT,
+	// 	parent			INTEGER NOT NULL,
+	// 	type				TEXT NOT NULL,
+	// 	content			TEXT NOT NULL,
+	// 	blocked			INTEGER,
+	//  block_time	INTEGER
 	// );`
 
 	sql_test_command := `CREATE TABLE IF NOT EXISTS posts (
@@ -62,4 +63,36 @@ func InsertPost(p *types.Post) (sql.Result, error) {
 	VALUES(?,?,?,?);
 	`
 	return db.Exec(sql_command, p.Author, p.Type, p.Content, p.Blocked)
+}
+
+func GetAllPosts() ([]types.Post, error) {
+	sql_command := `SELECT * FROM posts`
+
+	rows, err := db.Query(sql_command)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var posts []types.Post
+	for rows.Next() {
+		p := &types.Post{}
+		err := rows.Scan(&p.Id, &p.Author, &p.Type, &p.Content, &p.Blocked)
+		if err != nil {
+			return nil, err
+		}
+		posts = append(posts, *p)
+	}
+	return posts, nil
+}
+
+func UpdatePostBlocked(n uint8, id int) (sql.Result, error) {
+	// TODO: add time of blocking
+	// sql_command := `UPDATE posts
+	// SET blocked = ? block_time = ?
+	// WHERE id = ?`
+	sql_command := `UPDATE posts
+	SET blocked = ?
+	WHERE id = ?`
+	return db.Exec(sql_command, n, id)
 }
