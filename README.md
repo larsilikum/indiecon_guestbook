@@ -31,21 +31,41 @@ This compiles the code to a temporary executable and runs it
 
 `/api/test`: returns Hello + route
 
-### Planned Routes
-
-This is what I thought we need, might be missing something. If you have suggestions please write them in `:)`
-
 `/api/post`: 
 - GET: returns random leaf node from tree which isn't occupied by another client
   - no params
-  - return json TBD
+  - json: 
+  ```
+  {
+    id: int,
+    author: string,
+    date: unixTimeCode,
+    parent_id: int,
+    type: string,
+    content: string,
+    blocked: boolean,
+    block_time: unixTimeCode,
+  }
+  ```
 
 `/api/posts`:
 - GET: returns complete tree of posts
   - no params
-  - return json TBD
+  - return json same as single post but in an array
 - POST: adds single post to db
-  - body TBD
+  - body:
+  ```
+  {
+    author: string,
+    parent_id: int,
+    type: string,
+    content: string,
+  }
+  ```
+
+### Planned Routes
+
+This is what I thought we need, might be missing something. If you have suggestions please write them in `:)`
 
 `/api/posts/{id}`
 - GET: returns post with this id
