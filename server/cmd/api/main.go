@@ -19,6 +19,7 @@ func main() {
 
 	http.HandleFunc("/api/test", testHandler)
 	http.HandleFunc("/api/posts", handlers.HandlePosts)
+	http.HandleFunc("/api/post", handlers.HandlePost)
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

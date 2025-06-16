@@ -11,7 +11,7 @@ type Post struct {
 	Parent    uint16 `json:"parent_id"`
 	Type      string `json:"type"`
 	Content   string `json:"content"`
-	Blocked   uint8  `json:"blocked"`
+	Blocked   bool   `json:"blocked"`
 	BlockTime int64  `json:"block_time"`
 }
 

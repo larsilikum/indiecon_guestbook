@@ -5,50 +5,37 @@ import (
 	"fmt"
 	"img_masters/indie_guestbook/server/internal/database"
 	"img_masters/indie_guestbook/server/internal/types"
+	"math/rand"
 	"net/http"
 )
 
-func HandlePosts(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case "POST":
-		handlePostsPostRequest(r)
-	case "GET":
-		handlePostsGetRequest(w)
-	default:
+func HandlePost(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 	}
-
-}
-
-func handlePostsGetRequest(w http.ResponseWriter) {
-	posts, err := database.GetAllPosts()
+	var posts []types.Post
+	var err error
+	posts, err = database.GetLeafNodes(false)
 	if err != nil {
-		fmt.Printf("Error reading Posts: %v", err)
-		return
+		fmt.Printf("Error Getting unblocked Leaf Nodes: %v \n", err)
 	}
-	response := types.JsonResponse[[]types.Post]{
+	if len(posts) == 0 {
+		fmt.Println("All posts are blocked, getting all Leaf posts")
+		posts, err = database.GetLeafNodes(true)
+		if err != nil {
+			panic(err)
+		}
+	}
+	post := posts[rand.Intn(len(posts))]
+	_, e := database.BlockLeafNode(post.Id)
+	if e != nil {
+		fmt.Printf("Error blocking post: %v", e)
+	}
+	response := types.JsonResponse[types.Post]{
 		Status: http.StatusOK,
-		Data:   posts,
+		Data:   post,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
-}
-
-func handlePostsPostRequest(r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var p *types.Post
-	err := decoder.Decode(&p)
-	if err != nil {
-		fmt.Printf("Error decoding json: %v", err)
-		return
-	}
-	fmt.Printf("Successfully unmarshaled post from %v", p.Author)
-	// TODO: Sanitize and validate fields!!!!!
-	_, err = database.InsertPost(p)
-	if err != nil {
-		fmt.Printf("Error inserting Post: %v", err)
-		return
-	}
-	fmt.Printf("added Post from %v", p.Author)
 }

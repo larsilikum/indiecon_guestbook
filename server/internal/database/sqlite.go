@@ -40,10 +40,10 @@ func CreatePostTable() (sql.Result, error) {
 		id 					INTEGER PRIMARY KEY,
 		author 			TEXT NOT NULL,
 		date				INTEGER NOT NULL,
-		parent_id 	INTEGER NOT NULL,
+		parent_id 	INTEGER REFERENCES posts(id),
 		type				TEXT NOT NULL,
 		content			TEXT NOT NULL,
-		blocked			INTEGER,
+		blocked			BOOLEAN,
 		block_time	INTEGER
 	);`
 
@@ -55,7 +55,7 @@ func InsertPost(p *types.Post) (sql.Result, error) {
 	VALUES(?,?,?,?,?,?,?);
 	`
 	date := time.Now().UnixMilli()
-	blocked := 0
+	blocked := false
 	return db.Exec(sql_command, p.Author, date, p.Parent, p.Type, p.Content, blocked, 0)
 }
 
@@ -68,6 +68,10 @@ func GetAllPosts() ([]types.Post, error) {
 	}
 	defer rows.Close()
 
+	return ScanRows(rows)
+}
+
+func ScanRows(rows *sql.Rows) ([]types.Post, error) {
 	var posts []types.Post
 	for rows.Next() {
 		p := &types.Post{}
@@ -80,16 +84,40 @@ func GetAllPosts() ([]types.Post, error) {
 	return posts, nil
 }
 
-func BlockLeafNode(id int) (sql.Result, error) {
-	sql_command := `UPDATE posts
-	SET blocked = 1 block_time = ?
-	WHERE id = ?`
-	return db.Exec(sql_command, time.Now().UnixMilli(), id)
+func GetLeafNodes(with_blocked bool) ([]types.Post, error) {
+	sql_command := `SELECT * FROM posts
+	WHERE id NOT IN (
+		SELECT DISTINCT parent_id
+		FROM posts
+		WHERE parent_id IS NOT NULL
+	)`
+	if !with_blocked {
+		sql_command += `
+		AND (
+			blocked = 0
+			OR block_time + 60000 > unixepoch('now', 'subsec')
+		)`
+	}
+
+	rows, err := db.Query(sql_command)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	return ScanRows(rows)
 }
 
-func UnblockLeafNode(id int) (sql.Result, error) {
+func BlockLeafNode(id uint16) (sql.Result, error) {
 	sql_command := `UPDATE posts
-	SET blocked = 0 block_time = ?
+	SET blocked = ?, block_time = ?
 	WHERE id = ?`
-	return db.Exec(sql_command, nil, id)
+	return db.Exec(sql_command, true, time.Now().UnixMilli(), id)
+}
+
+func UnblockLeafNode(id uint16) (sql.Result, error) {
+	sql_command := `UPDATE posts
+	SET blocked = ?, block_time = ?
+	WHERE id = ?`
+	return db.Exec(sql_command, false, nil, id)
 }
