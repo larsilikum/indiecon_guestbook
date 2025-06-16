@@ -1,11 +1,97 @@
+<!-- WARNING!! This is a really quick and dirty prototype. Do not use in production -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <script defer>
+    document.addEventListener('alpine:init', () => {
+      Alpine.store('currPost', {
+        post: null,
+        setPost(post) {
+          this.post = post
+        }
+      })
+      Alpine.data('post', () => ({
+        post: null,
+        init() {
+          fetch("/api/post").then(r => r.json()).then(d => {
+            this.post = d.data
+            Alpine.store('currPost').setPost(d.data)
+          })
+        }
+      }))
+      Alpine.data("useForm", () => ({
+        data() {
+          const inputs = Array.from(this.$el.querySelectorAll("input, textarea"))
+          const data = inputs.reduce(
+            (object, key) => ({ ...object, [key.name]: key.value }),
+            {}
+          )
+          data.parent_id = Alpine.store("currPost").post?.id
+          data.type = 'text'
+          return data
+        },
+
+        async post() {
+          return await (
+            await fetch("/api/posts", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(this.data()),
+            })
+          )
+        },
+      }))
+    })
+  </script>
+  <style>
+    .post {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .body {
+      grid-column: span 2;
+      font-size: 24px;
+    }
+
+    .author {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .date {
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    #author-input, #body-input {
+      display: block;
+    }
+  </style>
   <title>indiecon guestbook</title>
 </head>
+
 <body>
-  <h1>hallo welt</h1>
+  <div class="container" x-data="post">
+    <template x-if="post">
+      <div class="post">
+        <p class="author" x-text="post.author"></p>
+        <p class="date" x-text="(new Date(post.date * 1000)).toUTCString()"></p>
+        <template x-if="post.type === 'text'">
+          <p class="body" x-text="post.content"></p>
+        </template>
+      </div>
+    </template>
+  </div>
+  <h2>Meine Geschichte:</h2>
+  <form x-data="useForm" x-on:submit.prevent="post">
+    <input type="text" name="author" id="author-input">
+    <textarea name="content" id="body-input" cols="40" rows="20"></textarea>
+    <button type="submit">Submit</button>
+  </form>
 </body>
+
 </html>
