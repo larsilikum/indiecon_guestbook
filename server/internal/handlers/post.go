@@ -29,7 +29,7 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 	post := posts[rand.Intn(len(posts))]
 	_, e := database.BlockLeafNode(post.Id)
 	if e != nil {
-		fmt.Printf("Error blocking post: %v", e)
+		fmt.Printf("Error blocking post: %v \n", e)
 	}
 	response := types.JsonResponse[types.Post]{
 		Status: http.StatusOK,

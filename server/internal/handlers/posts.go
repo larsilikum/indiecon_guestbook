@@ -23,7 +23,7 @@ func HandlePosts(w http.ResponseWriter, r *http.Request) {
 func handlePostsGetRequest(w http.ResponseWriter) {
 	posts, err := database.GetAllPosts()
 	if err != nil {
-		fmt.Printf("Error reading Posts: %v", err)
+		fmt.Printf("Error reading Posts: %v \n", err)
 		return
 	}
 	response := types.JsonResponse[[]types.Post]{
@@ -40,15 +40,15 @@ func handlePostsPostRequest(r *http.Request) {
 	var p *types.Post
 	err := decoder.Decode(&p)
 	if err != nil {
-		fmt.Printf("Error decoding json: %v", err)
+		fmt.Printf("Error decoding json: %v \n", err)
 		return
 	}
-	fmt.Printf("Successfully unmarshaled post from %v", p.Author)
+	fmt.Printf("Successfully unmarshaled post from %v \n", p.Author)
 	// TODO: Sanitize and validate fields!!!!!
 	_, err = database.InsertPost(p)
 	if err != nil {
-		fmt.Printf("Error inserting Post: %v", err)
+		fmt.Printf("Error inserting Post: %v \n", err)
 		return
 	}
-	fmt.Printf("added Post from %v", p.Author)
+	fmt.Printf("added Post from %v \n", p.Author)
 }
