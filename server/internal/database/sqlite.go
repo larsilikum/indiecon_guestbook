@@ -54,7 +54,7 @@ func InsertPost(p *types.Post) (sql.Result, error) {
 	sql_command := `INSERT INTO posts (author, date, parent_id, type, content, blocked, block_time)
 	VALUES(?,?,?,?,?,?,?);
 	`
-	date := time.Now().UnixMilli()
+	date := time.Now().Unix()
 	blocked := false
 	return db.Exec(sql_command, p.Author, date, p.Parent, p.Type, p.Content, blocked, 0)
 }
@@ -95,7 +95,7 @@ func GetLeafNodes(with_blocked bool) ([]types.Post, error) {
 		sql_command += `
 		AND (
 			blocked = 0
-			OR block_time + 60000 > unixepoch('now', 'subsec')
+			OR block_time + 600 < unixepoch('now')
 		)`
 	}
 
@@ -112,7 +112,7 @@ func BlockLeafNode(id uint16) (sql.Result, error) {
 	sql_command := `UPDATE posts
 	SET blocked = ?, block_time = ?
 	WHERE id = ?`
-	return db.Exec(sql_command, true, time.Now().UnixMilli(), id)
+	return db.Exec(sql_command, true, time.Now().Unix(), id)
 }
 
 func UnblockLeafNode(id uint16) (sql.Result, error) {
