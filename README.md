@@ -23,7 +23,8 @@ Updates in the public directory will appear after reloading the route. If you ch
 
 To start the server run:
 ```zsh
-go run server/cmd/api/main.go
+cd server
+go run cmd/api/main.go
 ```
 This compiles the code to a temporary executable and runs it
 
