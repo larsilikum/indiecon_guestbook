@@ -28,6 +28,18 @@ go run cmd/api/main.go
 ```
 This compiles the code to a temporary executable and runs it
 
+Then we need to populate the db with the first post. This is a temporary thing, will happen automatically in the future.
+```zsh
+curl --location 'localhost:8080/api/posts' \
+--header 'Content-Type: application/json' \
+--data '{
+    "author": "img masters",
+    "content": "This is the first entry. You are the happy person to start the story. Have fun",
+    "type": "text",
+    "parent_id": 0
+}'
+```
+
 ## API Routes
 
 `/api/test`: returns Hello + route
