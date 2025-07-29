@@ -2,7 +2,9 @@ package main
 
 import (
 	"img_masters/indie_guestbook/server/internal/database"
+	"img_masters/indie_guestbook/server/internal/types"
 	"img_masters/indie_guestbook/server/internal/handlers"
+	"fmt"
 	"log"
 	"net/http"
 )
@@ -16,6 +18,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error Creating Post Table, %v", err)
 	}
+	posts, err := database.GetAllPosts()
+	if err != nil {
+		fmt.Errorf("Error getting Posts %v", err)
+	} else if len(posts) == 0 {
+		p := &types.Post{
+			Author: "coopub",
+			Parent: 0,
+			Type: "text",
+			Content: "This is the first entry. You are the happy person to start the story. Have fun",
+		}
+		database.InsertPost(p)
+	} 
 
 	http.HandleFunc("/api/test", testHandler)
 	http.HandleFunc("/api/posts", handlers.HandlePosts)
