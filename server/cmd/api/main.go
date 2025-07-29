@@ -35,7 +35,7 @@ func main() {
 	http.HandleFunc("/api/posts", handlers.HandlePosts)
 	http.HandleFunc("/api/post", handlers.HandlePost)
 	http.Handle("/", http.FileServer(http.Dir("../public")))
-	log.Fatal(http.ListenAndServe("[::]:8100", nil))
+	log.Fatal(http.ListenAndServe("[::]:8101", nil))
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {
