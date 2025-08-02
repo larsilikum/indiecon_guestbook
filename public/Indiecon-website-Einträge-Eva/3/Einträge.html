@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einträ<ge-Indiecon></ge-Indiecon></title>
+    <link rel="stylesheet" href="einträge.css">
+</head>
+<body>
+    
+  <button class="logo">Co—o-Pub</button>
+  <div class="flexbox-container">
+    <div class="links">
+      <div class="storys"></div>
+      <div class="footnotes"></div>
+    </div>
+
+    <div class="tree"></div>
+
+    <div class="main">
+      <div class="wahlfeld">
+        <label>Was möchtest du beitragen?</label>
+          <div class="wahl-buttons">
+            <button data-type="text">Text</button>
+            <button data-type="image">Foto</button>
+            <button data-type="sketch">Skizze</button>
+            <button data-type="audio">Audio</button>
+          </div>
+    </div>
+      <div class="textfeld-wrapper">
+        <input type="text" class="input-name" placeholder="Dein Name">
+        <canvas class="skizze-canvas" width="400" height="300" ></canvas>
+<div class="audio-recorder" >
+  <button class="start-audio">Start Aufnahme</button>
+  <button class="stop-audio" disabled>Stop</button>
+  <audio class="audio-preview"></audio>
+</div>
+        <textarea class="textfeld" placeholder="Führe die Geschichte fort..."></textarea>
+        <div class="image-preview"></div>
+        <input type="file" class="input-foto" accept="image/*">
+      </div>
+      <button class="publish">Publish</button>
+    </div>
+  </div>
+
+</div>
+
+</body>
+
+<script src="einträge.js" defer></script>
+
+</html>

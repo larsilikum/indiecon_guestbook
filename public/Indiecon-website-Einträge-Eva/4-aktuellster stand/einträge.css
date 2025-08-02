@@ -1,0 +1,203 @@
+body {
+  background-color: #111;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+.flexbox-container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+button.logo {
+  background: coral;
+  padding: 0.3em 0.7em;
+  font-size: 1.7rem;
+  border: solid 1px black;
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  height: 6vh;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.storys {
+  width: 30%;
+  background-color: #ffffff;      
+  padding-top: 80px;
+  padding-left: 30px;
+  padding-right: 30px;
+  overflow-y: scroll;
+  display:inline;
+  gap: 0.3em;
+  height: auto;
+  background-color: #ffffff;
+}
+
+.story-part {
+  display: inline;
+  max-height: auto;
+  max-width: 100%;
+  overflow: scroll;
+}
+
+.story-part.blur {
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.story-part sup {
+  margin-right: 0.3em;
+}
+
+.image-part {
+  display: inline;
+  max-height: 1em;
+}
+
+.audio-play-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 1em;
+  padding: 0;
+  display: inline;
+}
+
+
+.footnotes {
+  width: 15%; 
+  padding-top: 20px;
+  padding-left: 1%;
+  background-color: #ffffff;
+  font-size: 0.8em;
+  gap: 1em;
+  line-height: 1.5em;
+}
+
+.tree {
+  position: relative;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #cfcfcf;
+  width: 20%;
+}
+
+.knoten {
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  border-radius: 50%;
+  z-index: 2;
+  margin: 0 auto;
+}
+
+.linie {
+  width: 2px;
+  background-color: black;
+  height: 40px;
+  margin: 0 auto;
+}
+
+.main {
+  background-color: white;
+  width: 30%;
+  height: auto;
+  padding: 30px;
+  padding-top: 20px;
+  overflow-y: auto;
+  position: relative;
+}
+
+.wahlfeld {
+  margin-bottom: 0.5em;
+  font-size: 1.3em;
+}
+
+.wahl-buttons button {
+  margin-right: 0.1em;
+  margin-top: 0.5em;;
+  padding: 0.4em 1em;
+  border-radius: 10px;
+  border: 1px solid black;
+  background: #eee;
+  cursor: pointer;
+  font-size: 1em;
+}
+.input-name {
+  margin-bottom: 1em;
+  padding: 0.5em;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: none;
+  outline: dotted 1.5px black;
+  outline-offset: -1px;
+  width: 92%;
+}
+
+.textfeld, .skizze-canvas {
+  width: 100%;
+  height: 300px;
+  border: none;
+  resize: none;
+  padding: 1em;
+  border-radius: 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 0.5em;
+}
+
+.input-foto, .audio-recorder {
+  width: 100%;
+  height: auto;
+  border: none;
+  resize: none;
+  padding: 1em;
+  border-radius: 10px;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+  margin-bottom: 0.5em;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 10px;
+  margin-top: 0.5em;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.audio-preview{
+  margin-top: 1em;
+  border-radius: 20px;
+}
+
+.textfeld,
+.input-foto,
+.skizze-canvas,
+.audio-recorder {
+  display: none;
+}
+
+.publish {
+  position: absolute;
+  bottom: 2em;
+  left: 1em;
+  right: 1em;
+  margin: 0 auto;
+  width: 80%;
+  padding: 0.5em 1.2em;
+  font-size: 1rem;
+  border-radius: 20px;
+  border: solid 1px black;
+  box-shadow: 5px 5px 12px -3px rgba(0, 0, 0, 0.31);
+  background: white;
+}
