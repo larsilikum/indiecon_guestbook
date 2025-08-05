@@ -1,5 +1,3 @@
-let footnoteCounter = 1;
-
 // --- Elemente ---
 const textarea = document.querySelector('.textfeld');
 const nameInput = document.querySelector('.input-name');
@@ -7,7 +5,6 @@ const fileInput = document.querySelector('.input-foto');
 const previewContainer = document.querySelector('.image-preview');
 const publishButton = document.querySelector('.publish');
 const storyContainer = document.querySelector('.storys');
-const treeContainer = document.querySelector('.tree');
 const wahlButtons = document.querySelectorAll('.wahl-buttons button');
 const textfeld = document.querySelector('.textfeld');
 const canvas = document.querySelector('.skizze-canvas');
@@ -20,7 +17,6 @@ const audioPreview = document.querySelector('.audio-preview');
 const userColors = {};
 const colorPalette = generateDistinctColors(100);
 let availableColors = [...colorPalette];
-let treeNodes = [];
 
 function generateDistinctColors(count) {
   const colors = [];
@@ -44,32 +40,6 @@ function getUserColor(name) {
   const color = availableColors.splice(idx, 1)[0];
   userColors[name] = color;
   return color;
-}
-
-function addToTree(userName) {
-  const userColor = getUserColor(userName);
-  const newKnoten = document.createElement('div');
-  newKnoten.classList.add('knoten');
-  newKnoten.style.color = userColor;
-  newKnoten.setAttribute('data-user', userName);
-
-  const lastKnoten = treeNodes.length > 0 ? treeNodes[treeNodes.length - 1] : null;
-  if (lastKnoten) {
-    const line = document.createElement('div');
-    line.classList.add('linie');
-    treeContainer.appendChild(line);
-  }
-
-  treeContainer.appendChild(newKnoten);
-  treeNodes.push(newKnoten);
-}
-
-function addFootnote(index, name, timestamp, color) {
-  const footnoteList = document.querySelector('.footnotes');
-  const fnItem = document.createElement('div');
-  fnItem.classList.add('footnote');
-  fnItem.innerHTML = `<sup style="color:${color}">${index}</sup> <span style="color:${color}">${name} (${timestamp})</span>`;
-  footnoteList.appendChild(fnItem);
 }
 
 fileInput.addEventListener('change', () => {
@@ -204,123 +174,83 @@ publishButton.addEventListener('click', () => {
 
   storyContainer.querySelectorAll('.story-part').forEach(p => p.classList.add('blur'));
 
-  addToTree(name);
-
   if (selectedType === 'text') {
     const lastEntry = Array.from(storyContainer.querySelectorAll('.story-part')).reverse()
       .find(el => el.style.color === userColor && el.tagName.toLowerCase() === 'span');
 
-    const footnoteIndex = footnoteCounter++;
-
     if (lastEntry) {
       lastEntry.textContent += ' ' + content + ' ';
-      const footnoteTag = document.createElement('sup');
-      footnoteTag.textContent = footnoteIndex;
-      footnoteTag.style.color = userColor;
-      lastEntry.appendChild(footnoteTag);
       lastEntry.setAttribute('data-info', `${name}\n${timestamp}`);
     } else {
-      const footnoteTag = document.createElement('sup');
-      footnoteTag.textContent = footnoteIndex;
-      footnoteTag.style.color = userColor;
-
       const textSpan = document.createElement('span');
       textSpan.classList.add('story-part');
       textSpan.style.color = userColor;
-      textSpan.textContent = content + ' ';
-      textSpan.appendChild(footnoteTag);
+      textSpan.textContent = content;
       textSpan.setAttribute('data-info', `${name}\n${timestamp}`);
-
       storyContainer.appendChild(textSpan);
     }
-
-    addFootnote(footnoteIndex, name, timestamp, userColor);
   }
 
   else if (selectedType === 'image') {
-  const footnoteIndex = footnoteCounter++;
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('story-part', 'image-wrapper');
-  wrapper.style.position = 'relative';
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('story-part', 'image-wrapper');
+    wrapper.style.position = 'relative';
 
-  const img = document.createElement('img');
-  img.src = URL.createObjectURL(file);
-  img.classList.add('image-part');
-  img.title = `Von: ${name} • ${timestamp}`;
+    const img = document.createElement('img');
+    img.src = URL.createObjectURL(file);
+    img.classList.add('image-part');
+    img.title = `Von: ${name} • ${timestamp}`;
 
-  const sup = document.createElement('sup');
-  sup.textContent = footnoteIndex;
-  sup.style.color = userColor;
-
-  wrapper.appendChild(img);
-  wrapper.appendChild(sup);
-  storyContainer.appendChild(wrapper);
-  addFootnote(footnoteIndex, name, timestamp, userColor);
-}
-
+    wrapper.appendChild(img);
+    storyContainer.appendChild(wrapper);
+  }
 
   else if (selectedType === 'sketch') {
-  const footnoteIndex = footnoteCounter++;
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('story-part', 'image-wrapper');
-  wrapper.style.position = 'relative';
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('story-part', 'image-wrapper');
+    wrapper.style.position = 'relative';
 
-  const img = document.createElement('img');
-  img.src = canvas.toDataURL('image/png');
-  img.classList.add('image-part');
-  img.title = `Skizze von: ${name} • ${timestamp}`;
+    const img = document.createElement('img');
+    img.src = canvas.toDataURL('image/png');
+    img.classList.add('image-part');
+    img.title = `Skizze von: ${name} • ${timestamp}`;
 
-  const sup = document.createElement('sup');
-  sup.textContent = footnoteIndex;
-  sup.style.color = userColor;
-
-  wrapper.appendChild(img);
-  wrapper.appendChild(sup);
-  storyContainer.appendChild(wrapper);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  addFootnote(footnoteIndex, name, timestamp, userColor);
-}
-
+    wrapper.appendChild(img);
+    storyContainer.appendChild(wrapper);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
 
   else if (selectedType === 'audio') {
-  const footnoteIndex = footnoteCounter++;
-  const container = document.createElement('div');
-  container.classList.add('story-part', 'audio-part');
-  container.title = `Audio von: ${name} • ${timestamp}`;
+    const container = document.createElement('div');
+    container.classList.add('story-part', 'audio-part');
+    container.title = `Audio von: ${name} • ${timestamp}`;
 
-  const audioEl = document.createElement('audio');
-  audioEl.src = audioPreview.src;
-  audioEl.style.display = 'none';
-  container.appendChild(audioEl);
+    const audioEl = document.createElement('audio');
+    audioEl.src = audioPreview.src;
+    audioEl.style.display = 'none';
+    container.appendChild(audioEl);
 
-  const playBtn = document.createElement('button');
-  playBtn.classList.add('audio-play-btn');
-  playBtn.textContent = '▶️';
-  container.appendChild(playBtn);
-
-  playBtn.addEventListener('click', () => {
-    if (audioEl.paused) {
-      audioEl.play();
-      playBtn.textContent = '⏸️';
-    } else {
-      audioEl.pause();
-      playBtn.textContent = '▶️';
-    }
-  });
-
-  audioEl.addEventListener('ended', () => {
+    const playBtn = document.createElement('button');
+    playBtn.classList.add('audio-play-btn');
     playBtn.textContent = '▶️';
-  });
+    container.appendChild(playBtn);
 
-  const sup = document.createElement('sup');
-  sup.textContent = footnoteIndex;
-  sup.style.color = userColor;
-  container.appendChild(sup);
+    playBtn.addEventListener('click', () => {
+      if (audioEl.paused) {
+        audioEl.play();
+        playBtn.textContent = '⏸️';
+      } else {
+        audioEl.pause();
+        playBtn.textContent = '▶️';
+      }
+    });
 
-  storyContainer.appendChild(container);
-  addFootnote(footnoteIndex, name, timestamp, userColor);
-}
+    audioEl.addEventListener('ended', () => {
+      playBtn.textContent = '▶️';
+    });
 
+    storyContainer.appendChild(container);
+  }
 
   const parts = storyContainer.querySelectorAll('.story-part');
   if (parts.length > 0) parts[parts.length - 1].classList.remove('blur');
@@ -337,4 +267,3 @@ publishButton.addEventListener('click', () => {
   canvas.style.display = 'none';
   audioDiv.style.display = 'none';
 });
-s

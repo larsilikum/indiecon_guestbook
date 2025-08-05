@@ -13,31 +13,18 @@ body {
   overflow: hidden;
 }
 
-button.logo {
-  background: coral;
-  padding: 0.3em 0.7em;
-  font-size: 1.7rem;
-  border: solid 1px black;
-  border-radius: 20px;
-  cursor: pointer;
-  z-index: 1000;
-  height: 6vh;
-  position: absolute;
-  top: 20px;
-  left: 20px;
-}
-
 .storys {
-  width: 30%;
-  background-color: #ffffff;      
-  padding-top: 80px;
+  width: 50%;
+  background-color: #ededed;      
+  padding-top: 100px;
   padding-left: 30px;
   padding-right: 30px;
   overflow-y: scroll;
   display:inline;
   gap: 0.3em;
   height: auto;
-  background-color: #ffffff;
+  font-size: 1.8em;
+  padding-bottom: 20px;
 }
 
 .story-part {
@@ -48,7 +35,7 @@ button.logo {
 }
 
 .story-part.blur {
-  filter: blur(2px);
+  filter: blur(3px);
   pointer-events: none;
 }
 
@@ -71,88 +58,58 @@ button.logo {
   display: inline;
 }
 
-
-.footnotes {
-  width: 15%; 
-  padding-top: 20px;
-  padding-left: 1%;
-  background-color: #ffffff;
-  font-size: 0.8em;
-  gap: 1em;
-  line-height: 1.5em;
-}
-
-.tree {
-  position: relative;
-  padding: 20px;
-  overflow-y: auto;
-  background-color: #cfcfcf;
-  width: 20%;
-}
-
-.knoten {
-  width: 20px;
-  height: 20px;
-  background-color: currentColor;
-  border-radius: 50%;
-  z-index: 2;
-  margin: 0 auto;
-}
-
-.linie {
-  width: 2px;
-  background-color: black;
-  height: 40px;
-  margin: 0 auto;
-}
-
 .main {
   background-color: white;
-  width: 30%;
+  width: 50%;
   height: auto;
   padding: 30px;
-  padding-top: 20px;
+  padding-top: 100px;
   overflow-y: auto;
   position: relative;
 }
 
 .wahlfeld {
-  margin-bottom: 0.5em;
-  font-size: 1.3em;
+  font-size: 2em;
+  text-align: center;
 }
 
 .wahl-buttons button {
-  margin-right: 0.1em;
-  margin-top: 0.5em;;
-  padding: 0.4em 1em;
-  border-radius: 10px;
-  border: 1px solid black;
-  background: #eee;
+  margin-bottom: -20px;
+  padding: 1.5em;
+  padding-bottom: 2em;
+  padding-top: 1em;
+  background: #000000;
+  color: white;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.8em;
+  clip-path: polygon(85.65% 51.4%, 96.04% 42.12%, 88.03% 24.99%, 89.24% 27.57%, 69.01% 21.2%, 50% 17.41%, 29.29% 17.41%, 11.46% 27.57%, 4.7% 40.88%, 11.46% 51.4%, 39.94% 57.28%, 69.01% 57.28%);
 }
 .input-name {
-  margin-bottom: 1em;
-  padding: 0.5em;
+  padding: 1em;
   font-size: 1rem;
-  border-radius: 10px;
-  border: none;
-  outline: dotted 1.5px black;
-  outline-offset: -1px;
   width: 92%;
+  clip-path: polygon(50% 2%, 20.27% 2%, 9.9% 21.31%, 0% 39.75%, 0% 64.7%, 9.9% 85.27%, 27.75% 99.5%, 72.25% 99.5%, 93.5% 83.75%, 100% 64.7%, 90.1% 21.31%, 77.75% 9%);
+  background-color: #ffc9c9;
+  border: none;
+  text-align: center;
+}
+.input-name:focus {
+  outline: none;
 }
 
 .textfeld, .skizze-canvas {
   width: 100%;
-  height: 300px;
+  height: 400px;
   border: none;
   resize: none;
-  padding: 1em;
+  padding: 3em;
   border-radius: 10px;
   font-size: 1rem;
   box-sizing: border-box;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   margin-bottom: 0.5em;
+  clip-path: polygon(48.12% 4.72%, 22.25% 1.25%, 3.6% 6.48%, 5.02% 30.72%, 0% 63.95%, 9% 80.19%, 9% 98.75%, 36.96% 94.43%, 67.49% 98.75%, 98.02% 94.43%, 95.85% 59.1%, 89.5% 36.03%, 95.85% 11.11%, 73.98% 1.25%);
+  background-color: #47ebbf
 }
 
 .input-foto, .audio-recorder {
@@ -188,16 +145,11 @@ button.logo {
 }
 
 .publish {
-  position: absolute;
-  bottom: 2em;
-  left: 1em;
-  right: 1em;
-  margin: 0 auto;
-  width: 80%;
-  padding: 0.5em 1.2em;
+  padding: 1em;
   font-size: 1rem;
-  border-radius: 20px;
-  border: solid 1px black;
-  box-shadow: 5px 5px 12px -3px rgba(0, 0, 0, 0.31);
-  background: white;
+  width: 92%;
+  border: none;
+  clip-path: polygon(63.5% 5.73%, 32.22% 2%, 3.51% 15.05%, 3.51% 40%, 0% 64.7%, 8.92% 94.5%, 39.68% 89.88%, 69.47% 94.5%, 93.5% 83.75%, 100% 64.7%, 89.95% 37.52%, 87.73% 8.62%);
+  background-color: #eb47a1
 }
+
