@@ -5,11 +5,19 @@ import (
 	"img_masters/indie_guestbook/server/internal/types"
 	"img_masters/indie_guestbook/server/internal/handlers"
 	"fmt"
+	"github.com/rs/cors"
 	"log"
 	"net/http"
 )
 
 func main() {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"http://localhost:*", "https://staging.co-o-pub.space", "https://co-o-pub.space", "http://127.0.0.1:*"},
+		AllowedMethods: []string{"GET", "POST"},
+		AllowedHeaders: []string{"Authorization", "Content-Type"},
+		AllowCredentials: true,
+	})
+
 	defer database.CloseDB()
 	// prepare DB
 	database.InitDB()
@@ -31,11 +39,15 @@ func main() {
 		database.InsertPost(p)
 	} 
 
-	http.HandleFunc("/api/test", testHandler)
-	http.HandleFunc("/api/posts", handlers.HandlePosts)
-	http.HandleFunc("/api/post", handlers.HandlePost)
-	http.Handle("/", http.FileServer(http.Dir("../public")))
-	log.Fatal(http.ListenAndServe("[::]:8101", nil))
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/api/test", testHandler)
+	mux.HandleFunc("/api/posts", handlers.HandlePosts)
+	mux.HandleFunc("/api/post", handlers.HandlePost)
+	mux.Handle("/", http.FileServer(http.Dir("../public")))
+
+	handler := c.Handler(mux)
+	log.Fatal(http.ListenAndServe("[::]:8101", handler))
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {

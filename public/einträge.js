@@ -1,3 +1,6 @@
+
+const BaseURL = "https://staging.co-o-pub.space/api/" // change to /api/ in production
+
 // --- Elemente ---
 const textarea = document.querySelector('.textfeld');
 const nameInput = document.querySelector('.input-name');
@@ -12,6 +15,36 @@ const audioDiv = document.querySelector('.audio-recorder');
 const startAudioBtn = document.querySelector('.start-audio');
 const stopAudioBtn = document.querySelector('.stop-audio');
 const audioPreview = document.querySelector('.audio-preview');
+
+async function getLeafBranch() {
+  try {
+    const response = await fetch(BaseURL + 'post')
+    const json = await response.json()
+    return json.data
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
+
+async function publishPost(post) {
+  try {
+    await fetch(BaseURL + 'posts', {
+      method: "POST",
+      body: JSON.stringify(post),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
+
+// --- State Management ---
+let currentPosts = [];
+let lastLoadedPostId = null;
 
 // --- Farben ---
 const userColors = {};
@@ -42,6 +75,208 @@ function getUserColor(name) {
   return color;
 }
 
+// --- Backend Integration ---
+async function loadAndDisplayPosts() {
+  try {
+    const posts = await getLeafBranch();
+    
+    
+    // Clear existing content
+    storyContainer.innerHTML = '';
+    treeContainer.innerHTML = '';
+    treeNodes = [];
+    footnoteCounter = 1;
+    
+    // Clear footnotes
+    const footnoteList = document.querySelector('.footnotes');
+    if (footnoteList) footnoteList.innerHTML = '';
+    
+    // Render each post
+    for (const post of posts) {
+      await renderPost(post);
+    }
+    
+    currentPosts = posts;
+    lastLoadedPostId = posts.length > 0 ? Math.max(...posts.map(p => p.id)) : null;
+    
+  } catch (error) {
+    console.error('Error loading posts:', error);
+  }
+}
+
+async function renderPost(post) {
+  const userName = post.author;
+  const timestamp = new Date(post.date * 1000).toLocaleString();
+  const userColor = getUserColor(userName);
+  
+  // Add to tree
+  addToTree(userName);
+  
+  // Blur existing posts
+  storyContainer.querySelectorAll('.story-part').forEach(p => p.classList.add('blur'));
+  
+  const footnoteIndex = footnoteCounter++;
+  
+  if (post.type === 'text') {
+    // Check if we can append to existing text from same user
+    const lastEntry = Array.from(storyContainer.querySelectorAll('.story-part')).reverse()
+      .find(el => el.style.color === userColor && el.tagName.toLowerCase() === 'span');
+
+    if (lastEntry) {
+      lastEntry.textContent += ' ' + post.content + ' ';
+      const footnoteTag = document.createElement('sup');
+      footnoteTag.textContent = footnoteIndex;
+      footnoteTag.style.color = userColor;
+      lastEntry.appendChild(footnoteTag);
+      lastEntry.setAttribute('data-info', `${userName}\n${timestamp}`);
+    } else {
+      const footnoteTag = document.createElement('sup');
+      footnoteTag.textContent = footnoteIndex;
+      footnoteTag.style.color = userColor;
+
+      const textSpan = document.createElement('span');
+      textSpan.classList.add('story-part');
+      textSpan.style.color = userColor;
+      textSpan.textContent = post.content + ' ';
+      textSpan.appendChild(footnoteTag);
+      textSpan.setAttribute('data-info', `${userName}\n${timestamp}`);
+
+      storyContainer.appendChild(textSpan);
+    }
+  }
+  
+  else if (post.type === 'image' || post.type === 'sketch') {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('story-part', 'image-wrapper');
+    wrapper.style.position = 'relative';
+
+    const img = document.createElement('img');
+    img.src = post.content; // Assuming content contains the image data URL or URL
+    img.classList.add('image-part');
+    img.title = `${post.type === 'sketch' ? 'Skizze' : 'Bild'} von: ${userName} • ${timestamp}`;
+
+    const sup = document.createElement('sup');
+    sup.textContent = footnoteIndex;
+    sup.style.color = userColor;
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(sup);
+    storyContainer.appendChild(wrapper);
+  }
+  
+  else if (post.type === 'audio') {
+    const container = document.createElement('div');
+    container.classList.add('story-part', 'audio-part');
+    container.title = `Audio von: ${userName} • ${timestamp}`;
+
+    const audioEl = document.createElement('audio');
+    audioEl.src = post.content; // Assuming content contains the audio data URL or URL
+    audioEl.style.display = 'none';
+    container.appendChild(audioEl);
+
+    const playBtn = document.createElement('button');
+    playBtn.classList.add('audio-play-btn');
+    playBtn.textContent = '▶️';
+    container.appendChild(playBtn);
+
+    playBtn.addEventListener('click', () => {
+      if (audioEl.paused) {
+        audioEl.play();
+        playBtn.textContent = '⏸️';
+      } else {
+        audioEl.pause();
+        playBtn.textContent = '▶️';
+      }
+    });
+
+    audioEl.addEventListener('ended', () => {
+      playBtn.textContent = '▶️';
+    });
+
+    const sup = document.createElement('sup');
+    sup.textContent = footnoteIndex;
+    sup.style.color = userColor;
+    container.appendChild(sup);
+
+    storyContainer.appendChild(container);
+  }
+  
+  // Add footnote
+  addFootnote(footnoteIndex, userName, timestamp, userColor);
+  
+  // Remove blur from the latest post
+  const parts = storyContainer.querySelectorAll('.story-part');
+  if (parts.length > 0) parts[parts.length - 1].classList.remove('blur');
+}
+
+function addToTree(userName) {
+  const userColor = getUserColor(userName);
+  const newKnoten = document.createElement('div');
+  newKnoten.classList.add('knoten');
+  newKnoten.style.color = userColor;
+  newKnoten.setAttribute('data-user', userName);
+
+  const lastKnoten = treeNodes.length > 0 ? treeNodes[treeNodes.length - 1] : null;
+  if (lastKnoten) {
+    const line = document.createElement('div');
+    line.classList.add('linie');
+    treeContainer.appendChild(line);
+  }
+
+  treeContainer.appendChild(newKnoten);
+  treeNodes.push(newKnoten);
+}
+
+function addFootnote(index, name, timestamp, color) {
+  const footnoteList = document.querySelector('.footnotes');
+  if (!footnoteList) return;
+  
+  const fnItem = document.createElement('div');
+  fnItem.classList.add('footnote');
+  fnItem.innerHTML = `<sup style="color:${color}">${index}</sup> <span style="color:${color}">${name} (${timestamp})</span>`;
+  footnoteList.appendChild(fnItem);
+}
+
+// --- File Upload Helpers ---
+function fileToDataURL(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+function canvasToDataURL(canvas) {
+  return canvas.toDataURL('image/png');
+}
+
+function audioToDataURL(audioBlob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(audioBlob);
+  });
+}
+
+// --- Post Creation ---
+async function createPost(author, type, content) {
+  // This function should make an API call to create a new post
+  const parentId = currentPosts[currentPosts.length - 1].id
+  
+  const newPost = {
+    author: author,
+    parent_id: parentId,
+    type: type,
+    content: content,
+  };
+  
+  // Here you would typically make an API call to save the post
+  await publishPost(newPost);
+  
+  return newPost;
+}
+
+// --- UI Event Handlers ---
 fileInput.addEventListener('change', () => {
   const file = fileInput.files[0];
   if (file) {
@@ -79,7 +314,7 @@ function showInputForType(type) {
   else if (type === 'audio') audioDiv.style.display = 'block';
 }
 
-// --- Canvas Zeichnen ---
+// --- Canvas Drawing ---
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0;
@@ -126,7 +361,7 @@ function isCanvasEmpty() {
   return !imgData.data.some(channel => channel !== 0);
 }
 
-// --- Audioaufnahme ---
+// --- Audio Recording ---
 let mediaRecorder = null;
 let audioChunks = [];
 
@@ -159,14 +394,13 @@ stopAudioBtn.addEventListener('click', () => {
   stopAudioBtn.disabled = true;
 });
 
-// --- Veröffentlichen ---
-publishButton.addEventListener('click', () => {
+// --- Publishing ---
+publishButton.addEventListener('click', async () => {
   const name = nameInput.value.trim() || 'Unbekannt';
-  const timestamp = new Date().toLocaleString();
-  const userColor = getUserColor(name);
   let content = textarea.value.trim();
   const file = fileInput.files[0];
 
+  // Validate input based on selected type
   if ((selectedType === 'text' && content === '') ||
       (selectedType === 'image' && !file) ||
       (selectedType === 'sketch' && isCanvasEmpty()) ||
@@ -189,6 +423,7 @@ publishButton.addEventListener('click', () => {
       textSpan.setAttribute('data-info', `${name}\n${timestamp}`);
       storyContainer.appendChild(textSpan);
     }
+    const newPost = await createPost(name, selectedType, content);
   }
 
   else if (selectedType === 'image') {
@@ -252,18 +487,9 @@ publishButton.addEventListener('click', () => {
     storyContainer.appendChild(container);
   }
 
-  const parts = storyContainer.querySelectorAll('.story-part');
-  if (parts.length > 0) parts[parts.length - 1].classList.remove('blur');
-
-  textarea.value = '';
-  nameInput.value = '';
-  fileInput.value = '';
-  previewContainer.innerHTML = '';
-  audioPreview.src = '';
-  selectedType = null;
-
-  textfeld.style.display = 'none';
-  fileInput.style.display = 'none';
-  canvas.style.display = 'none';
-  audioDiv.style.display = 'none';
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadAndDisplayPosts();
 });
+// Initial load
+loadAndDisplayPosts();
