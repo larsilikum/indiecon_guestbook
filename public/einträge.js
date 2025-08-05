@@ -16,6 +16,21 @@ const startAudioBtn = document.querySelector('.start-audio');
 const stopAudioBtn = document.querySelector('.stop-audio');
 const audioPreview = document.querySelector('.audio-preview');
 
+async function getLeafBranch() {
+  try {
+    const response = await fetch(BaseURL + 'post')
+    const json = await response.json()
+    return json.data
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
+
+// --- State Management ---
+let currentPosts = [];
+let lastLoadedPostId = null;
+
 // --- Farben ---
 const userColors = {};
 const colorPalette = generateDistinctColors(100);
@@ -46,6 +61,140 @@ function getUserColor(name) {
   return color;
 }
 
+// --- Backend Integration ---
+async function loadAndDisplayPosts() {
+  try {
+    const posts = await getLeafBranch();
+    
+    
+    // Clear existing content
+    storyContainer.innerHTML = '';
+    treeContainer.innerHTML = '';
+    treeNodes = [];
+    footnoteCounter = 1;
+    
+    // Clear footnotes
+    const footnoteList = document.querySelector('.footnotes');
+    if (footnoteList) footnoteList.innerHTML = '';
+    
+    // Render each post
+    for (const post of posts) {
+      await renderPost(post);
+    }
+    
+    currentPosts = posts;
+    lastLoadedPostId = posts.length > 0 ? Math.max(...posts.map(p => p.id)) : null;
+    
+  } catch (error) {
+    console.error('Error loading posts:', error);
+  }
+}
+
+async function renderPost(post) {
+  const userName = post.author;
+  const timestamp = new Date(post.date * 1000).toLocaleString();
+  const userColor = getUserColor(userName);
+  
+  // Add to tree
+  addToTree(userName);
+  
+  // Blur existing posts
+  storyContainer.querySelectorAll('.story-part').forEach(p => p.classList.add('blur'));
+  
+  const footnoteIndex = footnoteCounter++;
+  
+  if (post.type === 'text') {
+    // Check if we can append to existing text from same user
+    const lastEntry = Array.from(storyContainer.querySelectorAll('.story-part')).reverse()
+      .find(el => el.style.color === userColor && el.tagName.toLowerCase() === 'span');
+
+    if (lastEntry) {
+      lastEntry.textContent += ' ' + post.content + ' ';
+      const footnoteTag = document.createElement('sup');
+      footnoteTag.textContent = footnoteIndex;
+      footnoteTag.style.color = userColor;
+      lastEntry.appendChild(footnoteTag);
+      lastEntry.setAttribute('data-info', `${userName}\n${timestamp}`);
+    } else {
+      const footnoteTag = document.createElement('sup');
+      footnoteTag.textContent = footnoteIndex;
+      footnoteTag.style.color = userColor;
+
+      const textSpan = document.createElement('span');
+      textSpan.classList.add('story-part');
+      textSpan.style.color = userColor;
+      textSpan.textContent = post.content + ' ';
+      textSpan.appendChild(footnoteTag);
+      textSpan.setAttribute('data-info', `${userName}\n${timestamp}`);
+
+      storyContainer.appendChild(textSpan);
+    }
+  }
+  
+  else if (post.type === 'image' || post.type === 'sketch') {
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('story-part', 'image-wrapper');
+    wrapper.style.position = 'relative';
+
+    const img = document.createElement('img');
+    img.src = post.content; // Assuming content contains the image data URL or URL
+    img.classList.add('image-part');
+    img.title = `${post.type === 'sketch' ? 'Skizze' : 'Bild'} von: ${userName} • ${timestamp}`;
+
+    const sup = document.createElement('sup');
+    sup.textContent = footnoteIndex;
+    sup.style.color = userColor;
+
+    wrapper.appendChild(img);
+    wrapper.appendChild(sup);
+    storyContainer.appendChild(wrapper);
+  }
+  
+  else if (post.type === 'audio') {
+    const container = document.createElement('div');
+    container.classList.add('story-part', 'audio-part');
+    container.title = `Audio von: ${userName} • ${timestamp}`;
+
+    const audioEl = document.createElement('audio');
+    audioEl.src = post.content; // Assuming content contains the audio data URL or URL
+    audioEl.style.display = 'none';
+    container.appendChild(audioEl);
+
+    const playBtn = document.createElement('button');
+    playBtn.classList.add('audio-play-btn');
+    playBtn.textContent = '▶️';
+    container.appendChild(playBtn);
+
+    playBtn.addEventListener('click', () => {
+      if (audioEl.paused) {
+        audioEl.play();
+        playBtn.textContent = '⏸️';
+      } else {
+        audioEl.pause();
+        playBtn.textContent = '▶️';
+      }
+    });
+
+    audioEl.addEventListener('ended', () => {
+      playBtn.textContent = '▶️';
+    });
+
+    const sup = document.createElement('sup');
+    sup.textContent = footnoteIndex;
+    sup.style.color = userColor;
+    container.appendChild(sup);
+
+    storyContainer.appendChild(container);
+  }
+  
+  // Add footnote
+  addFootnote(footnoteIndex, userName, timestamp, userColor);
+  
+  // Remove blur from the latest post
+  const parts = storyContainer.querySelectorAll('.story-part');
+  if (parts.length > 0) parts[parts.length - 1].classList.remove('blur');
+}
+
 function addToTree(userName) {
   const userColor = getUserColor(userName);
   const newKnoten = document.createElement('div');
@@ -66,12 +215,59 @@ function addToTree(userName) {
 
 function addFootnote(index, name, timestamp, color) {
   const footnoteList = document.querySelector('.footnotes');
+  if (!footnoteList) return;
+  
   const fnItem = document.createElement('div');
   fnItem.classList.add('footnote');
   fnItem.innerHTML = `<sup style="color:${color}">${index}</sup> <span style="color:${color}">${name} (${timestamp})</span>`;
   footnoteList.appendChild(fnItem);
 }
 
+// --- File Upload Helpers ---
+function fileToDataURL(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(file);
+  });
+}
+
+function canvasToDataURL(canvas) {
+  return canvas.toDataURL('image/png');
+}
+
+function audioToDataURL(audioBlob) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.readAsDataURL(audioBlob);
+  });
+}
+
+// --- Post Creation ---
+async function createPost(author, type, content) {
+  // This function should make an API call to create a new post
+  // For now, we'll simulate the post structure
+  const parentId = currentPosts.length > 0 ? Math.max(...currentPosts.map(p => p.id)) : 0;
+  
+  const newPost = {
+    id: (lastLoadedPostId || 0) + 1,
+    author: author,
+    date: Math.floor(Date.now() / 1000), // Current unix timestamp
+    parent_id: parentId,
+    type: type,
+    content: content,
+    blocked: false,
+    block_time: null
+  };
+  
+  // Here you would typically make an API call to save the post
+  // await savePost(newPost);
+  
+  return newPost;
+}
+
+// --- UI Event Handlers ---
 fileInput.addEventListener('change', () => {
   const file = fileInput.files[0];
   if (file) {
@@ -109,7 +305,7 @@ function showInputForType(type) {
   else if (type === 'audio') audioDiv.style.display = 'block';
 }
 
-// --- Canvas Zeichnen ---
+// --- Canvas Drawing ---
 const ctx = canvas.getContext('2d');
 let isDrawing = false;
 let lastX = 0;
@@ -156,7 +352,7 @@ function isCanvasEmpty() {
   return !imgData.data.some(channel => channel !== 0);
 }
 
-// --- Audioaufnahme ---
+// --- Audio Recording ---
 let mediaRecorder = null;
 let audioChunks = [];
 
@@ -189,152 +385,76 @@ stopAudioBtn.addEventListener('click', () => {
   stopAudioBtn.disabled = true;
 });
 
-// --- Veröffentlichen ---
-publishButton.addEventListener('click', () => {
+// --- Publishing ---
+publishButton.addEventListener('click', async () => {
   const name = nameInput.value.trim() || 'Unbekannt';
-  const timestamp = new Date().toLocaleString();
-  const userColor = getUserColor(name);
   let content = textarea.value.trim();
   const file = fileInput.files[0];
 
+  // Validate input based on selected type
   if ((selectedType === 'text' && content === '') ||
       (selectedType === 'image' && !file) ||
       (selectedType === 'sketch' && isCanvasEmpty()) ||
-      (selectedType === 'audio' && audioPreview.src === '')) return;
-
-  storyContainer.querySelectorAll('.story-part').forEach(p => p.classList.add('blur'));
-
-  addToTree(name);
-
-  if (selectedType === 'text') {
-    const lastEntry = Array.from(storyContainer.querySelectorAll('.story-part')).reverse()
-      .find(el => el.style.color === userColor && el.tagName.toLowerCase() === 'span');
-
-    const footnoteIndex = footnoteCounter++;
-
-    if (lastEntry) {
-      lastEntry.textContent += ' ' + content + ' ';
-      const footnoteTag = document.createElement('sup');
-      footnoteTag.textContent = footnoteIndex;
-      footnoteTag.style.color = userColor;
-      lastEntry.appendChild(footnoteTag);
-      lastEntry.setAttribute('data-info', `${name}\n${timestamp}`);
-    } else {
-      const footnoteTag = document.createElement('sup');
-      footnoteTag.textContent = footnoteIndex;
-      footnoteTag.style.color = userColor;
-
-      const textSpan = document.createElement('span');
-      textSpan.classList.add('story-part');
-      textSpan.style.color = userColor;
-      textSpan.textContent = content + ' ';
-      textSpan.appendChild(footnoteTag);
-      textSpan.setAttribute('data-info', `${name}\n${timestamp}`);
-
-      storyContainer.appendChild(textSpan);
-    }
-
-    addFootnote(footnoteIndex, name, timestamp, userColor);
+      (selectedType === 'audio' && audioPreview.src === '')) {
+    alert('Bitte fülle alle erforderlichen Felder aus.');
+    return;
   }
 
-  else if (selectedType === 'image') {
-  const footnoteIndex = footnoteCounter++;
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('story-part', 'image-wrapper');
-  wrapper.style.position = 'relative';
+  publishButton.disabled = true;
+  publishButton.textContent = 'Wird veröffentlicht...';
 
-  const img = document.createElement('img');
-  img.src = URL.createObjectURL(file);
-  img.classList.add('image-part');
-  img.title = `Von: ${name} • ${timestamp}`;
+  try {
+    let postContent = '';
 
-  const sup = document.createElement('sup');
-  sup.textContent = footnoteIndex;
-  sup.style.color = userColor;
-
-  wrapper.appendChild(img);
-  wrapper.appendChild(sup);
-  storyContainer.appendChild(wrapper);
-  addFootnote(footnoteIndex, name, timestamp, userColor);
-}
-
-
-  else if (selectedType === 'sketch') {
-  const footnoteIndex = footnoteCounter++;
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('story-part', 'image-wrapper');
-  wrapper.style.position = 'relative';
-
-  const img = document.createElement('img');
-  img.src = canvas.toDataURL('image/png');
-  img.classList.add('image-part');
-  img.title = `Skizze von: ${name} • ${timestamp}`;
-
-  const sup = document.createElement('sup');
-  sup.textContent = footnoteIndex;
-  sup.style.color = userColor;
-
-  wrapper.appendChild(img);
-  wrapper.appendChild(sup);
-  storyContainer.appendChild(wrapper);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  addFootnote(footnoteIndex, name, timestamp, userColor);
-}
-
-
-  else if (selectedType === 'audio') {
-  const footnoteIndex = footnoteCounter++;
-  const container = document.createElement('div');
-  container.classList.add('story-part', 'audio-part');
-  container.title = `Audio von: ${name} • ${timestamp}`;
-
-  const audioEl = document.createElement('audio');
-  audioEl.src = audioPreview.src;
-  audioEl.style.display = 'none';
-  container.appendChild(audioEl);
-
-  const playBtn = document.createElement('button');
-  playBtn.classList.add('audio-play-btn');
-  playBtn.textContent = '▶️';
-  container.appendChild(playBtn);
-
-  playBtn.addEventListener('click', () => {
-    if (audioEl.paused) {
-      audioEl.play();
-      playBtn.textContent = '⏸️';
-    } else {
-      audioEl.pause();
-      playBtn.textContent = '▶️';
+    // Process content based on type
+    if (selectedType === 'text') {
+      postContent = content;
+    } else if (selectedType === 'image') {
+      postContent = await fileToDataURL(file);
+    } else if (selectedType === 'sketch') {
+      postContent = canvasToDataURL(canvas);
+    } else if (selectedType === 'audio') {
+      const audioBlob = new Blob(audioChunks);
+      postContent = await audioToDataURL(audioBlob);
     }
-  });
 
-  audioEl.addEventListener('ended', () => {
-    playBtn.textContent = '▶️';
-  });
+    // Create the post
+    const newPost = await createPost(name, selectedType, postContent);
+    
+    // Add to current posts and re-render
+    currentPosts.push(newPost);
+    await renderPost(newPost);
+    
+    // Clear form
+    textarea.value = '';
+    nameInput.value = '';
+    fileInput.value = '';
+    previewContainer.innerHTML = '';
+    audioPreview.src = '';
+    if (selectedType === 'sketch') {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    selectedType = null;
 
-  const sup = document.createElement('sup');
-  sup.textContent = footnoteIndex;
-  sup.style.color = userColor;
-  container.appendChild(sup);
+    // Hide all input types
+    textfeld.style.display = 'none';
+    fileInput.style.display = 'none';
+    canvas.style.display = 'none';
+    audioDiv.style.display = 'none';
 
-  storyContainer.appendChild(container);
-  addFootnote(footnoteIndex, name, timestamp, userColor);
-}
-
-
-  const parts = storyContainer.querySelectorAll('.story-part');
-  if (parts.length > 0) parts[parts.length - 1].classList.remove('blur');
-
-  textarea.value = '';
-  nameInput.value = '';
-  fileInput.value = '';
-  previewContainer.innerHTML = '';
-  audioPreview.src = '';
-  selectedType = null;
-
-  textfeld.style.display = 'none';
-  fileInput.style.display = 'none';
-  canvas.style.display = 'none';
-  audioDiv.style.display = 'none';
+  } catch (error) {
+    console.error('Error publishing post:', error);
+    alert('Fehler beim Veröffentlichen. Bitte versuche es erneut.');
+  } finally {
+    publishButton.disabled = false;
+    publishButton.textContent = 'Veröffentlichen';
+  }
 });
-s
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadAndDisplayPosts();
+});
+
+// Initial load
+loadAndDisplayPosts();
