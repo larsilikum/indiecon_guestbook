@@ -121,3 +121,26 @@ func UnblockLeafNode(id uint16) (sql.Result, error) {
 	WHERE id = ?`
 	return db.Exec(sql_command, false, nil, id)
 }
+
+func GetLeafBranch(id uint16) ([]types.Post, error) {
+	sql_command := `WITH RECURSIVE parent_chain AS (
+		SELECT id, author, date, parent_id, type, content, blocked, block_time
+		FROM posts 
+		WHERE id = ?
+		
+		UNION ALL
+		
+		SELECT p.id, p.author, p.date, p.parent_id, p.type, p.content, p.blocked, p.block_time
+		FROM posts p
+		INNER JOIN parent_chain pc ON p.id = pc.parent_id
+	)
+	SELECT * FROM parent_chain
+	ORDER BY id;`
+	rows, err := db.Query(sql_command, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	return ScanRows(rows)
+}

@@ -27,13 +27,17 @@ func HandlePost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	post := posts[rand.Intn(len(posts))]
-	_, e := database.BlockLeafNode(post.Id)
-	if e != nil {
-		fmt.Printf("Error blocking post: %v \n", e)
+	_, err = database.BlockLeafNode(post.Id)
+	if err != nil {
+		fmt.Printf("Error blocking post: %v \n", err)
 	}
-	response := types.JsonResponse[types.Post]{
+	branch, err := database.GetLeafBranch(post.Id)
+	if err != nil {
+		fmt.Printf("Error getting Leaf Branch: %v \n", err)
+	}
+	response := types.JsonResponse[[]types.Post]{
 		Status: http.StatusOK,
-		Data:   post,
+		Data:   branch,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

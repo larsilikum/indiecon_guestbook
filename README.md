@@ -45,20 +45,22 @@ curl --location 'localhost:8080/api/posts' \
 `/api/test`: returns Hello + route
 
 `/api/post`: 
-- GET: returns random leaf node from tree which isn't occupied by another client
+- GET: returns random leaf node and its branch from tree which isn't occupied by another client. Branch is ordered with leaf node at the end and root node at beginning.
   - no params
   - json: 
   ```
-  {
-    id: int,
-    author: string,
-    date: unixTimeCode,
-    parent_id: int,
-    type: string,
-    content: string,
-    blocked: boolean,
-    block_time: unixTimeCode,
-  }
+  [
+    {
+      id: int,
+      author: string,
+      date: unixTimeCode,
+      parent_id: int,
+      type: string,
+      content: string,
+      blocked: boolean,
+      block_time: unixTimeCode,
+    }, {...}
+  ]
   ```
 
 `/api/posts`:
