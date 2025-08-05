@@ -1,5 +1,8 @@
 let footnoteCounter = 1;
 
+const BaseURL = "https://staging.co-o-pub.space/api/" // change to /api/ in production
+
+
 // --- Elemente ---
 const textarea = document.querySelector('.textfeld');
 const nameInput = document.querySelector('.input-name');
@@ -21,6 +24,21 @@ async function getLeafBranch() {
     const response = await fetch(BaseURL + 'post')
     const json = await response.json()
     return json.data
+  }
+  catch (e) {
+    console.error(e)
+  }
+}
+
+async function publishPost(post) {
+  try {
+    await fetch(BaseURL + 'posts', {
+      method: "POST",
+      body: JSON.stringify(post),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }
+    })
   }
   catch (e) {
     console.error(e)
@@ -247,22 +265,17 @@ function audioToDataURL(audioBlob) {
 // --- Post Creation ---
 async function createPost(author, type, content) {
   // This function should make an API call to create a new post
-  // For now, we'll simulate the post structure
-  const parentId = currentPosts.length > 0 ? Math.max(...currentPosts.map(p => p.id)) : 0;
+  const parentId = currentPosts[currentPosts.length - 1].id
   
   const newPost = {
-    id: (lastLoadedPostId || 0) + 1,
     author: author,
-    date: Math.floor(Date.now() / 1000), // Current unix timestamp
     parent_id: parentId,
     type: type,
     content: content,
-    blocked: false,
-    block_time: null
   };
   
   // Here you would typically make an API call to save the post
-  // await savePost(newPost);
+  await publishPost(newPost);
   
   return newPost;
 }
@@ -409,13 +422,16 @@ publishButton.addEventListener('click', async () => {
     // Process content based on type
     if (selectedType === 'text') {
       postContent = content;
-    } else if (selectedType === 'image') {
-      postContent = await fileToDataURL(file);
+    } else if (selectedType === 'image') { // This doesnt work yet
+      // postContent = await fileToDataURL(file);
+      return
     } else if (selectedType === 'sketch') {
-      postContent = canvasToDataURL(canvas);
+      // postContent = canvasToDataURL(canvas);
+      return
     } else if (selectedType === 'audio') {
-      const audioBlob = new Blob(audioChunks);
-      postContent = await audioToDataURL(audioBlob);
+      // const audioBlob = new Blob(audioChunks);
+      // postContent = await audioToDataURL(audioBlob);
+      return
     }
 
     // Create the post
