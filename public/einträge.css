@@ -13,7 +13,6 @@ body {
   overflow: hidden;
 }
 
-
 .logo-container {
   display: flex;
   position: absolute;
@@ -45,13 +44,53 @@ body {
 }
 
 .logo-button.form2 {
-  clip-path: polygon(50% 0%, 73% 13%, 100% 22%, 91% 66%, 98% 91%, 50% 78%, 20% 90%, 0% 70%, 0% 35%, 14% 10%);
-  -webkit-clip-path: polygon(50% 0%, 73% 13%, 100% 22%, 91% 66%, 98% 91%, 50% 78%, 20% 90%, 0% 70%, 0% 35%, 14% 10%);
+  clip-path: polygon(
+    50% 0%,
+    73% 13%,
+    100% 22%,
+    91% 66%,
+    98% 91%,
+    50% 78%,
+    20% 90%,
+    0% 70%,
+    0% 35%,
+    14% 10%
+  );
+  -webkit-clip-path: polygon(
+    50% 0%,
+    73% 13%,
+    100% 22%,
+    91% 66%,
+    98% 91%,
+    50% 78%,
+    20% 90%,
+    0% 70%,
+    0% 35%,
+    14% 10%
+  );
 }
 
 .logo-button.form3 {
-  clip-path: polygon(34% 23%, 80% 0%, 100% 20%, 100% 85%, 51% 87%, 20% 100%, 0% 80%, 0% 20%);
-  -webkit-clip-path: polygon(34% 23%, 80% 0%, 100% 20%, 100% 85%, 51% 87%, 20% 100%, 0% 80%, 0% 20%);
+  clip-path: polygon(
+    34% 23%,
+    80% 0%,
+    100% 20%,
+    100% 85%,
+    51% 87%,
+    20% 100%,
+    0% 80%,
+    0% 20%
+  );
+  -webkit-clip-path: polygon(
+    34% 23%,
+    80% 0%,
+    100% 20%,
+    100% 85%,
+    51% 87%,
+    20% 100%,
+    0% 80%,
+    0% 20%
+  );
 }
 
 .logo-line {
@@ -76,8 +115,7 @@ body {
   transform: translateY(0px);
 }
 
-
-.storys {
+#storys {
   width: 50%;
   background-color: #ededed;
   padding-top: 100px;
@@ -124,7 +162,7 @@ body {
   display: inline;
 }
 
-.main {
+#main {
   background-color: white;
   width: 50%;
   height: auto;
@@ -132,6 +170,30 @@ body {
   padding-top: 100px;
   overflow-y: auto;
   position: relative;
+}
+
+#main.posted {
+  transform: translateX(100%);
+  transition: transform 0.5s ease-in-out;
+}
+
+#tree {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 50%;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f10e0e;
+  padding-top: 100px;
+  padding-left: 30px;
+  padding-right: 30px;
+  display: inline-block;
+  transform: translateX(100%);
+}
+#tree.posted {
+  transform: translateX(0);
+  transition: transform 0.5s ease-in-out;
 }
 
 .wahlfeld {
@@ -149,7 +211,20 @@ body {
   color: white;
   cursor: pointer;
   font-size: 0.8em;
-  clip-path: polygon(85.65% 51.4%, 96.04% 42.12%, 88.03% 24.99%, 89.24% 27.57%, 69.01% 21.2%, 50% 17.41%, 29.29% 17.41%, 11.46% 27.57%, 4.7% 40.88%, 11.46% 51.4%, 39.94% 57.28%, 69.01% 57.28%);
+  clip-path: polygon(
+    85.65% 51.4%,
+    96.04% 42.12%,
+    88.03% 24.99%,
+    89.24% 27.57%,
+    69.01% 21.2%,
+    50% 17.41%,
+    29.29% 17.41%,
+    11.46% 27.57%,
+    4.7% 40.88%,
+    11.46% 51.4%,
+    39.94% 57.28%,
+    69.01% 57.28%
+  );
 }
 
 .input-name {
@@ -157,7 +232,20 @@ body {
   font-size: 1rem;
   width: 92%;
   color: #b0afaf;
-  clip-path: polygon(50% 2%, 20.27% 2%, 9.9% 21.31%, 0% 39.75%, 0% 64.7%, 9.9% 85.27%, 27.75% 99.5%, 72.25% 99.5%, 93.5% 83.75%, 100% 64.7%, 90.1% 21.31%, 77.75% 9%);
+  clip-path: polygon(
+    50% 2%,
+    20.27% 2%,
+    9.9% 21.31%,
+    0% 39.75%,
+    0% 64.7%,
+    9.9% 85.27%,
+    27.75% 99.5%,
+    72.25% 99.5%,
+    93.5% 83.75%,
+    100% 64.7%,
+    90.1% 21.31%,
+    77.75% 9%
+  );
   background-color: #ededed;
   border: none;
   text-align: center;
@@ -179,8 +267,23 @@ body {
   box-sizing: border-box;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
   margin-bottom: 0.5em;
-  clip-path: polygon(48.12% 4.72%, 22.25% 1.25%, 3.6% 6.48%, 5.02% 30.72%, 0% 63.95%, 9% 80.19%, 9% 98.75%, 36.96% 94.43%, 67.49% 98.75%, 98.02% 94.43%, 95.85% 59.1%, 89.5% 36.03%, 95.85% 11.11%, 73.98% 1.25%);
-  background-color: #47ebbf
+  clip-path: polygon(
+    48.12% 4.72%,
+    22.25% 1.25%,
+    3.6% 6.48%,
+    5.02% 30.72%,
+    0% 63.95%,
+    9% 80.19%,
+    9% 98.75%,
+    36.96% 94.43%,
+    67.49% 98.75%,
+    98.02% 94.43%,
+    95.85% 59.1%,
+    89.5% 36.03%,
+    95.85% 11.11%,
+    73.98% 1.25%
+  );
+  background-color: #47ebbf;
 }
 
 .input-foto,
@@ -222,6 +325,19 @@ body {
   width: 92%;
   border: none;
   color: #47ebbf;
-  clip-path: polygon(63.5% 5.73%, 32.22% 2%, 3.51% 15.05%, 3.51% 40%, 0% 64.7%, 8.92% 94.5%, 39.68% 89.88%, 69.47% 94.5%, 93.5% 83.75%, 100% 64.7%, 89.95% 37.52%, 87.73% 8.62%);
+  clip-path: polygon(
+    63.5% 5.73%,
+    32.22% 2%,
+    3.51% 15.05%,
+    3.51% 40%,
+    0% 64.7%,
+    8.92% 94.5%,
+    39.68% 89.88%,
+    69.47% 94.5%,
+    93.5% 83.75%,
+    100% 64.7%,
+    89.95% 37.52%,
+    87.73% 8.62%
+  );
   background-color: #b0afaf;
 }
