@@ -1,5 +1,5 @@
-// const BaseURL = "https://staging.co-o-pub.space/api/" 
-const BaseURL = "/api/"
+const BaseURL = "https://staging.co-o-pub.space/api/" 
+// const BaseURL = "/api/"
 
 document.addEventListener("alpine:init", () => {
   Alpine.store("currentEntry", {
