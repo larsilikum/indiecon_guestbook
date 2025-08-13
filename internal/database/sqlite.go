@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"img_masters/indie_guestbook/server/internal/types"
+	"img_masters/indie_guestbook/internal/types"
 	"time"
 
 	_ "github.com/glebarez/go-sqlite"
@@ -11,9 +11,9 @@ import (
 
 var db *sql.DB
 
-func InitDB() {
+func InitDB(dbPath string) {
 	var err error
-	db, err = sql.Open("sqlite", "./sqlite-data.db")
+	db, err = sql.Open("sqlite", dbPath)
 	if err != nil {
 		fmt.Printf("Failed to open db connection: %v", err)
 		return

@@ -196,7 +196,6 @@ body {
   border-radius: 20px;
 }
 
-.textfeld,
 .input-foto,
 .skizze-canvas,
 .audio-recorder {
@@ -212,3 +211,6 @@ body {
   background-color: #eb47a1
 }
 
+label {
+  color: white;
+}
