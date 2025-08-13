@@ -43,7 +43,7 @@
     </div>
     <!--========================================================= Upload Form ==============================================================-->
     <form x-data="useForm" x-on:submit.prevent="submitEntry">
-      <input type="text" name="author" id="author-input" class="input-name">
+      <input type="text" name="author" id="author-input" class="input-name" required>
       <!-- choose File type -->
       <div class="radio-group">
         <div class="radio-option">
@@ -55,20 +55,24 @@
             <label for="type-image">Image</label>
         </div>
         <div class="radio-option">
+            <input type="radio" x-model="selectedType" value="image">
+            <label for="type-image">Sketch</label>
+        </div>
+        <div class="radio-option">
             <input type="radio" x-model="selectedType" value="sound">
             <label for="type-sound">Sound</label>
         </div>
       </div>
       <!-- depending on which type is selected we show the correct input field -->
-      <div x-show="selectedType === 'text'" x-transition>
-        <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld" placeholder="Enter your text here..."></textarea>
-      </div>
-      <div x-show="selectedType === 'image'" x-transition>
-        <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp" x-ref="imageFile">
-      </div>
-      <div x-show="selectedType === 'sound'" x-transition>
-        <input type="file" name="sound" class="file-input" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm" x-ref="soundFile">
-      </div>
+      <template x-if="selectedType === 'text'">
+        <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld" placeholder="Enter your text here..." required></textarea>
+      </template>
+      <template x-if="selectedType === 'image'">
+        <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp" x-ref="imageFile" required>
+      </template>
+      <template x-if="selectedType === 'sound'">
+        <input type="file" name="sound" class="file-input" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm" x-ref="soundFile" required>
+      </template>
 
       <button type="submit" class="publish" x-bind:disabled="isSubmitting">
         <span x-show="!isSubmitting">Publish</span>

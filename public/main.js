@@ -1,4 +1,5 @@
-const BaseURL = "https://staging.co-o-pub.space/api/" // change to /api/ in production
+// const BaseURL = "https://staging.co-o-pub.space/api/" 
+const BaseURL = "/api/"
 
 document.addEventListener("alpine:init", () => {
   Alpine.store("currentEntry", {
@@ -81,17 +82,9 @@ document.addEventListener("alpine:init", () => {
           // Add file based on type
           if (this.selectedType === 'image') {
             const fileInput = this.$refs.imageFile
-            if (!fileInput.files[0]) {
-              alert('Please select an image file')
-              return
-            }
             formData.append('image', fileInput.files[0])
           } else if (this.selectedType === 'sound') {
             const fileInput = this.$refs.soundFile
-            if (!fileInput.files[0]) {
-              alert('Please select a sound file')
-              return
-            }
             formData.append('sound', fileInput.files[0])
           }
 
@@ -109,7 +102,6 @@ document.addEventListener("alpine:init", () => {
           this.$el.reset()
           this.selectedType = 'text'
 
-          alert('Post submitted successfully!')
         } else {
           const error = await response.text()
           console.error('Upload failed:', error)
