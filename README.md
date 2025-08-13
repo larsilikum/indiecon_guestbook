@@ -96,3 +96,6 @@ This is what I thought we need, might be missing something. If you have suggesti
 
 Don't know if we need a route to get or update a single tag?
 
+### build command:
+`GOARCH=386 GOOS=linux go build -o . cmd/api/main.go`
+
