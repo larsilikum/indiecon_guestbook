@@ -23,17 +23,57 @@
 
   <div class="flexbox-container">
     <div class="storys" x-data="entryData">
-      <template x-if="entries" x-for="entry in entries">
-        <template x-if="entry.type === 'text'">
-          <span class="story-part" :data-info="`{userName}\n${timestamp}`" x-text="entry.content + ' '"></p>
-        </template>
+      <template x-if="entries">
+        <div class="test-div">
+          <template  x-for="entry in entries">
+            <span>
+              <template x-if="entry.type === 'text'">
+                <span class="story-part" x-text="entry.content + ' '"></p>
+              </template>
+              <template x-if="entry.type === 'image'">
+                <img class="image-part" :src="entry.content" alt="">
+              </template>
+              <template x-if="entry.type === 'sound'">
+                <span> here should be a sound file but i was to lazy to implement it yet </span>
+              </template>
+            </span>
+          </template>
+        </div>
       </template>
     </div>
-
+    <!--========================================================= Upload Form ==============================================================-->
     <form x-data="useForm" x-on:submit.prevent="submitEntry">
       <input type="text" name="author" id="author-input" class="input-name">
-      <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld"></textarea>
-      <button type="submit" class="publish">Submit</button>
+      <!-- choose File type -->
+      <div class="radio-group">
+        <div class="radio-option">
+            <input type="radio" x-model="selectedType" value="text">
+            <label for="type-text">Text</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" x-model="selectedType" value="image">
+            <label for="type-image">Image</label>
+        </div>
+        <div class="radio-option">
+            <input type="radio" x-model="selectedType" value="sound">
+            <label for="type-sound">Sound</label>
+        </div>
+      </div>
+      <!-- depending on which type is selected we show the correct input field -->
+      <div x-show="selectedType === 'text'" x-transition>
+        <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld" placeholder="Enter your text here..."></textarea>
+      </div>
+      <div x-show="selectedType === 'image'" x-transition>
+        <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp" x-ref="imageFile">
+      </div>
+      <div x-show="selectedType === 'sound'" x-transition>
+        <input type="file" name="sound" class="file-input" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm" x-ref="soundFile">
+      </div>
+
+      <button type="submit" class="publish" x-bind:disabled="isSubmitting">
+        <span x-show="!isSubmitting">Publish</span>
+        <span x-show="isSubmitting">Uploading...</span>
+      </button>
     </form>
   </div>
 
