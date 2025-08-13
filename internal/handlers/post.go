@@ -3,8 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"img_masters/indie_guestbook/server/internal/database"
-	"img_masters/indie_guestbook/server/internal/types"
+	"img_masters/indie_guestbook/internal/database"
+	"img_masters/indie_guestbook/internal/types"
 	"math/rand"
 	"net/http"
 )

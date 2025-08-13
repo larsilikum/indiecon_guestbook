@@ -1,9 +1,9 @@
 package main
 
 import (
-	"img_masters/indie_guestbook/server/internal/database"
-	"img_masters/indie_guestbook/server/internal/types"
-	"img_masters/indie_guestbook/server/internal/handlers"
+	"img_masters/indie_guestbook/internal/database"
+	"img_masters/indie_guestbook/internal/types"
+	"img_masters/indie_guestbook/internal/handlers"
 	"fmt"
 	"github.com/rs/cors"
 	"log"
@@ -20,7 +20,7 @@ func main() {
 
 	defer database.CloseDB()
 	// prepare DB
-	database.InitDB()
+	database.InitDB("./sqlite-data.db")
 	// initialize Tables
 	_, err := database.CreatePostTable()
 	if err != nil {
@@ -44,7 +44,7 @@ func main() {
 	mux.HandleFunc("/api/test", testHandler)
 	mux.HandleFunc("/api/posts", handlers.HandlePosts)
 	mux.HandleFunc("/api/post", handlers.HandlePost)
-	mux.Handle("/", http.FileServer(http.Dir("../public")))
+	mux.Handle("/", http.FileServer(http.Dir("public")))
 
 	handler := c.Handler(mux)
 	log.Fatal(http.ListenAndServe("[::]:8101", handler))
