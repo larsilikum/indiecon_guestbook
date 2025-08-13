@@ -5,13 +5,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Indiecon Test</title>
-  <script src="api-calls.js" defer></script>
-  <script src="einträge.js" defer></script>
+  <!-- <script src="api-calls.js" defer></script>
+  <script src="einträge.js" defer></script> -->
+  <script src="//unpkg.com/alpinejs" defer></script>
+  <script src="./main.js"></script>
   <link rel="stylesheet" href="einträge.css">
 </head>
 
 <body>
-
   <div class="logo-container">
     <button class="logo-button form1">Co</button>
     <div class="logo-line"></div>
@@ -21,6 +22,22 @@
   </div>
 
   <div class="flexbox-container">
+    <div class="storys" x-data="entryData">
+      <template x-if="entries" x-for="entry in entries">
+        <template x-if="entry.type === 'text'">
+          <span class="story-part" :data-info="`{userName}\n${timestamp}`" x-text="entry.content + ' '"></p>
+        </template>
+      </template>
+    </div>
+    <h2>Meine Geschichte:</h2>
+    <form x-data="useForm" x-on:submit.prevent="submitEntry">
+      <input type="text" name="author" id="author-input" class="input-name">
+      <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld"></textarea>
+      <button type="submit" class="publish">Submit</button>
+    </form>
+  </div>
+
+  <!-- <div class="flexbox-container">
 
     <div class="storys"></div>
 
@@ -59,7 +76,7 @@
       <button class="publish">Publish</button>
 
     </div>
-  </div>
+  </div> -->
 
 </body>
 
