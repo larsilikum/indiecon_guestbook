@@ -218,7 +218,15 @@
       </button>
     </form>
 
-<a href="" id="help">?</a>
+  <div x-data="{open: false}">
+    <a href="" id="help" @click.prevent="open = !open">?</a>
+    <div x-show="open" id="help-container">
+      <!-- hier html rein @jule -->
+      hallo
+      <button @click.prevent="open = false">close</button>
+    </div>
+  </div>
+
 
     <!-- <div class="flexbox-container">
 
