@@ -1,7 +1,10 @@
-// const BaseURL = "https://staging.co-o-pub.space/api/";
-const BaseURL = "/api/"
+// const BaseURL = "https://staging.co-o-pub.space";
+const BaseURL = ""
+
+const ApiURL = BaseURL + '/api/'
 
 document.addEventListener("alpine:init", () => {
+  // current Entry is to know which is the parent of the added entry
   Alpine.store("currentEntry", {
     entry: null,
     setEntry(entry) {
@@ -9,33 +12,65 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
-  Alpine.store("ui", { posted: false });
+  Alpine.store("ui", { 
+    posted: false,
+    hoveredAuthor: null, 
+  });
 
-  window.storyRendered = false;
+  Alpine.store("colors", {
+    colors: {},
+    possibleColors: [
+      "#FF8366",
+      "#66FF8A",
+      "#668AFF",
+      "#F7D86F",
+      "#B78ED2",
+      "#F0A55C",
+    ],
+    getEntryColor(entry) {
+      const c = this.colors[entry.id]
+      if (!c) this.setEntryColor(entry)
+      return this.colors[entry.id]
+    },
+    setEntryColor(entry) {
+      if (this.colors[entry.id]) return
+      const parentColor = this.colors[entry.parent_id]
+      let color = getRandomEntryFromArray(this.possibleColors)
+      if (parentColor) {
+        const filteredColors = this.possibleColors.filter(c => c !== parentColor)
+        color = getRandomEntryFromArray(filteredColors)
+      }
+      this.colors[entry.id] = color
+    }
+  })
 
-  Alpine.data("storyData", () => ({
+  Alpine.store("story", {
     entries: [],
     init() {
-      fetch(`${BaseURL}post`)
+      fetch(`${ApiURL}post`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
-          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
-          this.$nextTick(() => styleEntries());
-
-          window.storyRendered = true;
+          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1])
+          this.entries.forEach(entry => {
+            Alpine.store("colors").setEntryColor(entry)
+          })
         });
     },
-    // appendStoredEntry(entry) {
-    //   this.entries.append(entry)
-    // },
-    // changeBranch(entries) {
-    //   this.entries = entries
-    // }
-  }));
+    existsInStory(id) {
+      return this.entries.findIndex(el => el.id === id) >= 0
+    },
+    switchBranch(entries) {
+      this.entries = entries
+    },
+    appendPostedEntry(entry) {
+      this.entries.push(entry)
+      Alpine.store("currentEntry").setEntry(entry)
+    }
+  });
 
   Alpine.data("branch", (b) => {
-    console.log(b);
+    // console.log(b);
     return {
       branch: b,
     };
@@ -46,21 +81,21 @@ document.addEventListener("alpine:init", () => {
     branches: [],
     tree: [],
     init() {
-      fetch(`${BaseURL}posts`)
+      fetch(`${ApiURL}posts`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
+          this.entries.forEach(entry => {
+            Alpine.store("colors").setEntryColor(entry)
+          })
           this.branches = this.buildBranches(this.entries);
           this.tree = this.appendChildrenToBranch(this.branches[0]);
 
-          console.log("Entries:", this.entries);
-          console.log("Branches:", this.branches);
-          console.log("Tree:", this.tree);
+          // console.log("Entries:", this.entries);
+          // console.log("Branches:", this.branches);
+          // console.log("Tree:", this.tree);
 
           Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
-          if (window.storyRendered) {
-            this.$nextTick(() => styleEntries());
-          }
         });
     },
     //building branches
@@ -111,6 +146,34 @@ document.addEventListener("alpine:init", () => {
       }
       return branch;
     },
+
+    switchBranch(entry) {
+      Alpine.store("story").switchBranch(this.searchEntryInTree(this.tree, entry))
+    },
+
+    searchEntryInTree(branch, entry) {
+      let entries = []
+      const lastEntry = branch[branch.length - 1]
+      if(Array.isArray(lastEntry)) {
+        entries = branch.slice(0, branch.length - 1)
+      } else {
+        entries = branch
+      }
+      const idx = branch.findIndex(e => entry.id === e.id)
+      if(idx >= 0) {
+        return entries
+      }
+      if(Array.isArray(lastEntry)) {
+        for (b of lastEntry) {
+          const res = this.searchEntryInTree(b, entry)
+          if (res) {
+            entries.push(...res)
+            return entries
+          }
+        }
+      }
+      return null
+    }
   }));
 
   Alpine.data("useForm", () => ({
@@ -149,7 +212,7 @@ document.addEventListener("alpine:init", () => {
 
         if (this.selectedType === "text") {
           // Send as JSON for text posts
-          response = await fetch(`${BaseURL}posts`, {
+          response = await fetch(`${ApiURL}posts`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -177,7 +240,7 @@ document.addEventListener("alpine:init", () => {
             formData.append("sound", fileInput.files[0]);
           }
 
-          response = await fetch(`${BaseURL}posts`, {
+          response = await fetch(`${ApiURL}posts`, {
             method: "POST",
             body: formData,
           });
@@ -186,6 +249,7 @@ document.addEventListener("alpine:init", () => {
         if (response.ok) {
           const result = await response.json();
           console.log("Upload successful:", result);
+          Alpine.store("story").appendPostedEntry(result)
 
           // Reset form
           Alpine.store("ui").posted = true; // Flag/classtoggle für globalen ui-shift wenn success
@@ -227,3 +291,10 @@ function scrollDownContainer() {
   }, 500);
 }
 scrollDownContainer();
+
+// HELPER
+function getRandomEntryFromArray(arr) {
+  const randInt = Math.floor(Math.random() * arr.length)
+  return arr[randInt]
+}
+

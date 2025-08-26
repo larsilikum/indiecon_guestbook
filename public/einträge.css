@@ -8,12 +8,12 @@ body {
 
 @font-face {
   font-family: "a";
-  src: url("/public/fonts/HealTheWebA-Regular.otf");
+  src: url("./fonts/HealTheWebA-Regular.otf");
 }
 
 @font-face {
   font-family: "b";
-  src: url("/public/fonts/HealTheWebB-Regular.otf");
+  src: url("./fonts/HealTheWebB-Regular.otf");
 }
 
 .flexbox-container {
@@ -24,14 +24,14 @@ body {
 }
 
 .flexbox-container.open {
-  width: 99vw;
+  width: calc(100% - 4rem);
 }
 
 .logo-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: start;
   gap: 0;
-  width: 25%;
+  width: auto;
   position: fixed;
   text-decoration: none;
   top: 0;
@@ -39,33 +39,56 @@ body {
   padding: 1%;
   z-index: 1000;
   align-items: center;
-  transition: 0.6s;
-  pointer-events: none;
-}
-
-.logo-container.open {
-  width: 90%;
+  mix-blend-mode: difference;
 }
 
 .logo-container img {
-  width: 7rem;
-  height: 100%;
+  height: 3.3rem;
+  padding-right: 0.4rem;
+  width: auto;
+  transition: transform 0.35s ease-in-out, margin 0.4s ease-in-out,
+    height 0.2s ease;
 }
 
-#connection-lines {
-  position: fixed;
-  z-index: -1;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+.logo-container.open img {
+  transition: transform 0.42s ease-in-out, margin 0.4s ease-in-out,
+    height 0.2s ease;
+}
+
+#logo-form2 {
+  height: 0.8rem;
+  width: auto;
+  transform-origin: left;
+  transform: translateY(25%);
+}
+
+.logo-container.open #logo-form2 {
+  height: 0.7rem;
+  width: auto;
+  transform: translateY(25%) scaleX(164%);
+}
+
+.logo-container.open #logo-form3 {
+  margin-left: 22%;
+  transition: transform 0.4s ease-in-out, margin 0.4s ease-in-out,
+    height 0.2s ease;
+}
+
+.logo-container:hover #logo-form2 {
+  transform: translateY(25%) scaleX(90%);
+  height: 0.8rem;
+  transition: transform 0.4s ease-in-out, margin 0.4s ease-in-out,
+    height 0.2s ease;
+}
+
+.logo-container:hover #logo-form3 {
+  margin-left: -3.5%;
 }
 
 .stories {
   width: 100%;
-  padding: 1.5%;
-  padding-top: 8rem;
+  padding: 2%;
+  padding-top: 6.5rem;
   padding-bottom: 5%;
   background-color: white;
   overflow-y: scroll;
@@ -106,7 +129,7 @@ form {
   height: 100%;
   width: 45%;
   padding: 1.5%;
-  transform: translateX(97%);
+  transform: translateX(calc(100% - 4rem));
   display: flex;
   flex-direction: column;
   box-shadow: 1px 1px 10px black;
@@ -116,8 +139,8 @@ form {
   transition: 0.2s ease;
 }
 
-form:hover:not(.open) {
-  transform: translateX(90%);
+form:not(.open):hover {
+  transform: translateX(calc(100% - 6rem));
   cursor: pointer;
 }
 
@@ -137,6 +160,7 @@ form.open {
 form * {
   opacity: 0;
   overflow: hidden;
+  cursor: pointer;
 }
 
 form.open * {
@@ -144,6 +168,27 @@ form.open * {
   transform: translateX(0%);
   transition-delay: 1s;
   transition: opacity 0.2s;
+  cursor: auto;
+}
+
+form #add {
+  position: fixed;
+  left: 0;
+  width: 4rem;
+  height: 100%;
+  top: 50%;
+  font-size: 4rem;
+  transform: translatey(-50%);
+  background-color: transparent;
+  color: white;
+  border: none;
+  font-family: "b";
+  cursor: pointer;
+  opacity: 1;
+}
+
+form.open #add {
+  display: none;
 }
 
 #radio-group {
@@ -199,7 +244,7 @@ form.open * {
 }
 
 .tree * {
-  filter: blur(10px);
+  filter: blur(7px);
 }
 
 .tree.open * {
@@ -208,7 +253,7 @@ form.open * {
 
 .tree.open {
   width: 100%;
-  overflow: scroll;
+  overflow: auto;
 }
 
 .tree.locked * {
@@ -218,7 +263,7 @@ form.open * {
 .notFetched {
   border-left: none;
   color: white !important;
-  filter: blur(10px) !important;
+  filter: blur(8px) !important;
   opacity: 0.2;
 }
 
@@ -232,7 +277,7 @@ form.open * {
 
 .entry {
   color: rgb(0, 0, 0);
-  font-size: 3.3em;
+  font-size: 3.1em;
   cursor: pointer;
   pointer-events: auto;
   border-radius: 1rem 1rem 1rem 1rem;
@@ -240,8 +285,8 @@ form.open * {
 
 .locked .entry {
   pointer-events: none;
-  opacity: 0.2;
-  filter: blur(20px);
+  opacity: 0.4;
+  filter: blur(15px);
   transition: filter 0.3s, opacity 0.3s;
 }
 
@@ -251,18 +296,18 @@ form.open * {
 }
 
 .locked span:nth-last-child(2) .entry {
-  filter: blur(10px);
+  filter: blur(7px);
   opacity: 0.9;
 }
 
 .locked span:nth-last-child(3) .entry {
-  filter: blur(13px);
+  filter: blur(10px);
   opacity: 0.8;
 }
 
 .locked span:nth-last-child(4) .entry {
-  filter: blur(15px);
-  opacity: 0.5;
+  filter: blur(14px);
+  opacity: 0.7;
 }
 
 .entry:hover,
@@ -290,7 +335,7 @@ form.open * {
   text-transform: uppercase;
   text-align: center;
   width: 5rem;
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-decoration: none;
   border-radius: 0rem 0rem 1rem 0rem;
   border-left: 0.2rem dashed rgb(255, 255, 255);
@@ -432,6 +477,8 @@ label {
   display: contents;
 }
 
+/* help styling @jule */
+
 #help {
   position: fixed;
   bottom: 0;
@@ -442,4 +489,32 @@ label {
   color: rgb(255, 255, 255);
   mix-blend-mode: difference;
   text-decoration: none;
+  z-index: 100;
+}
+
+#help-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
+
+@media (max-width: 768px) {
+  .logo-container {
+    padding: 2%;
+  }
+  .logo-container img {
+    height: 8.4vw;
+    padding-right: 0.4vw;
+  }
+
+  #logo-form2 {
+    height: 2vw;
+  }
+
+  .logo-container.open #logo-form2 {
+    height: 1.8vw;
+  }
 }
