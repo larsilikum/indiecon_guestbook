@@ -18,8 +18,8 @@ function styleEntries() {
 
     fetchedEntries.forEach((fetchedEntry) => {
       if (fetchedEntry.getAttribute("data-user") === userId) {
-        fetchedEntry.style.color = color;
-        entry.style.backgroundColor = color;
+        // fetchedEntry.style.color = color;
+        // entry.style.backgroundColor = color;
         //entry.style.border = `0.2rem solid ${color}`;
 
         const mediaEntry =
@@ -27,14 +27,14 @@ function styleEntries() {
           fetchedEntry.classList.contains("sound-part");
 
         if (mediaEntry) {
-          fetchedEntry.style.backgroundColor = color;
+          // fetchedEntry.style.backgroundColor = color;
         }
         found = true;
       }
     });
 
     if (!found) {
-      entry.style.backgroundColor = color;
+      // entry.style.backgroundColor = color;
       entry.classList.add("notFetched");
     }
   });

@@ -44,6 +44,7 @@
                     :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                     :data-user="entry.author + entry.id"
                     :id="entry.author + entry.id"
+                    :style="`color: ${$store.colors.getEntryColor(entry)};`"
                     x-text="entry.content + ' '"
                   ></span>
                 </template>
@@ -53,6 +54,7 @@
                     :data-user="entry.author + entry.id"
                     :id="entry.author + entry.id"
                     :src="entry.content"
+                    :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
                     alt=""
                   />
                 </template>
@@ -61,6 +63,7 @@
                     :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                     :data-user="entry.author + entry.id"
                     :id="entry.author + entry.id"
+                    :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
                     >Sound placeholder</span
                   >
                 </template>
@@ -84,6 +87,7 @@
                       :data-user="entry.author + entry.id"
                       :data-parent="entry.parent_id"
                       :data-entry="entryIndex"
+                      :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
                       x-text="entry.author.slice(0,1)"
                       :href="'#' + entry.author + entry.id"
                     ></a>
