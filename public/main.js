@@ -1,5 +1,7 @@
-const BaseURL = "https://staging.co-o-pub.space/api/";
-// const BaseURL = "/api/"
+const BaseURL = "https://staging.co-o-pub.space";
+// const BaseURL = ""
+
+const ApiURL = BaseURL + '/api/'
 
 document.addEventListener("alpine:init", () => {
   // current Entry is to know which is the parent of the added entry
@@ -11,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", { 
-    posted: true,
+    posted: false,
     hoveredAuthor: null, 
   });
 
@@ -45,7 +47,7 @@ document.addEventListener("alpine:init", () => {
   Alpine.store("story", {
     entries: [],
     init() {
-      fetch(`${BaseURL}post`)
+      fetch(`${ApiURL}post`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
@@ -75,7 +77,7 @@ document.addEventListener("alpine:init", () => {
     branches: [],
     tree: [],
     init() {
-      fetch(`${BaseURL}posts`)
+      fetch(`${ApiURL}posts`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
@@ -206,7 +208,7 @@ document.addEventListener("alpine:init", () => {
 
         if (this.selectedType === "text") {
           // Send as JSON for text posts
-          response = await fetch(`${BaseURL}posts`, {
+          response = await fetch(`${ApiURL}posts`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -234,7 +236,7 @@ document.addEventListener("alpine:init", () => {
             formData.append("sound", fileInput.files[0]);
           }
 
-          response = await fetch(`${BaseURL}posts`, {
+          response = await fetch(`${ApiURL}posts`, {
             method: "POST",
             body: formData,
           });
