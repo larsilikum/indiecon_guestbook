@@ -1,223 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Indiecon Test</title>
-  <!-- <script src="api-calls.js" defer></script>
-  <script src="einträge.js" defer></script> -->
-    <script src="./outlet.js" defer></script>
-    <script src="./main.js" defer></script>
-    <script src="./styleEntries.js" defer></script>
-    <script src="./logoSVG.js" defer></script>
-        <script src="//unpkg.com/alpinejs" defer></script>  <!-- defer all and keep alpine.js last! -->
-    <link rel="stylesheet" href="einträge.css" />
-  </head>
 
-  <body x-data="{}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Indiecon Test</title>
+  <script src="./outlet.js" defer></script>
+  <script src="./main.js" defer></script>
+  <script src="./logoSVG.js" defer></script>
+  <script src="//unpkg.com/alpinejs" defer></script> <!-- defer all and keep alpine.js last! -->
+  <link rel="stylesheet" href="einträge.css" />
+</head>
 
-    <a class="logo-container" href="" 
-    x-data="storyData"
-    :class="{ 'open': $store.ui.posted }">
-    
-   
-   <img src="/public/logo/Asset 1.svg" id="logo-form1">
-   <img src="/public/logo/Asset 2.svg" id="logo-form2">
-   <img src="/public/logo/Asset 3.svg" id="logo-form3">
- 
+<body x-data>
 
- </a>
+  <a class="logo-container" href="" x-data :class="{ 'open': $store.ui.posted }">
+    <img src="/public/logo/Asset 1.svg" id="logo-form1">
+    <img src="/public/logo/Asset 2.svg" id="logo-form2">
+    <img src="/public/logo/Asset 3.svg" id="logo-form3">
+  </a>
 
-    <div class="flexbox-container open" 
-    :class="{ 'open': $store.ui.posted }"
-    >
-      <div
-        class="stories open"
-        x-data="storyData"
-        @click="$store.ui.storyOpen = true"
-        :class="{ 'locked': !$store.ui.posted }"
-      >
-        <template x-if="entries">
-          <div class="test-div">
-            <template x-for="entry in entries" :key="entry.id">
-              <span>
-                <template x-if="entry.type === 'text'">
-                  <span
-                    class="entry story-part"
-                    onmouseover="hoverEntries(this)"
-                    onmouseout="unhoverEntries(this)"
-                    :data-user="entry.author + entry.id"
-                    :id="entry.author + entry.id"
-                    x-text="entry.content + ' '"
-                  ></span>
-                </template>
-                <template x-if="entry.type === 'image'">
-                  <img
-                    class="entry image-part"
-                    onmouseover="hoverEntries(this)"
-                    onmouseout="unhoverEntries(this)"
-                    :data-user="entry.author + entry.id"
-                    :id="entry.author + entry.id"
-                    :src="entry.content"
-                    alt=""
-                  />
-                </template>
-                <template x-if="entry.type === 'sound'">
-                  <span
-                    class="entry sound-part"
-                    onmouseover="hoverEntries(this)"
-                    onmouseout="unhoverEntries(this)"
-                    :data-user="entry.author + entry.id"
-                    :id="entry.author + entry.id"
-                    >Sound placeholder</span
-                  >
-                </template>
-              </span>
-            </template>
-          </div>
-        </template>
-      </div>
-
-      <!--========================================================= Tree ==============================================================-->
-      <template x-ref="br">
-          <div x-data="branch( branchData )" class="branch" >
-            <template x-if="branch.length">
-              <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
-                <div class="content">
-                  <template x-if="entry.id">
-                    <a
-                      class="tree-entry"
-                      @mouseover="hoverEntries($el)"
-                      @mouseout="unhoverEntries($el)"
-                      :data-user="entry.author + entry.id"
-                      :data-parent="entry.parent_id"
-                      :data-entry="entryIndex"
-                      x-text="entry.author.slice(0,1)"
-                      :href="'#' + entry.author + entry.id"
-                    ></a>
-                  </template>
-                  <template x-if="Array.isArray(entry)">
-                    <div class="split-branches">
-                      <template x-for="b in entry">
-                        <div class="content">
-                          <template x-template-outlet="$refs.br" x-data="{ branchData: b }"></template>
-                        </div>
-                      </template>
-                    </div>
-                  </template>
-                  </div>
-                </div>
+  <div class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
+    <div class="stories open" x-data @click="$store.ui.storyOpen = true"
+      :class="{ 'locked': !$store.ui.posted }">
+      <template x-if="$store.story.entries">
+        <div class="test-div">
+          <template x-for="entry in $store.story.entries" :key="entry.id">
+            <span>
+              <template x-if="entry.type === 'text'">
+                <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id"
+                  :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
-            </template>
-    
-          </div>
-      </template>
-
-      <div
-      class="tree open"
-      x-data="treeData"
-      :class="{ locked: !$store.ui.posted, open: $store.ui.posted }"
-    >
-      <template x-if="tree.length">
-        <template x-template-outlet="$refs.br" x-data="{ branchData: tree }"></template>
+              <template x-if="entry.type === 'image'">
+                <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="entry.content"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
+              </template>
+              <template x-if="entry.type === 'sound'">
+                <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`">Sound placeholder</span>
+              </template>
+            </span>
+          </template>
+        </div>
       </template>
     </div>
-    
-    
+
+    <!--========================================================= Tree ==============================================================-->
+    <template x-ref="br">
+      <div x-data="branch( branchData )" class="branch">
+        <template x-if="branch.length">
+          <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
+            <div class="content">
+              <template x-if="entry.id">
+                <a :class="{'tree-entry': true, 'notFetched': !$store.story.existsInStory(entry.id) }"
+                  @mouseover="$store.ui.hoveredAuthor = entry.id" @mouseout="$store.ui.hoveredAuthor = null"
+                  :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`" x-text="entry.author.slice(0,1)"
+                  :href="'#' + entry.author + entry.id"></a>
+              </template>
+              <template x-if="Array.isArray(entry)">
+                <div class="split-branches">
+                  <template x-for="b in entry">
+                    <div class="content">
+                      <template x-template-outlet="$refs.br" x-data="{ branchData: b }"></template>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </div>
+      </div>
+    </template>
+    </template>
+
+  </div>
+  </template>
+
+  <div class="tree open" x-data="treeData" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+    <template x-if="tree.length">
+      <template x-template-outlet="$refs.br" x-data="{ branchData: tree }"></template>
+    </template>
+  </div>
 
 
-    <!--========================================================= Upload Form ==============================================================-->
-    <form
-      x-ref="form"
-      x-data="useForm"
-      :class="{ 'open': !$store.ui.posted }"
-      x-on:submit.prevent="submitEntry"
-      @click="$store.ui.posted = false;  scrollDownContainer();
-     history.replaceState(null, '', window.location.pathname + window.location.search);"
-    >
-<button id="add">+</button>
+
+
+  <!--========================================================= Upload Form ==============================================================-->
+  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
+     history.replaceState(null, '', window.location.pathname + window.location.search);">
+    
+  <button id="add">+</button>
     <p id="formIntro">Continue the story:</p><br>
-      <input
-        type="text"
-        name="author"
-        id="author-input"
-        class="input-name"
-        placeholder="Name"
-        required
-      />
+    <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
-      <!-- choose File type -->
-      <div id="radio-group" >
-        <button
-          @click="selectedType = 'text'"
-          :class="selectedType === 'text' ? 'active' : ''"
-        >
-          Text
-        </button>
-
-        <button
-          @click="selectedType = 'image'"
-          :class="selectedType === 'image' ? 'active' : ''"
-        >
-          Image
-        </button>
-
-        <button
-          @click="selectedType = 'sketch'"
-          :class="selectedType === 'sketch' ? 'active' : ''"
-        >
-          Sketch
-        </button>
-
-        <button
-          @click="selectedType = 'sound'"
-          :class="selectedType === 'sound' ? 'active' : ''"
-        >
-          Sound
-        </button>
-      </div>
-
-      <!-- general content input container -->
-      <div id="content-input"     :class="{ 'active': selectedType !== null }">
-        <!-- depending on which type is selected we show the correct input field -->
-        <template x-if="selectedType === 'text'">
-          <textarea
-            name="content"
-            id="body-input"
-            cols="40"
-            rows="20"
-            class="textfeld"
-            placeholder="Enter your text here..."
-            required
-          ></textarea>
-        </template>
-        <template x-if="selectedType === 'image'">
-          <input
-            type="file"
-            name="image"
-            class="file-input"
-            accept="image/jpeg,image/png,image/gif,image/webp"
-            x-ref="imageFile"
-            required
-          />
-        </template>
-        <template x-if="selectedType === 'sound'">
-          <input
-            type="file"
-            name="sound"
-            class="file-input"
-            accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm"
-            x-ref="soundFile"
-            required
-          />
-        </template>
-      </div>
-
-      <button type="submit" class="publish" x-bind:disabled="isSubmitting">
-        <span x-show="!isSubmitting">Publish</span>
-        <span x-show="isSubmitting">Uploading...</span>
+    <!-- choose File type -->
+    <div id="radio-group">
+      <button @click="selectedType = 'text'" :class="selectedType === 'text' ? 'active' : ''">
+        Text
       </button>
-    </form>
+
+      <button @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">
+        Image
+      </button>
+
+      <button @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">
+        Sketch
+      </button>
+
+      <button @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">
+        Sound
+      </button>
+    </div>
+
+    <!-- general content input container -->
+    <div id="content-input" :class="{ 'active': selectedType !== null }">
+      <!-- depending on which type is selected we show the correct input field -->
+      <template x-if="selectedType === 'text'">
+        <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld"
+          placeholder="Enter your text here..." required></textarea>
+      </template>
+      <template x-if="selectedType === 'image'">
+        <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp"
+          x-ref="imageFile" required />
+      </template>
+      <template x-if="selectedType === 'sound'">
+        <input type="file" name="sound" class="file-input" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm"
+          x-ref="soundFile" required />
+      </template>
+    </div>
+
+    <button type="submit" class="publish" x-bind:disabled="isSubmitting">
+      <span x-show="!isSubmitting">Publish</span>
+      <span x-show="isSubmitting">Uploading...</span>
+    </button>
+  </form>
 
   <div x-data="{open: false}">
     <a href="" id="help" @click.prevent="open = !open">?</a>
@@ -229,7 +147,7 @@
   </div>
 
 
-    <!-- <div class="flexbox-container">
+  <!-- <div class="flexbox-container">
 
     <div class="storys"></div>
 
@@ -269,5 +187,6 @@
 
     </div>
   </div> -->
-  </body>
+</body>
+
 </html>
