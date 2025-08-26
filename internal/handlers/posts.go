@@ -70,16 +70,19 @@ func handlePostsPostRequest(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Successfully parsed post from %v with type %s\n", post.Author, post.Type)
 	
 	// TODO: Sanitize and validate fields!!!!!
-	_, err = database.InsertPost(post)
+	insertedPost, err := database.InsertPost(post)
 	if err != nil {
 		fmt.Printf("Error inserting Post: %v\n", err)
 		http.Error(w, "Error saving post", http.StatusInternalServerError)
 		return
 	}
 	
-	fmt.Printf("Added Post from %v\n", post.Author)
+	fmt.Printf("Added Post from %v with ID %d\n", post.Author, insertedPost.Id)
+	
+	// Set content type for JSON response
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+	json.NewEncoder(w).Encode(insertedPost)
 }
 
 func parseMultipartPost(r *http.Request) (*types.Post, error) {

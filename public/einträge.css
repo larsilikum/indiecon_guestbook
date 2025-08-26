@@ -8,12 +8,12 @@ body {
 
 @font-face {
   font-family: "a";
-  src: url("/public/fonts/HealTheWebA-Regular.otf");
+  src: url("./fonts/HealTheWebA-Regular.otf");
 }
 
 @font-face {
   font-family: "b";
-  src: url("/public/fonts/HealTheWebB-Regular.otf");
+  src: url("./fonts/HealTheWebB-Regular.otf");
 }
 
 .flexbox-container {

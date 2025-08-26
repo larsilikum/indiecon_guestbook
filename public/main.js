@@ -1,5 +1,5 @@
-const BaseURL = "https://staging.co-o-pub.space";
-// const BaseURL = ""
+// const BaseURL = "https://staging.co-o-pub.space";
+const BaseURL = ""
 
 const ApiURL = BaseURL + '/api/'
 
@@ -62,6 +62,10 @@ document.addEventListener("alpine:init", () => {
     },
     switchBranch(entries) {
       this.entries = entries
+    },
+    appendPostedEntry(entry) {
+      this.entries.push(entry)
+      Alpine.store("currentEntry").setEntry(entry)
     }
   });
 
@@ -245,6 +249,7 @@ document.addEventListener("alpine:init", () => {
         if (response.ok) {
           const result = await response.json();
           console.log("Upload successful:", result);
+          Alpine.store("story").appendPostedEntry(result)
 
           // Reset form
           Alpine.store("ui").posted = true; // Flag/classtoggle für globalen ui-shift wenn success
