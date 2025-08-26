@@ -90,6 +90,8 @@
   <!--========================================================= Upload Form ==============================================================-->
   <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
      history.replaceState(null, '', window.location.pathname + window.location.search);">
+    
+  <button id="add">+</button>
     <p id="formIntro">Continue the story:</p><br>
     <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
