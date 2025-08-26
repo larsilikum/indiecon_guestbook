@@ -2,6 +2,7 @@ const BaseURL = "https://staging.co-o-pub.space/api/";
 // const BaseURL = "/api/"
 
 document.addEventListener("alpine:init", () => {
+  // current Entry is to know which is the parent of the added entry
   Alpine.store("currentEntry", {
     entry: null,
     setEntry(entry) {
@@ -9,7 +10,10 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
-  Alpine.store("ui", { posted: false });
+  Alpine.store("ui", { 
+    posted: true,
+    hoveredAuthor: null, 
+  });
 
   window.storyRendered = false;
 

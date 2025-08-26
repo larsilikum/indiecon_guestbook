@@ -41,47 +41,47 @@ function styleEntries() {
 }
 
 //++cool hover effect
-function hoverEntries(e) {
-  const entryID = e.getAttribute("data-user");
+// function hoverEntries(e) {
+//   const entryID = e.getAttribute("data-user");
 
-  const treeEntries = document.querySelectorAll(".tree-entry");
-  const normalEntries = document.querySelectorAll(".entry");
+//   const treeEntries = document.querySelectorAll(".tree-entry");
+//   const normalEntries = document.querySelectorAll(".entry");
 
-  const toggleHover = (entries, id, add) => {
-    entries.forEach((entry) => {
-      if (entry.getAttribute("data-user") === id) {
-        if (add) {
-          entry.classList.add("hovered");
-        } else {
-          entry.classList.remove("hovered");
-        }
-      }
-    });
-  };
+//   const toggleHover = (entries, id, add) => {
+//     entries.forEach((entry) => {
+//       if (entry.getAttribute("data-user") === id) {
+//         if (add) {
+//           entry.classList.add("hovered");
+//         } else {
+//           entry.classList.remove("hovered");
+//         }
+//       }
+//     });
+//   };
 
-  // Add hovered class
-  toggleHover(treeEntries, entryID, true);
-  toggleHover(normalEntries, entryID, true);
-}
+//   // Add hovered class
+//   toggleHover(treeEntries, entryID, true);
+//   toggleHover(normalEntries, entryID, true);
+// }
 
-function unhoverEntries(e) {
-  const entryID = e.getAttribute("data-user");
+// function unhoverEntries(e) {
+//   const entryID = e.getAttribute("data-user");
 
-  const treeEntries = document.querySelectorAll(".tree-entry");
-  const normalEntries = document.querySelectorAll(".entry");
+//   const treeEntries = document.querySelectorAll(".tree-entry");
+//   const normalEntries = document.querySelectorAll(".entry");
 
-  const toggleHover = (entries, id, add) => {
-    entries.forEach((entry) => {
-      if (entry.getAttribute("data-user") === id) {
-        if (add) {
-          entry.classList.add("hovered");
-        } else {
-          entry.classList.remove("hovered");
-        }
-      }
-    });
-  };
+//   const toggleHover = (entries, id, add) => {
+//     entries.forEach((entry) => {
+//       if (entry.getAttribute("data-user") === id) {
+//         if (add) {
+//           entry.classList.add("hovered");
+//         } else {
+//           entry.classList.remove("hovered");
+//         }
+//       }
+//     });
+//   };
 
-  toggleHover(treeEntries, entryID, false);
-  toggleHover(normalEntries, entryID, false);
-}
+//   toggleHover(treeEntries, entryID, false);
+//   toggleHover(normalEntries, entryID, false);
+// }

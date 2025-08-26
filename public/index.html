@@ -4,13 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Indiecon Test</title>
-  <!-- <script src="api-calls.js" defer></script>
-  <script src="einträge.js" defer></script> -->
     <script src="./outlet.js" defer></script>
     <script src="./main.js" defer></script>
     <script src="./styleEntries.js" defer></script>
     <script src="./logoSVG.js" defer></script>
-        <script src="//unpkg.com/alpinejs" defer></script>  <!-- defer all and keep alpine.js last! -->
+    <script src="//unpkg.com/alpinejs" defer></script>  <!-- defer all and keep alpine.js last! -->
     <link rel="stylesheet" href="einträge.css" />
   </head>
 
@@ -43,9 +41,7 @@
               <span>
                 <template x-if="entry.type === 'text'">
                   <span
-                    class="entry story-part"
-                    onmouseover="hoverEntries(this)"
-                    onmouseout="unhoverEntries(this)"
+                    :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                     :data-user="entry.author + entry.id"
                     :id="entry.author + entry.id"
                     x-text="entry.content + ' '"
@@ -53,9 +49,7 @@
                 </template>
                 <template x-if="entry.type === 'image'">
                   <img
-                    class="entry image-part"
-                    onmouseover="hoverEntries(this)"
-                    onmouseout="unhoverEntries(this)"
+                    :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                     :data-user="entry.author + entry.id"
                     :id="entry.author + entry.id"
                     :src="entry.content"
@@ -64,9 +58,7 @@
                 </template>
                 <template x-if="entry.type === 'sound'">
                   <span
-                    class="entry sound-part"
-                    onmouseover="hoverEntries(this)"
-                    onmouseout="unhoverEntries(this)"
+                    :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                     :data-user="entry.author + entry.id"
                     :id="entry.author + entry.id"
                     >Sound placeholder</span
@@ -87,8 +79,8 @@
                   <template x-if="entry.id">
                     <a
                       class="tree-entry"
-                      @mouseover="hoverEntries($el)"
-                      @mouseout="unhoverEntries($el)"
+                      @mouseover="$store.ui.hoveredAuthor = entry.id"
+                      @mouseout="$store.ui.hoveredAuthor = null"
                       :data-user="entry.author + entry.id"
                       :data-parent="entry.parent_id"
                       :data-entry="entryIndex"
