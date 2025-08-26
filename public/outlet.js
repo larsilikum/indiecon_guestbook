@@ -8,7 +8,6 @@ document.addEventListener("alpine:init", () => {
 function TemplateOutletDirective(element, metadata, framework) {
   // Get the template reference that we want to clone and render.
   var templateRef = framework.evaluate(metadata.expression);
-  console.log(templateRef);
 
   // Clone the template and get the root node - this is the node that we will
   // inject into the DOM.
@@ -44,5 +43,3 @@ function TemplateOutletDirective(element, metadata, framework) {
     Alpine.destroyTree(element);
   });
 }
-
-console.log("hi");
