@@ -44,7 +44,7 @@ document.addEventListener("alpine:init", () => {
 
   window.storyRendered = false;
 
-  Alpine.data("storyData", () => ({
+  Alpine.store("story", {
     entries: [],
     init() {
       fetch(`${BaseURL}post`)
@@ -55,15 +55,17 @@ document.addEventListener("alpine:init", () => {
           this.entries.forEach(entry => {
             Alpine.store("colors").setEntryColor(entry)
           })
-          this.$nextTick(() => styleEntries());
 
           window.storyRendered = true;
         });
     },
-  }));
+    existsInStory(id) {
+      return this.entries.findIndex(el => el.id === id) >= 0
+    }
+  });
 
   Alpine.data("branch", (b) => {
-    console.log(b);
+    // console.log(b);
     return {
       branch: b,
     };
@@ -84,14 +86,11 @@ document.addEventListener("alpine:init", () => {
           this.branches = this.buildBranches(this.entries);
           this.tree = this.appendChildrenToBranch(this.branches[0]);
 
-          console.log("Entries:", this.entries);
-          console.log("Branches:", this.branches);
-          console.log("Tree:", this.tree);
+          // console.log("Entries:", this.entries);
+          // console.log("Branches:", this.branches);
+          // console.log("Tree:", this.tree);
 
           Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
-          if (window.storyRendered) {
-            this.$nextTick(() => styleEntries());
-          }
         });
     },
     //building branches

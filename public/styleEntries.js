@@ -1,44 +1,44 @@
-function styleEntries() {
-  const treeEntries = document.querySelectorAll(".tree-entry");
-  const fetchedEntries = document.querySelectorAll(".entry");
+// function styleEntries() {
+//   const treeEntries = document.querySelectorAll(".tree-entry");
+//   const fetchedEntries = document.querySelectorAll(".entry");
 
-  const colors = [
-    "#FF8366",
-    "#66FF8A",
-    "#668AFF",
-    "#F7D86F",
-    "#B78ED2",
-    "#F0A55C",
-  ];
+//   const colors = [
+//     "#FF8366",
+//     "#66FF8A",
+//     "#668AFF",
+//     "#F7D86F",
+//     "#B78ED2",
+//     "#F0A55C",
+//   ];
 
-  treeEntries.forEach((entry) => {
-    const userId = entry.getAttribute("data-user");
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    let found = false;
+//   treeEntries.forEach((entry) => {
+//     const userId = entry.getAttribute("data-user");
+//     // const color = colors[Math.floor(Math.random() * colors.length)];
+//     let found = false;
 
-    fetchedEntries.forEach((fetchedEntry) => {
-      if (fetchedEntry.getAttribute("data-user") === userId) {
-        // fetchedEntry.style.color = color;
-        // entry.style.backgroundColor = color;
-        //entry.style.border = `0.2rem solid ${color}`;
+//     fetchedEntries.forEach((fetchedEntry) => {
+//       if (fetchedEntry.getAttribute("data-user") === userId) {
+//         // fetchedEntry.style.color = color;
+//         // entry.style.backgroundColor = color;
+//         //entry.style.border = `0.2rem solid ${color}`;
 
-        const mediaEntry =
-          fetchedEntry.classList.contains("image-part") ||
-          fetchedEntry.classList.contains("sound-part");
+//         const mediaEntry =
+//           fetchedEntry.classList.contains("image-part") ||
+//           fetchedEntry.classList.contains("sound-part");
 
-        if (mediaEntry) {
-          // fetchedEntry.style.backgroundColor = color;
-        }
-        found = true;
-      }
-    });
+//         if (mediaEntry) {
+//           // fetchedEntry.style.backgroundColor = color;
+//         }
+//         found = true;
+//       }
+//     });
 
-    if (!found) {
-      // entry.style.backgroundColor = color;
-      entry.classList.add("notFetched");
-    }
-  });
-}
+//     if (!found) {
+//       // entry.style.backgroundColor = color;
+//       entry.classList.add("notFetched");
+//     }
+//   });
+// }
 
 //++cool hover effect
 // function hoverEntries(e) {
