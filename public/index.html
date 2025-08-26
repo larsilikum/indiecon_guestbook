@@ -57,6 +57,7 @@
               <template x-if="entry.id">
                 <a :class="{'tree-entry': true, 'notFetched': !$store.story.existsInStory(entry.id) }"
                   @mouseover="$store.ui.hoveredAuthor = entry.id" @mouseout="$store.ui.hoveredAuthor = null"
+                  @click="switchBranch(entry)"
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)}`" x-text="entry.author.slice(0,1)"
                   :href="'#' + entry.author + entry.id"></a>

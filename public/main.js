@@ -11,7 +11,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", { 
-    posted: false,
+    posted: true,
     hoveredAuthor: null, 
   });
 
@@ -42,8 +42,6 @@ document.addEventListener("alpine:init", () => {
     }
   })
 
-  window.storyRendered = false;
-
   Alpine.store("story", {
     entries: [],
     init() {
@@ -55,12 +53,13 @@ document.addEventListener("alpine:init", () => {
           this.entries.forEach(entry => {
             Alpine.store("colors").setEntryColor(entry)
           })
-
-          window.storyRendered = true;
         });
     },
     existsInStory(id) {
       return this.entries.findIndex(el => el.id === id) >= 0
+    },
+    switchBranch(entries) {
+      this.entries = entries
     }
   });
 
@@ -141,6 +140,34 @@ document.addEventListener("alpine:init", () => {
       }
       return branch;
     },
+
+    switchBranch(entry) {
+      Alpine.store("story").switchBranch(this.searchEntryInTree(this.tree, entry))
+    },
+
+    searchEntryInTree(branch, entry) {
+      let entries = []
+      const lastEntry = branch[branch.length - 1]
+      if(Array.isArray(lastEntry)) {
+        entries = branch.slice(0, branch.length - 1)
+      } else {
+        entries = branch
+      }
+      const idx = branch.findIndex(e => entry.id === e.id)
+      if(idx >= 0) {
+        return entries
+      }
+      if(Array.isArray(lastEntry)) {
+        for (b of lastEntry) {
+          const res = this.searchEntryInTree(b, entry)
+          if (res) {
+            entries.push(...res)
+            return entries
+          }
+        }
+      }
+      return null
+    }
   }));
 
   Alpine.data("useForm", () => ({
