@@ -1,5 +1,5 @@
-const BaseURL = "https://staging.co-o-pub.space/api/";
-// const BaseURL = "/api/"
+// const BaseURL = "https://staging.co-o-pub.space/api/";
+const BaseURL = "/api/"
 
 document.addEventListener("alpine:init", () => {
   Alpine.store("currentEntry", {
@@ -26,6 +26,12 @@ document.addEventListener("alpine:init", () => {
           window.storyRendered = true;
         });
     },
+    // appendStoredEntry(entry) {
+    //   this.entries.append(entry)
+    // },
+    // changeBranch(entries) {
+    //   this.entries = entries
+    // }
   }));
 
   Alpine.data("branch", (b) => {
