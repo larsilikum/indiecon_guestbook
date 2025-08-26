@@ -9,7 +9,7 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
-  Alpine.store("ui", { posted: false });
+  Alpine.store("ui", { posted: true });
 
   window.storyRendered = false;
 
