@@ -34,7 +34,7 @@
               </template>
               <template x-if="entry.type === 'image'">
                 <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
-                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="entry.content"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
               </template>
               <template x-if="entry.type === 'sound'">
