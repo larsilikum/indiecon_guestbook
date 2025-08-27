@@ -66,7 +66,7 @@
                   'tree-entry': true,
                   'notFetched': !$store.story.existsInStory(entry.id),
                   'hovered': $store.ui.hoveredAuthor === entry.id}"
-                @mouseov er="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
+                @mouseover="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
                 @mouseout="$store.ui.hoveredAuthor = null"
                 @click.prevent="document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
                 :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
