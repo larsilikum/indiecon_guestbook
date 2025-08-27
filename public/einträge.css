@@ -494,8 +494,8 @@ label {
   color: black;
   font-family: "NeueMontreal", sans-serif;
   /* font-family: Arial, sans-serif; */
-  line-height: 1.6rem;
-  font-size: 1.3rem;
+  line-height: 1.8rem;
+  font-size: 1.6rem;
   opacity: 0;
   overflow-y: auto;
   box-sizing: border-box;
@@ -515,8 +515,8 @@ label {
 #help-container ul {
   margin: 0.5rem 0;
   padding-left: 1rem;
-  line-height: 1.2rem;
-  font-size: 1.1rem;
+  line-height: 1.5rem;
+  font-size: 1.4rem;
 }
 
 #help-container li {
