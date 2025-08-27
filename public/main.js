@@ -46,8 +46,11 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.store("story", {
     entries: [],
-    init() {
-      fetch(`${ApiURL}post`)
+    async init() {
+      await this.fetch()
+    },
+    async fetch() {
+      await fetch(`${ApiURL}post`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
@@ -66,6 +69,14 @@ document.addEventListener("alpine:init", () => {
     appendPostedEntry(entry) {
       this.entries.push(entry)
       Alpine.store("currentEntry").setEntry(entry)
+    },
+    async handleFormClick() {
+      scrollDownContainer();
+      history.replaceState(null, '', window.location.pathname + window.location.search); 
+      if (Alpine.store("ui").posted) {
+        Alpine.store("ui").posted = false;  
+        await this.fetch();
+      }
     }
   });
 

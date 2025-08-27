@@ -79,9 +79,16 @@
   </div>
   </template>
 
-  <div class="tree open" x-data :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
-    <template x-if="$store.treeData.tree.length">
-      <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
+  <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+    <template x-if="!$store.ui.posted && $store.story.entries.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>  
+      </div>
+    </template>
+    <template x-if="$store.ui.posted && $store.treeData.tree.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
+      </div>
     </template>
   </div>
 
@@ -89,8 +96,7 @@
 
 
   <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
-     history.replaceState(null, '', window.location.pathname + window.location.search);">
+  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.story.handleFormClick()">
     
   <button id="add">+</button>
     <p id="formIntro">Continue the story:</p><br>
