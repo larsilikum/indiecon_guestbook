@@ -61,19 +61,21 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
+ 
 
-                <a  :id="'@tree%' + entry.author + entry.id"
-                :class="{
-                  'tree-entry': true,
-                  'notFetched': !$store.story.existsInStory(entry.id),
-                  'hovered': $store.ui.hoveredAuthor === entry.id}"
-                @mouseover="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-                @mouseout="$store.ui.hoveredAuthor = null"
-                @click.prevent="document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-                :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
-                :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
-                >
-                <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`" :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
+                  <a  :id="'@tree%' + entry.author + entry.id"
+                  :class="{
+                    'tree-entry': true,
+                    'notFetched': !$store.story.existsInStory(entry.id),
+                    'hovered': $store.ui.hoveredAuthor === entry.id}"
+                  @mouseover="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
+                  @mouseout="$store.ui.hoveredAuthor = null"
+                  @click="$store.treeData.switchBranch(entry)"
+                  @click.prevent="document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
+                  :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
+                  >
+                  <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`" :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
                 </a>
               </template>
               <template x-if="Array.isArray(entry)">
@@ -89,15 +91,23 @@
       </div>
     </template>
     </template>
+
   </div>
   </template>
 
-  <div class="tree open" x-data="treeData" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+  <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
     <div id="treeZoom"><img src="/public/logo/Asset 2.svg" id="slider"></div>
-    <template x-if="tree.length">
-      <template x-template-outlet="$refs.br" x-data="{ branchData: tree }"></template>
+    <template x-if="!$store.ui.posted && $store.story.entries.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>  
+      </div>
     </template>
-</div>
+    <template x-if="$store.ui.posted && $store.treeData.tree.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
+      </div>
+    </template>
+  </div>
 
 
 
@@ -106,7 +116,7 @@
   <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.story.handleFormClick()">
     
   <button id="add">+</button>
-    <p id="formIntro">führe die Geschichte fort:</p><br>
+    <p id="formIntro">Führe die Geschichte fort:</p><br>
     <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
     <!-- choose File type -->
@@ -133,7 +143,7 @@
       <!-- depending on which type is selected we show the correct input field -->
       <template x-if="selectedType === 'text'">
         <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld"
-          placeholder="füge hier deinen Text hinzu..." required></textarea>
+          placeholder="Füge hier deinen Text hinzu..." required></textarea>
       </template>
       <template x-if="selectedType === 'image'">
         <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp"
@@ -178,6 +188,7 @@
       </div>
     </div>
   </div>
+
 
 
   <!-- <div class="flexbox-container">

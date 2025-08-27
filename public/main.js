@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: false,
+    posted: true,
     hoveredAuthor: null,
   });
 
@@ -56,7 +56,6 @@ document.addEventListener("alpine:init", () => {
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
-
           Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
           this.entries.forEach((entry) => {
             Alpine.store("colors").setEntryColor(entry);
