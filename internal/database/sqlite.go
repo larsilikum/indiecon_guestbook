@@ -49,16 +49,36 @@ func CreatePostTable() (sql.Result, error) {
 
 	return db.Exec(sql_test_command)
 }
-
-func InsertPost(p *types.Post) (sql.Result, error) {
+func InsertPost(p *types.Post) (*types.Post, error) {
 	sql_command := `INSERT INTO posts (author, date, parent_id, type, content, blocked, block_time)
-	VALUES(?,?,?,?,?,?,?);
-	`
+	VALUES(?,?,?,?,?,?,?);`
+	
 	date := time.Now().Unix()
 	blocked := false
-	return db.Exec(sql_command, p.Author, date, p.Parent, p.Type, p.Content, blocked, 0)
-}
+	
+	result, err := db.Exec(sql_command, p.Author, date, p.Parent, p.Type, p.Content, blocked, 0)
+	if err != nil {
+		return nil, err
+	}
 
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	
+	insertedPost := &types.Post{
+		Id:        uint16(id),
+		Author:    p.Author,
+		Date:      date,
+		Parent:    p.Parent,
+		Type:      p.Type,
+		Content:   p.Content,
+		Blocked:   blocked,
+		BlockTime: 0,
+	}
+	
+	return insertedPost, nil
+}
 func GetAllPosts() ([]types.Post, error) {
 	sql_command := `SELECT * FROM posts`
 

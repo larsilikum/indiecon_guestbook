@@ -15,9 +15,9 @@
 <body x-data>
 
   <a class="logo-container" href="" x-data :class="{ 'open': $store.ui.posted }">
-    <img src="/public/logo/Asset 1.svg" id="logo-form1">
-    <img src="/public/logo/Asset 2.svg" id="logo-form2">
-    <img src="/public/logo/Asset 3.svg" id="logo-form3">
+    <img src="./logo/Asset 1.svg" id="logo-form1">
+    <img src="./logo/Asset 2.svg" id="logo-form2">
+    <img src="./logo/Asset 3.svg" id="logo-form3">
   </a>
 
   <div class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
@@ -57,7 +57,7 @@
               <template x-if="entry.id">
                 <a :class="{'tree-entry': true, 'notFetched': !$store.story.existsInStory(entry.id) }"
                   @mouseover="$store.ui.hoveredAuthor = entry.id" @mouseout="$store.ui.hoveredAuthor = null"
-                  @click="switchBranch(entry)"
+                  @click="$store.treeData.switchBranch(entry)"
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)}`" x-text="entry.author.slice(0,1)"
                   :href="'#' + entry.author + entry.id"></a>
@@ -79,9 +79,16 @@
   </div>
   </template>
 
-  <div class="tree open" x-data="treeData" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
-    <template x-if="tree.length">
-      <template x-template-outlet="$refs.br" x-data="{ branchData: tree }"></template>
+  <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+    <template x-if="!$store.ui.posted && $store.story.entries.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>  
+      </div>
+    </template>
+    <template x-if="$store.ui.posted && $store.treeData.tree.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
+      </div>
     </template>
   </div>
 
@@ -89,8 +96,7 @@
 
 
   <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
-     history.replaceState(null, '', window.location.pathname + window.location.search);">
+  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.story.handleFormClick()">
     
   <button id="add">+</button>
     <p id="formIntro">Continue the story:</p><br>
