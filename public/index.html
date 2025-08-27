@@ -33,14 +33,16 @@
                   :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
               <template x-if="entry.type === 'image'">
-                <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                <img :class="{ 'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id, 'big': big }"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }" @click="big = !big" />
               </template>
               <template x-if="entry.type === 'sound'">
-                <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                <audio :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`">Sound placeholder</span>
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" controls>
+                  <source :src="BaseURL + entry.content">
+                </audio>
               </template>
             </span>
           </template>
@@ -57,7 +59,7 @@
               <template x-if="entry.id">
                 <a :class="{'tree-entry': true, 'notFetched': !$store.story.existsInStory(entry.id) }"
                   @mouseover="$store.ui.hoveredAuthor = entry.id" @mouseout="$store.ui.hoveredAuthor = null"
-                  @click="switchBranch(entry)"
+                  @click="$store.treeData.switchBranch(entry)"
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)}`" x-text="entry.author.slice(0,1)"
                   :href="'#' + entry.author + entry.id"></a>
@@ -79,9 +81,16 @@
   </div>
   </template>
 
-  <div class="tree open" x-data="treeData" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
-    <template x-if="tree.length">
-      <template x-template-outlet="$refs.br" x-data="{ branchData: tree }"></template>
+  <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+    <template x-if="!$store.ui.posted && $store.story.entries.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>  
+      </div>
+    </template>
+    <template x-if="$store.ui.posted && $store.treeData.tree.length">
+      <div>
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
+      </div>
     </template>
   </div>
 
@@ -89,8 +98,7 @@
 
 
   <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
-     history.replaceState(null, '', window.location.pathname + window.location.search);">
+  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.story.handleFormClick()">
     
   <button id="add">+</button>
     <p id="formIntro">Continue the story:</p><br>
@@ -139,11 +147,30 @@
   </form>
 
   <div x-data="{open: false}">
-    <a href="" id="help" @click.prevent="open = !open">?</a>
-    <div x-show="open" id="help-container">
-      <!-- hier html rein @jule -->
-      hallo
-      <button @click.prevent="open = false">close</button>
+    <!-- Help Button ? -->
+    <div class="help-icon" @click="open = !open" x-text="open ? '×' : '?'"></div>
+
+    <!-- Help Panel aufgeklappt -->
+    <div id="help" :class="{ 'open': open }">
+      <div id="help-container">
+        <p>Bei Co~o–Pub entsteht gemeinschaftlich eine forlaufende, mehrstimmige Geschichte zur Indiecon –
+          dokumentarisch, spekulativ, absurd oder emotional. Werde ganz einfach Teil davon indem du...</p>
+
+        <ul>
+          <li>Einen Namen für deinen Beitrag wählst</li>
+          <li>Den Inhaltstyp festlegst: Text, Foto, Zeichnung oder Sound</li>
+          <li>Einen Beitrag gestaltest der an den vorherigen anknüpft<br> (Der Rest der Geschichte ist bis dahin
+            unsichtbar)</li>
+          <li>Klicke auf "Publish" um deinen Beitrag der Geschichte hinzuzufügen</li>
+          <li>Dein Beitrag wird automatisch mit den vorherigen verknüpft und du kannst nun die ganze Geschichte sehen
+          </li>
+          <li>Über die Baumstruktur, die rechts erscheint, ist es möglich sich durch die Geschichte und ihre
+            verschiedenen Stränge zu navigieren</li>
+          <li>Du kannst das schwarze Eingabe Fenster am Rand erneut öffnen um einen weiteren Beitrag zu verfassen
+          </li>
+        </ul>
+
+      </div>
     </div>
   </div>
 
