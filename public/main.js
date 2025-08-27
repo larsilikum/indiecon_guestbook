@@ -12,9 +12,9 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
-  Alpine.store("ui", { 
-    posted: false,
-    hoveredAuthor: null, 
+  Alpine.store("ui", {
+    posted: true,
+    hoveredAuthor: null,
   });
 
   Alpine.store("colors", {
@@ -28,21 +28,23 @@ document.addEventListener("alpine:init", () => {
       "#F0A55C",
     ],
     getEntryColor(entry) {
-      const c = this.colors[entry.id]
-      if (!c) this.setEntryColor(entry)
-      return this.colors[entry.id]
+      const c = this.colors[entry.id];
+      if (!c) this.setEntryColor(entry);
+      return this.colors[entry.id];
     },
     setEntryColor(entry) {
-      if (this.colors[entry.id]) return
-      const parentColor = this.colors[entry.parent_id]
-      let color = getRandomEntryFromArray(this.possibleColors)
+      if (this.colors[entry.id]) return;
+      const parentColor = this.colors[entry.parent_id];
+      let color = getRandomEntryFromArray(this.possibleColors);
       if (parentColor) {
-        const filteredColors = this.possibleColors.filter(c => c !== parentColor)
-        color = getRandomEntryFromArray(filteredColors)
+        const filteredColors = this.possibleColors.filter(
+          (c) => c !== parentColor
+        );
+        color = getRandomEntryFromArray(filteredColors);
       }
-      this.colors[entry.id] = color
-    }
-  })
+      this.colors[entry.id] = color;
+    },
+  });
 
   Alpine.store("story", {
     entries: [],
@@ -54,6 +56,7 @@ document.addEventListener("alpine:init", () => {
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
+        
           Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1])
           this.entries.forEach(entry => {
             Alpine.store("colors").setEntryColor(entry)
@@ -101,9 +104,9 @@ document.addEventListener("alpine:init", () => {
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
-          this.entries.forEach(entry => {
-            Alpine.store("colors").setEntryColor(entry)
-          })
+          this.entries.forEach((entry) => {
+            Alpine.store("colors").setEntryColor(entry);
+          });
           this.branches = this.buildBranches(this.entries);
           this.tree = this.appendChildrenToBranch(this.branches[0]);
 
@@ -311,7 +314,6 @@ scrollDownContainer();
 
 // HELPER
 function getRandomEntryFromArray(arr) {
-  const randInt = Math.floor(Math.random() * arr.length)
-  return arr[randInt]
+  const randInt = Math.floor(Math.random() * arr.length);
+  return arr[randInt];
 }
-
