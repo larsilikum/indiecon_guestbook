@@ -28,17 +28,12 @@
         <div class="test-div">
           <template x-for="entry in $store.story.entries" :key="entry.id">
             <a 
-            @mouseover="
-              $store.ui.hoveredAuthor = entry.id;
-              document.getElementById('@tree%' + entry.author + entry.id)
-                ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-            "
+            @mouseover="$store.ui.hoveredAuthor = entry.id;
+            document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
             @mouseout="$store.ui.hoveredAuthor = null"
-            @click.prevent="
-              document.getElementById('@tree%' + entry.author + entry.id)
-                ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-            "
-          >       <template x-if="entry.type === 'text'">
+            @click.prevent="document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
+            >
+              <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
                   :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
@@ -66,25 +61,19 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
-                <a :  :id="'@tree%' + entry.author + entry.id"
+                <a  :id="'@tree%' + entry.author + entry.id"
                 :class="{
                   'tree-entry': true,
                   'notFetched': !$store.story.existsInStory(entry.id),
-                  'hovered': $store.ui.hoveredAuthor === entry.id
-                }"
-                @mouseover="
-                  $store.ui.hoveredAuthor = entry.id;
-                  document.getElementById(entry.author + entry.id)
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-                "
+                  'hovered': $store.ui.hoveredAuthor === entry.id}"
+                @mouseov er="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
                 @mouseout="$store.ui.hoveredAuthor = null"
-                @click.prevent="
-                  document.getElementById(entry.author + entry.id)
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-                "
-                  :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
-                  >    <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`" :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span></a>
+                @click.prevent="document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
+                :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
+                :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
+                >
+                <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`" :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
+              </a>
               </template>
               <template x-if="Array.isArray(entry)">
                 <div class="split-branches">
