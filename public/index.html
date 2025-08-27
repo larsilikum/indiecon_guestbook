@@ -5,47 +5,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Indiecon Test</title>
-  <!-- <script src="api-calls.js" defer></script>
-  <script src="einträge.js" defer></script> -->
   <script src="./outlet.js" defer></script>
   <script src="./main.js" defer></script>
-  <script src="./styleEntries.js" defer></script>
   <script src="./logoSVG.js" defer></script>
   <script src="//unpkg.com/alpinejs" defer></script> <!-- defer all and keep alpine.js last! -->
   <link rel="stylesheet" href="einträge.css" />
 </head>
 
-<body x-data="{}">
+<body x-data>
 
-  <a class="logo-container" href="" x-data="storyData" :class="{ 'open': $store.ui.posted }">
-
-
+  <a class="logo-container" href="" x-data :class="{ 'open': $store.ui.posted }">
     <img src="/public/logo/Asset 1.svg" id="logo-form1">
     <img src="/public/logo/Asset 2.svg" id="logo-form2">
     <img src="/public/logo/Asset 3.svg" id="logo-form3">
-
-
   </a>
 
   <div class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
-    <div class="stories open" x-data="storyData" @click="$store.ui.storyOpen = true"
+    <div class="stories open" x-data @click="$store.ui.storyOpen = true"
       :class="{ 'locked': !$store.ui.posted }">
-      <template x-if="entries">
+      <template x-if="$store.story.entries">
         <div class="test-div">
-          <template x-for="entry in entries" :key="entry.id">
+          <template x-for="entry in $store.story.entries" :key="entry.id">
             <span>
               <template x-if="entry.type === 'text'">
-                <span class="entry story-part" onmouseover="hoverEntries(this)" onmouseout="unhoverEntries(this)"
+                <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
-                  x-text="entry.content + ' '"></span>
+                  :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
               <template x-if="entry.type === 'image'">
-                <img class="entry image-part" onmouseover="hoverEntries(this)" onmouseout="unhoverEntries(this)"
-                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="entry.content" alt="" />
+                <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
               </template>
               <template x-if="entry.type === 'sound'">
-                <span class="entry sound-part" onmouseover="hoverEntries(this)" onmouseout="unhoverEntries(this)"
-                  :data-user="entry.author + entry.id" :id="entry.author + entry.id">Sound placeholder</span>
+                <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`">Sound placeholder</span>
               </template>
             </span>
           </template>
@@ -60,9 +55,12 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
-                <a class="tree-entry" @mouseover="hoverEntries($el)" @mouseout="unhoverEntries($el)"
+                <a :class="{'tree-entry': true, 'notFetched': !$store.story.existsInStory(entry.id) }"
+                  @mouseover="$store.ui.hoveredAuthor = entry.id" @mouseout="$store.ui.hoveredAuthor = null"
+                  @click="switchBranch(entry)"
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
-                  x-text="entry.author.slice(0,1)" :href="'#' + entry.author + entry.id"></a>
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`" x-text="entry.author.slice(0,1)"
+                  :href="'#' + entry.author + entry.id"></a>
               </template>
               <template x-if="Array.isArray(entry)">
                 <div class="split-branches">
@@ -93,6 +91,8 @@
   <!--========================================================= Upload Form ==============================================================-->
   <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
      history.replaceState(null, '', window.location.pathname + window.location.search);">
+    
+  <button id="add">+</button>
     <p id="formIntro">Continue the story:</p><br>
     <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
@@ -165,7 +165,6 @@
       </div>
     </div>
   </div>
-
 
 
   <!-- <div class="flexbox-container">
