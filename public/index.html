@@ -38,9 +38,11 @@
                   :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
               </template>
               <template x-if="entry.type === 'sound'">
-                <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                <audio :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`">Sound placeholder</span>
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" controls>
+                  <source :src="BaseURL + entry.content">
+                </audio>
               </template>
             </span>
           </template>
