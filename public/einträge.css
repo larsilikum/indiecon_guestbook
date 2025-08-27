@@ -368,7 +368,11 @@ form.open #add {
 
 .image-part {
   display: inline;
-  max-height: 1em;
+  max-height: .8em;
+}
+.image-part.big {
+  max-height: 70dvh;
+  max-width: 100%;
 }
 
 .audio-play-btn {

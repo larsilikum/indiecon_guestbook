@@ -33,9 +33,9 @@
                   :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
               <template x-if="entry.type === 'image'">
-                <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                <img :class="{ 'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id, 'big': big }"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }" @click="big = !big" />
               </template>
               <template x-if="entry.type === 'sound'">
                 <audio :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
