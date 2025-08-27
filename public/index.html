@@ -16,9 +16,9 @@
 <body x-data>
 
   <a class="logo-container" href="" x-data :class="{ 'open': $store.ui.posted }">
-    <img src="/public/logo/Asset 1.svg" id="logo-form1">
-    <img src="/public/logo/Asset 2.svg" id="logo-form2">
-    <img src="/public/logo/Asset 3.svg" id="logo-form3">
+    <img src="./logo/Asset 1.svg" id="logo-form1">
+    <img src="./logo/Asset 2.svg" id="logo-form2">
+    <img src="./logo/Asset 3.svg" id="logo-form3">
   </a>
 
   <div class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
@@ -40,7 +40,7 @@
               </template>
               <template x-if="entry.type === 'image'">
                 <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
-                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="entry.content"
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
               </template>
               <template x-if="entry.type === 'sound'">
@@ -61,6 +61,7 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
+
                 <a  :id="'@tree%' + entry.author + entry.id"
                 :class="{
                   'tree-entry': true,
@@ -73,7 +74,7 @@
                 :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
                 >
                 <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`" :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
-              </a>
+                </a>
               </template>
               <template x-if="Array.isArray(entry)">
                 <div class="split-branches">
@@ -90,6 +91,7 @@
     </template>
   </div>
   </template>
+
   <div class="tree open" x-data="treeData" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
     <div id="treeZoom"><img src="/public/logo/Asset 2.svg" id="slider"></div>
     <template x-if="tree.length">
@@ -101,8 +103,7 @@
 
 
   <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.ui.posted = false;  scrollDownContainer();
-     history.replaceState(null, '', window.location.pathname + window.location.search);">
+  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.story.handleFormClick()">
     
   <button id="add">+</button>
     <p id="formIntro">führe die Geschichte fort:</p><br>
@@ -151,11 +152,30 @@
   </form>
 
   <div x-data="{open: false}">
-    <a href="" id="help" @click.prevent="open = !open">?</a>
-    <div x-show="open" id="help-container">
-      <!-- hier html rein @jule -->
-      hallo
-      <button @click.prevent="open = false">close</button>
+    <!-- Help Button ? -->
+    <div class="help-icon" @click="open = !open" x-text="open ? '×' : '?'"></div>
+
+    <!-- Help Panel aufgeklappt -->
+    <div id="help" :class="{ 'open': open }">
+      <div id="help-container">
+        <p>Bei Co~o–Pub entsteht gemeinschaftlich eine forlaufende, mehrstimmige Geschichte zur Indiecon –
+          dokumentarisch, spekulativ, absurd oder emotional. Werde ganz einfach Teil davon indem du...</p>
+
+        <ul>
+          <li>Einen Namen für deinen Beitrag wählst</li>
+          <li>Den Inhaltstyp festlegst: Text, Foto, Zeichnung oder Sound</li>
+          <li>Einen Beitrag gestaltest der an den vorherigen anknüpft<br> (Der Rest der Geschichte ist bis dahin
+            unsichtbar)</li>
+          <li>Klicke auf "Publish" um deinen Beitrag der Geschichte hinzuzufügen</li>
+          <li>Dein Beitrag wird automatisch mit den vorherigen verknüpft und du kannst nun die ganze Geschichte sehen
+          </li>
+          <li>Über die Baumstruktur, die rechts erscheint, ist es möglich sich durch die Geschichte und ihre
+            verschiedenen Stränge zu navigieren</li>
+          <li>Du kannst das schwarze Eingabe Fenster am Rand erneut öffnen um einen weiteren Beitrag zu verfassen
+          </li>
+        </ul>
+
+      </div>
     </div>
   </div>
 
