@@ -1,7 +1,7 @@
 const BaseURL = "https://staging.co-o-pub.space";
 // const BaseURL = ""
 
-const ApiURL = BaseURL + '/api/'
+const ApiURL = BaseURL + "/api/";
 
 document.addEventListener("alpine:init", () => {
   // current Entry is to know which is the parent of the added entry
@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: true,
+    posted: false,
     hoveredAuthor: null,
   });
 
@@ -49,38 +49,42 @@ document.addEventListener("alpine:init", () => {
   Alpine.store("story", {
     entries: [],
     async init() {
-      await this.fetch()
+      await this.fetch();
     },
     async fetch() {
       await fetch(`${ApiURL}post`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
-        
-          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1])
-          this.entries.forEach(entry => {
-            Alpine.store("colors").setEntryColor(entry)
-          })
+
+          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
+          this.entries.forEach((entry) => {
+            Alpine.store("colors").setEntryColor(entry);
+          });
         });
     },
     existsInStory(id) {
-      return this.entries.findIndex(el => el.id === id) >= 0
+      return this.entries.findIndex((el) => el.id === id) >= 0;
     },
     switchBranch(entries) {
-      this.entries = entries
+      this.entries = entries;
     },
     appendPostedEntry(entry) {
-      this.entries.push(entry)
-      Alpine.store("currentEntry").setEntry(entry)
+      this.entries.push(entry);
+      Alpine.store("currentEntry").setEntry(entry);
     },
     async handleFormClick() {
       scrollDownContainer();
-      history.replaceState(null, '', window.location.pathname + window.location.search); 
+      history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search
+      );
       if (Alpine.store("ui").posted) {
-        Alpine.store("ui").posted = false;  
+        Alpine.store("ui").posted = false;
         await this.fetch();
       }
-    }
+    },
   });
 
   Alpine.data("branch", (b) => {
@@ -95,11 +99,11 @@ document.addEventListener("alpine:init", () => {
     branches: [],
     tree: [],
     async init() {
-      await this.initTree()
+      await this.initTree();
     },
     // initialize tree from server
     async initTree() {
-      this.tree = []
+      this.tree = [];
       await fetch(`${ApiURL}posts`)
         .then((r) => r.json())
         .then((d) => {
@@ -167,32 +171,34 @@ document.addEventListener("alpine:init", () => {
     },
 
     switchBranch(entry) {
-      Alpine.store("story").switchBranch(this.searchEntryInTree(this.tree, entry))
+      Alpine.store("story").switchBranch(
+        this.searchEntryInTree(this.tree, entry)
+      );
     },
 
     searchEntryInTree(branch, entry) {
-      let entries = []
-      const lastEntry = branch[branch.length - 1]
-      if(Array.isArray(lastEntry)) {
-        entries = branch.slice(0, branch.length - 1)
+      let entries = [];
+      const lastEntry = branch[branch.length - 1];
+      if (Array.isArray(lastEntry)) {
+        entries = branch.slice(0, branch.length - 1);
       } else {
-        entries = branch
+        entries = branch;
       }
-      const idx = branch.findIndex(e => entry.id === e.id)
-      if(idx >= 0) {
-        return entries
+      const idx = branch.findIndex((e) => entry.id === e.id);
+      if (idx >= 0) {
+        return entries;
       }
-      if(Array.isArray(lastEntry)) {
+      if (Array.isArray(lastEntry)) {
         for (b of lastEntry) {
-          const res = this.searchEntryInTree(b, entry)
+          const res = this.searchEntryInTree(b, entry);
           if (res) {
-            entries.push(...res)
-            return entries
+            entries.push(...res);
+            return entries;
           }
         }
       }
-      return null
-    }
+      return null;
+    },
   });
 
   Alpine.data("useForm", () => ({
@@ -268,8 +274,8 @@ document.addEventListener("alpine:init", () => {
         if (response.ok) {
           const result = await response.json();
           console.log("Upload successful:", result);
-          Alpine.store("story").appendPostedEntry(result)
-          await Alpine.store("treeData").initTree()
+          Alpine.store("story").appendPostedEntry(result);
+          await Alpine.store("treeData").initTree();
 
           // Reset form
           Alpine.store("ui").posted = true; // Flag/classtoggle für globalen ui-shift wenn success
