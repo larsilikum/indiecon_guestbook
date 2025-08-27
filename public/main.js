@@ -1,5 +1,5 @@
-// const BaseURL = "https://staging.co-o-pub.space";
-const BaseURL = ""
+const BaseURL = "https://staging.co-o-pub.space";
+// const BaseURL = ""
 
 const ApiURL = BaseURL + '/api/'
 
@@ -76,12 +76,17 @@ document.addEventListener("alpine:init", () => {
     };
   });
 
-  Alpine.data("treeData", () => ({
+  Alpine.store("treeData", {
     entries: [],
     branches: [],
     tree: [],
-    init() {
-      fetch(`${ApiURL}posts`)
+    async init() {
+      await this.initTree()
+    },
+    // initialize tree from server
+    async initTree() {
+      this.tree = []
+      await fetch(`${ApiURL}posts`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
@@ -93,9 +98,9 @@ document.addEventListener("alpine:init", () => {
 
           // console.log("Entries:", this.entries);
           // console.log("Branches:", this.branches);
-          // console.log("Tree:", this.tree);
+          console.log("Tree:", this.tree);
 
-          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
+          // Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
         });
     },
     //building branches
@@ -174,7 +179,7 @@ document.addEventListener("alpine:init", () => {
       }
       return null
     }
-  }));
+  });
 
   Alpine.data("useForm", () => ({
     selectedType: "text",
@@ -250,6 +255,7 @@ document.addEventListener("alpine:init", () => {
           const result = await response.json();
           console.log("Upload successful:", result);
           Alpine.store("story").appendPostedEntry(result)
+          await Alpine.store("treeData").initTree()
 
           // Reset form
           Alpine.store("ui").posted = true; // Flag/classtoggle für globalen ui-shift wenn success

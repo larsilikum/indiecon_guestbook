@@ -57,7 +57,7 @@
               <template x-if="entry.id">
                 <a :class="{'tree-entry': true, 'notFetched': !$store.story.existsInStory(entry.id) }"
                   @mouseover="$store.ui.hoveredAuthor = entry.id" @mouseout="$store.ui.hoveredAuthor = null"
-                  @click="switchBranch(entry)"
+                  @click="$store.treeData.switchBranch(entry)"
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)}`" x-text="entry.author.slice(0,1)"
                   :href="'#' + entry.author + entry.id"></a>
@@ -79,9 +79,9 @@
   </div>
   </template>
 
-  <div class="tree open" x-data="treeData" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
-    <template x-if="tree.length">
-      <template x-template-outlet="$refs.br" x-data="{ branchData: tree }"></template>
+  <div class="tree open" x-data :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+    <template x-if="$store.treeData.tree.length">
+      <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
     </template>
   </div>
 
