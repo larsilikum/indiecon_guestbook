@@ -7,6 +7,7 @@ document.addEventListener("alpine:init", () => {
  */
 function TemplateOutletDirective(element, metadata, framework) {
   // Get the template reference that we want to clone and render.
+  console.log(metadata.expression)
   var templateRef = framework.evaluate(metadata.expression);
 
   // Clone the template and get the root node - this is the node that we will

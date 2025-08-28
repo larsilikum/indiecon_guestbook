@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", { 
-    posted: false,
+    posted: true,
     hoveredAuthor: null, 
   });
 
@@ -86,6 +86,61 @@ document.addEventListener("alpine:init", () => {
       branch: b,
     };
   });
+
+  Alpine.data("audio", (src, id) => ({  
+    src,
+    id,
+    duration: '0:00',
+    audioRef: null,
+    seekRef: null,
+    playState: false,
+    currentTime: '0:00',
+    volume: 100,
+    // store audio ref for other functions to use
+    setAudioRef(el) {
+      this.audioRef = el
+    },
+    setSeekRef(el) {
+      this.seekRef = el
+    },
+    // calculate duration of audio to display
+    onLoadedMetadata(el) {
+      if(el.readyState === 0) return
+      const secs = el.duration
+      this.seekRef.max = Math.floor(secs)
+      this.duration = this.formatSeconds(secs)
+    },
+    // when seeking through the audio
+    seekInput(el) {
+      this.currentTime = this.formatSeconds(el.value)
+    },
+    // when seeking is done and mouse is lifted
+    seekChange(el) {
+      this.audioRef.currentTime = el.value
+    },
+    // when clicking play button
+    playPauseAudio() {
+      if(!this.playState) {
+        this.audioRef.play()
+        this.playState = true
+      } else {
+        this.audioRef.pause()
+        this.playState = false
+      }
+    },
+    // when audio is playing and time gets updated
+    onTimeUpdate() {
+      this.seekRef.value = Math.floor(this.audioRef.currentTime)
+      this.currentTime = this.formatSeconds(this.audioRef.currentTime)
+    },
+    // helper function to format seconds into (m)m:ss format
+    formatSeconds(secs) {
+      const minutes = Math.floor(secs / 60);
+      const seconds = Math.floor(secs % 60);
+      const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+      return `${minutes}:${returnedSeconds}`;
+    }
+  }))
 
   Alpine.store("treeData", {
     entries: [],
