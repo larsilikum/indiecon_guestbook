@@ -45,16 +45,18 @@
                   <div class="controls">
                     <button class="audio-play" @click.prevent="playPauseAudio()">
                       <template x-if="!playState">
-                        <span>▶</span>
+                        <img src="./assets/play.svg" alt="">
                       </template>
                       <template x-if="playState">
-                        <span>❚❚</span>
+                        <img src="./assets/pause.svg" alt="">
                       </template>
                     </button>
                     <div class="audio-progress">
-                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)" :style="`--val: 0%;`">
-                      <span class="audio-current" x-text="currentTime"></span> /
-                      <span class="audio-duration" x-text="duration"></span>
+                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)" :style="`--val: 0%; --per: 0;`">
+                      <div class="audio-time">
+                        <span class="audio-current" x-text="currentTime"></span> /
+                        <span class="audio-duration" x-text="duration"></span>
+                      </div>
                     </div>
                   </div>
                 </div>
