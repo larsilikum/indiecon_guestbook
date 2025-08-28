@@ -61,8 +61,6 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
- 
-
                   <a  :id="'@tree%' + entry.author + entry.id"
                   :class="{
                     'tree-entry': true,

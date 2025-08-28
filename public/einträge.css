@@ -325,22 +325,22 @@ form.open #add {
   transition: filter 0.3s, opacity 0.3s;
 }
 
-.locked span:nth-last-child(1) .entry {
+.locked a:nth-last-child(1) .entry {
   filter: blur(0);
   opacity: 1;
 }
 
-.locked span:nth-last-child(2) .entry {
+.locked a:nth-last-child(2) .entry {
   filter: blur(7px);
   opacity: 0.9;
 }
 
-.locked span:nth-last-child(3) .entry {
+.locked a:nth-last-child(3) .entry {
   filter: blur(10px);
   opacity: 0.8;
 }
 
-.locked span:nth-last-child(4) .entry {
+.locked a:nth-last-child(4) .entry {
   filter: blur(14px);
   opacity: 0.7;
 }
