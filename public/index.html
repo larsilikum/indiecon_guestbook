@@ -38,37 +38,35 @@
                   :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }" @click="big = !big" />
               </template>
               <template x-ref="audioPlayer">
-                <div x-data="audio(src, id)">
-                  <div class="audio-player">
-                    <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)" @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
-                      <source :src="BaseURL + src">
-                    </audio>
-                    <div class="controls">
-                      <button class="audio-play" @click.prevent="playPauseAudio()">
-                        <template x-if="!playState">
-                          <span>▶</span>
-                        </template>
-                        <template x-if="playState">
-                          <span>❚❚</span>
-                        </template>
-                      </button>
-                      <div class="audio-progress">
-                        <input type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)">
-                        <span class="audio-current" x-text="currentTime"></span> /
-                        <span class="audio-duration" x-text="duration"></span>
-                      </div>
+                <div class="audio-player" x-data="audio(src, id)">
+                  <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)" @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
+                    <source :src="BaseURL + src">
+                  </audio>
+                  <div class="controls">
+                    <button class="audio-play" @click.prevent="playPauseAudio()">
+                      <template x-if="!playState">
+                        <span>▶</span>
+                      </template>
+                      <template x-if="playState">
+                        <span>❚❚</span>
+                      </template>
+                    </button>
+                    <div class="audio-progress">
+                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)">
+                      <span class="audio-current" x-text="currentTime"></span> /
+                      <span class="audio-duration" x-text="duration"></span>
                     </div>
                   </div>
                 </div>
               </template>
               <template x-if="entry.type === 'sound'">
-                <div :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                     :data-user="entry.author + entry.id" :id="entry.author + entry.id"
                     :style="`background-color: ${$store.colors.getEntryColor(entry)};`">
                     <template x-template-outlet="$refs.audioPlayer" x-data="{ src: entry.content, id: entry.id }">
 
                     </template>
-                  </div>
+                  </span>
               </template>
             </span>
           </template>
