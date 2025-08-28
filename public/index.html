@@ -52,7 +52,7 @@
                       </template>
                     </button>
                     <div class="audio-progress">
-                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)">
+                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)" :style="`--val: 0%;`">
                       <span class="audio-current" x-text="currentTime"></span> /
                       <span class="audio-duration" x-text="duration"></span>
                     </div>

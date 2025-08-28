@@ -113,10 +113,12 @@ document.addEventListener("alpine:init", () => {
     // when seeking through the audio
     seekInput(el) {
       this.currentTime = this.formatSeconds(el.value)
+      this.updateSeekStyle()
     },
     // when seeking is done and mouse is lifted
     seekChange(el) {
       this.audioRef.currentTime = el.value
+      // this.updateSeekStyle()
     },
     // when clicking play button
     playPauseAudio() {
@@ -131,6 +133,7 @@ document.addEventListener("alpine:init", () => {
     // when audio is playing and time gets updated
     onTimeUpdate() {
       this.seekRef.value = Math.floor(this.audioRef.currentTime)
+      this.updateSeekStyle()
       this.currentTime = this.formatSeconds(this.audioRef.currentTime)
     },
     // helper function to format seconds into (m)m:ss format
@@ -139,6 +142,10 @@ document.addEventListener("alpine:init", () => {
       const seconds = Math.floor(secs % 60);
       const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
       return `${minutes}:${returnedSeconds}`;
+    },
+
+    updateSeekStyle() {
+      this.seekRef.style = `--val: ${(this.seekRef.value / this.seekRef.max) * 100}%; --per: ${this.seekRef.value / this.seekRef.max};`
     }
   }))
 
