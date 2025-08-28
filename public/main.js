@@ -1,7 +1,7 @@
-// const BaseURL = "https://staging.co-o-pub.space";
-const BaseURL = ""
+const BaseURL = "https://staging.co-o-pub.space";
+// const BaseURL = ""
 
-const ApiURL = BaseURL + '/api/'
+const ApiURL = BaseURL + "/api/";
 
 document.addEventListener("alpine:init", () => {
   // current Entry is to know which is the parent of the added entry
@@ -12,9 +12,9 @@ document.addEventListener("alpine:init", () => {
     },
   });
 
-  Alpine.store("ui", { 
+  Alpine.store("ui", {
     posted: false,
-    hoveredAuthor: null, 
+    hoveredAuthor: null,
   });
 
   Alpine.store("colors", {
@@ -28,56 +28,62 @@ document.addEventListener("alpine:init", () => {
       "#F0A55C",
     ],
     getEntryColor(entry) {
-      const c = this.colors[entry.id]
-      if (!c) this.setEntryColor(entry)
-      return this.colors[entry.id]
+      const c = this.colors[entry.id];
+      if (!c) this.setEntryColor(entry);
+      return this.colors[entry.id];
     },
     setEntryColor(entry) {
-      if (this.colors[entry.id]) return
-      const parentColor = this.colors[entry.parent_id]
-      let color = getRandomEntryFromArray(this.possibleColors)
+      if (this.colors[entry.id]) return;
+      const parentColor = this.colors[entry.parent_id];
+      let color = getRandomEntryFromArray(this.possibleColors);
       if (parentColor) {
-        const filteredColors = this.possibleColors.filter(c => c !== parentColor)
-        color = getRandomEntryFromArray(filteredColors)
+        const filteredColors = this.possibleColors.filter(
+          (c) => c !== parentColor
+        );
+        color = getRandomEntryFromArray(filteredColors);
       }
-      this.colors[entry.id] = color
-    }
-  })
+      this.colors[entry.id] = color;
+    },
+  });
 
   Alpine.store("story", {
     entries: [],
     async init() {
-      await this.fetch()
+      await this.fetch();
     },
     async fetch() {
       await fetch(`${ApiURL}post`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
-          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1])
-          this.entries.forEach(entry => {
-            Alpine.store("colors").setEntryColor(entry)
-          })
+          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
+          this.entries.forEach((entry) => {
+            Alpine.store("colors").setEntryColor(entry);
+          });
         });
     },
     existsInStory(id) {
-      return this.entries.findIndex(el => el.id === id) >= 0
+      return this.entries.findIndex((el) => el.id === id) >= 0;
     },
     switchBranch(entries) {
-      this.entries = entries
+      this.entries = entries;
     },
     appendPostedEntry(entry) {
-      this.entries.push(entry)
-      Alpine.store("currentEntry").setEntry(entry)
+      this.entries.push(entry);
+      Alpine.store("currentEntry").setEntry(entry);
     },
     async handleFormClick() {
       scrollDownContainer();
-      history.replaceState(null, '', window.location.pathname + window.location.search); 
+      history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search
+      );
       if (Alpine.store("ui").posted) {
-        Alpine.store("ui").posted = false;  
+        Alpine.store("ui").posted = false;
         await this.fetch();
       }
-    }
+    },
   });
 
   Alpine.data("branch", (b) => {
@@ -87,23 +93,85 @@ document.addEventListener("alpine:init", () => {
     };
   });
 
+  Alpine.data("audio", (src, id) => ({  
+    src,
+    id,
+    duration: '0:00',
+    audioRef: null,
+    seekRef: null,
+    playState: false,
+    currentTime: '0:00',
+    volume: 100,
+    // store audio ref for other functions to use
+    setAudioRef(el) {
+      this.audioRef = el
+    },
+    setSeekRef(el) {
+      this.seekRef = el
+    },
+    // calculate duration of audio to display
+    onLoadedMetadata(el) {
+      if(el.readyState === 0) return
+      const secs = el.duration
+      this.seekRef.max = Math.floor(secs)
+      this.duration = this.formatSeconds(secs)
+    },
+    // when seeking through the audio
+    seekInput(el) {
+      this.currentTime = this.formatSeconds(el.value)
+      this.updateSeekStyle()
+    },
+    // when seeking is done and mouse is lifted
+    seekChange(el) {
+      this.audioRef.currentTime = el.value
+      // this.updateSeekStyle()
+    },
+    // when clicking play button
+    playPauseAudio() {
+      if(!this.playState) {
+        this.audioRef.play()
+        this.playState = true
+      } else {
+        this.audioRef.pause()
+        this.playState = false
+      }
+    },
+    // when audio is playing and time gets updated
+    onTimeUpdate() {
+      this.seekRef.value = Math.floor(this.audioRef.currentTime)
+      this.updateSeekStyle()
+      this.currentTime = this.formatSeconds(this.audioRef.currentTime)
+    },
+    // helper function to format seconds into (m)m:ss format
+    formatSeconds(secs) {
+      const minutes = Math.floor(secs / 60);
+      const seconds = Math.floor(secs % 60);
+      const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+      return `${minutes}:${returnedSeconds}`;
+    },
+
+    updateSeekStyle() {
+      this.seekRef.style = `--val: ${(this.seekRef.value / this.seekRef.max) * 100}%; --per: ${this.seekRef.value / this.seekRef.max};`
+    }
+  }))
+
   Alpine.store("treeData", {
     entries: [],
     branches: [],
     tree: [],
     async init() {
-      await this.initTree()
+      await this.initTree();
     },
     // initialize tree from server
     async initTree() {
-      this.tree = []
+      this.tree = [];
       await fetch(`${ApiURL}posts`)
         .then((r) => r.json())
         .then((d) => {
           this.entries = d.data;
-          this.entries.forEach(entry => {
-            Alpine.store("colors").setEntryColor(entry)
-          })
+          this.entries.forEach((entry) => {
+            Alpine.store("colors").setEntryColor(entry);
+          });
           this.branches = this.buildBranches(this.entries);
           this.tree = this.appendChildrenToBranch(this.branches[0]);
 
@@ -164,32 +232,34 @@ document.addEventListener("alpine:init", () => {
     },
 
     switchBranch(entry) {
-      Alpine.store("story").switchBranch(this.searchEntryInTree(this.tree, entry))
+      Alpine.store("story").switchBranch(
+        this.searchEntryInTree(this.tree, entry)
+      );
     },
 
     searchEntryInTree(branch, entry) {
-      let entries = []
-      const lastEntry = branch[branch.length - 1]
-      if(Array.isArray(lastEntry)) {
-        entries = branch.slice(0, branch.length - 1)
+      let entries = [];
+      const lastEntry = branch[branch.length - 1];
+      if (Array.isArray(lastEntry)) {
+        entries = branch.slice(0, branch.length - 1);
       } else {
-        entries = branch
+        entries = branch;
       }
-      const idx = branch.findIndex(e => entry.id === e.id)
-      if(idx >= 0) {
-        return entries
+      const idx = branch.findIndex((e) => entry.id === e.id);
+      if (idx >= 0) {
+        return entries;
       }
-      if(Array.isArray(lastEntry)) {
+      if (Array.isArray(lastEntry)) {
         for (b of lastEntry) {
-          const res = this.searchEntryInTree(b, entry)
+          const res = this.searchEntryInTree(b, entry);
           if (res) {
-            entries.push(...res)
-            return entries
+            entries.push(...res);
+            return entries;
           }
         }
       }
-      return null
-    }
+      return null;
+    },
   });
 
   Alpine.data("useForm", () => ({
@@ -265,8 +335,8 @@ document.addEventListener("alpine:init", () => {
         if (response.ok) {
           const result = await response.json();
           console.log("Upload successful:", result);
-          Alpine.store("story").appendPostedEntry(result)
-          await Alpine.store("treeData").initTree()
+          Alpine.store("story").appendPostedEntry(result);
+          await Alpine.store("treeData").initTree();
 
           // Reset form
           Alpine.store("ui").posted = true; // Flag/classtoggle für globalen ui-shift wenn success
@@ -311,7 +381,6 @@ scrollDownContainer();
 
 // HELPER
 function getRandomEntryFromArray(arr) {
-  const randInt = Math.floor(Math.random() * arr.length)
-  return arr[randInt]
+  const randInt = Math.floor(Math.random() * arr.length);
+  return arr[randInt];
 }
-

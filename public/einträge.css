@@ -18,7 +18,8 @@ body {
 
 @font-face {
   font-family: "NeueMontreal";
-  src: url("/public/fonts/PPNeueMontreal-Medium.woff"), url("/public/fonts/PPNeueMontreal-Medium.woff2");
+  src: url("/public/fonts/PPNeueMontreal-Medium.woff"),
+    url("/public/fonts/PPNeueMontreal-Medium.woff2");
 }
 
 .flexbox-container {
@@ -48,8 +49,8 @@ body {
 }
 
 .logo-container img {
-  height: 3.3rem;
-  padding-right: 0.4rem;
+  height: 3.5rem;
+  padding-right: 0.7rem;
   width: auto;
   transition: transform 0.35s ease-in-out, margin 0.4s ease-in-out,
     height 0.2s ease;
@@ -61,14 +62,14 @@ body {
 }
 
 #logo-form2 {
-  height: 0.8rem;
+  height: 0.9rem;
   width: auto;
   transform-origin: left;
   transform: translateY(25%);
 }
 
 .logo-container.open #logo-form2 {
-  height: 0.7rem;
+  height: 0.8rem;
   width: auto;
   transform: translateY(25%) scaleX(164%);
 }
@@ -93,7 +94,8 @@ body {
 .stories {
   width: 100%;
   padding: 2%;
-  padding-top: 6.5rem;
+  padding-top: 7.5rem;
+  padding-right: 3%;
   padding-bottom: 5%;
   background-color: white;
   overflow-y: scroll;
@@ -107,6 +109,10 @@ body {
   transition: 0.1s ease;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+.stories * {
+  text-decoration: none !important;
 }
 
 .stories::-webkit-scrollbar {
@@ -131,6 +137,7 @@ form {
   position: fixed;
   bottom: 0;
   right: 0;
+  z-index: 10;
   height: 100%;
   width: 45%;
   padding: 1.5%;
@@ -237,11 +244,16 @@ form.open #add {
   background-color: rgb(223, 223, 223);
   width: 5%;
   font-size: 5rem;
+  cursor: pointer;
+  padding: 0% 2% 2% 2%;
   overflow: hidden;
   transition: 0.2s ease;
   pointer-events: all;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  scroll-snap-type: y mandatory;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
 }
 
 .tree::-webkit-scrollbar {
@@ -268,8 +280,27 @@ form.open #add {
 .notFetched {
   border-left: none;
   color: white !important;
-  filter: blur(8px) !important;
+  filter: blur(8px) grayscale(1) !important;
   opacity: 0.2;
+}
+
+#treeZoom {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 50vw;
+  z-index: 8;
+  font-size: 3vw;
+}
+
+#slider {
+  width: 10rem;
+  object-fit: scale-down;
+  height: 4rem;
+  transform: scaleX(100%);
+  transition: 0.4s ease;
+  cursor: grab;
+  transform-origin: left;
 }
 
 .story-part {
@@ -282,7 +313,8 @@ form.open #add {
 
 .entry {
   color: rgb(0, 0, 0);
-  font-size: 3.1em;
+  font-size: 3.1rem;
+  line-height: 125%;
   cursor: pointer;
   pointer-events: auto;
   border-radius: 1rem 1rem 1rem 1rem;
@@ -295,64 +327,94 @@ form.open #add {
   transition: filter 0.3s, opacity 0.3s;
 }
 
-.locked span:nth-last-child(1) .entry {
+.locked a:nth-last-child(1) .entry {
   filter: blur(0);
   opacity: 1;
 }
 
-.locked span:nth-last-child(2) .entry {
+.locked a:nth-last-child(2) .entry {
   filter: blur(7px);
   opacity: 0.9;
 }
 
-.locked span:nth-last-child(3) .entry {
+.locked a:nth-last-child(3) .entry {
   filter: blur(10px);
   opacity: 0.8;
 }
 
-.locked span:nth-last-child(4) .entry {
+.locked a:nth-last-child(4) .entry {
   filter: blur(14px);
   opacity: 0.7;
 }
 
 .entry:hover,
 .hovered {
-  background-color: rgb(222, 222, 222) !important;
+  background-color: rgb(242, 242, 242);
   border-radius: 0;
-  transition: 0.2s ease;
   box-shadow: 1px 1px 10px rgb(255, 255, 255);
 }
 
 .tree-entry:hover,
 .tree-entry.hovered {
-  background-color: rgb(255, 255, 255) !important;
   border-radius: 0;
-  transition: 0.2s ease;
-  box-shadow: 1px 1px 10px rgb(255, 255, 255);
+  padding: 0rem;
+  border: none;
   color: black;
 }
 
 .tree-entry {
   display: flex;
-  padding: 0.5rem;
   padding-left: 0;
+  padding: 0.8rem;
   font-family: "b";
   text-transform: uppercase;
-  text-align: center;
-  width: 5rem;
-  font-size: 1.8rem;
+  width: 4rem;
+  transform: scale(1.15);
   text-decoration: none;
-  border-radius: 0rem 0rem 1rem 0rem;
+  border-radius: 0rem 1rem 1rem 0rem;
   border-left: 0.2rem dashed rgb(255, 255, 255);
   color: rgb(255, 255, 255);
-  justify-content: center;
+  justify-content: start;
+  transition: all 0.2s ease;
+  scroll-snap-align: center;
 }
 
+.tree.small .tree-entry {
+  padding: 0.4rem;
+  width: 2rem;
+}
+
+.tree.big .tree-entry {
+  padding: 1.6rem;
+  width: 8rem;
+}
+
+.fullname {
+  color: rgb(0, 0, 0);
+  font-size: 0rem;
+  position: relative;
+  z-index: 20;
+  transition: 0.3s ease;
+  transform: translateX(-1rem);
+}
+
+.tree.big .fullname {
+  border: none;
+}
+
+.fullname.hovered {
+  text-align: left;
+  padding: 0.5rem;
+  font-size: 2.8rem;
+  box-shadow: none;
+  border-left: 0.2rem dashed rgb(255, 255, 255);
+}
 .split-branches {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 100%;
+  width: auto;
+  scroll-snap-align: center;
   border-top: 0.2rem dashed rgb(255, 255, 255);
 }
 
@@ -360,6 +422,7 @@ form.open #add {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: max-content;
 }
 
 .story-part sup {
@@ -521,7 +584,7 @@ label {
   box-shadow: -4px 0px 20px rgba(0, 0, 0, 0.3);
 }
 
-.help-icon:hover+#help:not(.open) {
+.help-icon:hover + #help:not(.open) {
   transform: translateX(calc(100% - 4rem));
 }
 
@@ -560,13 +623,16 @@ label {
   opacity: 0;
 }
 
-
 #help-container ul {
   font-family: "NeueMontreal", sans-serif;
   margin: 0.5rem 0;
   padding-left: 1rem;
   line-height: 1.5rem;
   font-size: 1.4rem;
+}
+
+#help-container a {
+  color: rgb(89, 89, 89);
 }
 
 #help-container li {
@@ -584,20 +650,152 @@ label {
   top: 0;
   color: black;
 }
+
+.sound-part {
+  display: inline-flex;
+  align-items: center;
+  transform: translateY(-.5rem);
+}
+
+.audio-player {
+  font-size: 1.5rem;
+  display: inline;
+  color: black;
+  padding: 0 .8rem 0 .2rem;
+}
+
+.audio-player .controls {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .4rem;
+}
+
+.audio-player button {
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.audio-player button img {
+  height: 1em;
+  width: 1em;
+}
+
+.audio-progress {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.audio-time {
+  font-size: 1em;
+  line-height: 1.5;
+  margin-top: .15em;
+}
+
+.audio-progress-bar {
+  width: 7rem;
+  display: block;
+}
+
+input[type="range"] {
+  position: relative;
+  height: .7em;
+  background-color: transparent;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  background: url("assets/slider-thumb.svg");
+  background-size: 100% 100%;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* apparently this cant be styled together but needs to be duplicate */
+
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+  background: url("assets/slider-thumb.svg");
+  background-size: 100% 100%;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: auto;
+  position: relative;
+  cursor: pointer;
+  z-index: 10;
+  border: none;
+}
+
+/* progress (before the thumb) */
+/* chrome */
+input[type="range"]::before {
+  position: absolute;
+  content: "";
+  top: 15%;
+  left: 0;
+  width: calc(var(--val) - var(--per) * 1rem - .1rem);
+  height: 70%;
+  cursor: pointer;
+  background: url("./assets/slider-squiggly.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+/* firefox */
+input[type="range"]::-moz-range-progress {
+  height: 70%;
+  background: url("./assets/slider-squiggly.svg");
+  background-repeat: no-repeat;
+  background-size: calc(100% - var(--per) * 1rem - .1rem) 100%;
+}
+
+
+input[type="range"]::-moz-range-track {
+  --point: calc(var(--val) + (1 - var(--per)) * 1rem + .1rem);
+  width: 100%;
+  height: .18em;
+  cursor: pointer;
+  background: linear-gradient(to right, transparent var(--point), black var(--point));
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  --point: calc(var(--val) + (1 - var(--per)) * 1rem + .1rem);
+  width: 100%;
+  height: .18em;
+  cursor: pointer;
+  background: linear-gradient(to right, transparent var(--point), black var(--point));
+}
+
+
 @media (max-width: 768px) {
   .logo-container {
     padding: 2%;
   }
   .logo-container img {
-    height: 8.4vw;
-    padding-right: 0.4vw;
+    height: 8.7vw;
+    padding-right: 1.3vw;
   }
 
   #logo-form2 {
-    height: 2vw;
+    height: 2.1vw;
   }
 
   .logo-container.open #logo-form2 {
-    height: 1.8vw;
+    height: 1.9vw;
   }
 }
