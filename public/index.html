@@ -39,14 +39,42 @@
                   :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
               <template x-if="entry.type === 'image'">
-                <img :class="{'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
+                <img :class="{ 'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id, 'big': big }"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" />
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }" @click="big = !big" />
+              </template>
+              <template x-ref="audioPlayer">
+                <div class="audio-player" x-data="audio(src, id)">
+                  <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)" @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
+                    <source :src="BaseURL + src">
+                  </audio>
+                  <div class="controls">
+                    <button class="audio-play" @click.prevent="playPauseAudio()">
+                      <template x-if="!playState">
+                        <img src="./assets/play.svg" alt="">
+                      </template>
+                      <template x-if="playState">
+                        <img src="./assets/pause.svg" alt="">
+                      </template>
+                    </button>
+                    <div class="audio-progress">
+                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)" :style="`--val: 0%; --per: 0;`">
+                      <div class="audio-time">
+                        <span class="audio-current" x-text="currentTime"></span> /
+                        <span class="audio-duration" x-text="duration"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </template>
               <template x-if="entry.type === 'sound'">
                 <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
-                  :data-user="entry.author + entry.id" :id="entry.author + entry.id"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`">Sound placeholder</span>
+                    :data-user="entry.author + entry.id" :id="entry.author + entry.id"
+                    :style="`background-color: ${$store.colors.getEntryColor(entry)};`">
+                    <template x-template-outlet="$refs.audioPlayer" x-data="{ src: entry.content, id: entry.id }">
+
+                    </template>
+                  </span>
               </template>
             </a>
           </template>

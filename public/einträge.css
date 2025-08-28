@@ -431,7 +431,11 @@ form.open #add {
 
 .image-part {
   display: inline;
-  max-height: 1em;
+  max-height: .8em;
+}
+.image-part.big {
+  max-height: 70dvh;
+  max-width: 100%;
 }
 
 .audio-play-btn {
@@ -646,6 +650,138 @@ label {
   top: 0;
   color: black;
 }
+
+.sound-part {
+  display: inline-flex;
+  align-items: center;
+  transform: translateY(-.5rem);
+}
+
+.audio-player {
+  font-size: 1.5rem;
+  display: inline;
+  color: black;
+  padding: 0 .8rem 0 .2rem;
+}
+
+.audio-player .controls {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: .4rem;
+}
+
+.audio-player button {
+  background-color: transparent;
+  border: none;
+  color: inherit;
+  font-size: 1em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.audio-player button img {
+  height: 1em;
+  width: 1em;
+}
+
+.audio-progress {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.audio-time {
+  font-size: 1em;
+  line-height: 1.5;
+  margin-top: .15em;
+}
+
+.audio-progress-bar {
+  width: 7rem;
+  display: block;
+}
+
+input[type="range"] {
+  position: relative;
+  height: .7em;
+  background-color: transparent;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  background: url("assets/slider-thumb.svg");
+  background-size: 100% 100%;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* apparently this cant be styled together but needs to be duplicate */
+
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+  background: url("assets/slider-thumb.svg");
+  background-size: 100% 100%;
+  width: 1rem;
+  height: 1rem;
+  pointer-events: auto;
+  position: relative;
+  cursor: pointer;
+  z-index: 10;
+  border: none;
+}
+
+/* progress (before the thumb) */
+/* chrome */
+input[type="range"]::before {
+  position: absolute;
+  content: "";
+  top: 15%;
+  left: 0;
+  width: calc(var(--val) - var(--per) * 1rem - .1rem);
+  height: 70%;
+  cursor: pointer;
+  background: url("./assets/slider-squiggly.svg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+/* firefox */
+input[type="range"]::-moz-range-progress {
+  height: 70%;
+  background: url("./assets/slider-squiggly.svg");
+  background-repeat: no-repeat;
+  background-size: calc(100% - var(--per) * 1rem - .1rem) 100%;
+}
+
+
+input[type="range"]::-moz-range-track {
+  --point: calc(var(--val) + (1 - var(--per)) * 1rem + .1rem);
+  width: 100%;
+  height: .18em;
+  cursor: pointer;
+  background: linear-gradient(to right, transparent var(--point), black var(--point));
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  --point: calc(var(--val) + (1 - var(--per)) * 1rem + .1rem);
+  width: 100%;
+  height: .18em;
+  cursor: pointer;
+  background: linear-gradient(to right, transparent var(--point), black var(--point));
+}
+
+
 @media (max-width: 768px) {
   .logo-container {
     padding: 2%;
