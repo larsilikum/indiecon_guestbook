@@ -286,9 +286,9 @@ form.open #add {
 
 #treeZoom {
   display: flex;
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  right: 5rem;
+  left: 50vw;
   z-index: 8;
   font-size: 3vw;
 }
@@ -297,10 +297,10 @@ form.open #add {
   width: 10rem;
   object-fit: scale-down;
   height: 4rem;
-  transform: scaleX(100%):
-  transition: 0.2s ease;
+  transform: scaleX(100%);
+  transition: 0.4s ease;
   cursor: grab;
-  transform-origin: right;
+  transform-origin: left;
 }
 
 .story-part {
