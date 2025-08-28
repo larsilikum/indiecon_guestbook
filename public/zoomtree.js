@@ -16,7 +16,7 @@ function scaleMap() {
     const deltaX = e.clientX - lastMouseX;
     lastMouseX = e.clientX;
 
-    currentScale -= deltaX / 50;
+    currentScale -= deltaX / 25;
 
     // clamp
     currentScale = Math.min(Math.max(currentScale, 0.5), 2);
@@ -25,7 +25,7 @@ function scaleMap() {
       currentScale = 2;
     } else if (currentScale <= 0.6) {
       currentScale = 0.5;
-    } else if (currentScale > 0.8 && currentScale < 1.75) {
+    } else if (currentScale > 0.8 && currentScale < 1.4) {
       currentScale = 1;
     }
 

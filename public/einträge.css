@@ -18,7 +18,8 @@ body {
 
 @font-face {
   font-family: "NeueMontreal";
-  src: url("/public/fonts/PPNeueMontreal-Medium.woff"), url("/public/fonts/PPNeueMontreal-Medium.woff2");
+  src: url("/public/fonts/PPNeueMontreal-Medium.woff"),
+    url("/public/fonts/PPNeueMontreal-Medium.woff2");
 }
 
 .flexbox-container {
@@ -243,6 +244,7 @@ form.open #add {
   background-color: rgb(223, 223, 223);
   width: 5%;
   font-size: 5rem;
+  cursor: pointer;
   padding: 0% 2% 2% 2%;
   overflow: hidden;
   transition: 0.2s ease;
@@ -278,7 +280,7 @@ form.open #add {
 .notFetched {
   border-left: none;
   color: white !important;
-  filter: blur(8px) !important;
+  filter: blur(8px) grayscale(1) !important;
   opacity: 0.2;
 }
 
@@ -295,7 +297,7 @@ form.open #add {
   width: 10rem;
   object-fit: scale-down;
   height: 4rem;
-  transform: scaleX(100%);
+  transform: scaleX(100%):
   transition: 0.2s ease;
   cursor: grab;
   transform-origin: right;
@@ -356,6 +358,7 @@ form.open #add {
 .tree-entry.hovered {
   border-radius: 0;
   padding: 0rem;
+  border: none;
   color: black;
 }
 
@@ -391,6 +394,7 @@ form.open #add {
   font-size: 0rem;
   position: relative;
   z-index: 20;
+  transition: 0.3s ease;
   transform: translateX(-1rem);
 }
 
@@ -576,7 +580,7 @@ label {
   box-shadow: -4px 0px 20px rgba(0, 0, 0, 0.3);
 }
 
-.help-icon:hover+#help:not(.open) {
+.help-icon:hover + #help:not(.open) {
   transform: translateX(calc(100% - 4rem));
 }
 
@@ -615,13 +619,16 @@ label {
   opacity: 0;
 }
 
-
 #help-container ul {
   font-family: "NeueMontreal", sans-serif;
   margin: 0.5rem 0;
   padding-left: 1rem;
   line-height: 1.5rem;
   font-size: 1.4rem;
+}
+
+#help-container a {
+  color: rgb(89, 89, 89);
 }
 
 #help-container li {
