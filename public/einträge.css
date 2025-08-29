@@ -224,7 +224,7 @@ form.open #add {
 
 #radio-group button.active,
 #radio-group button:hover {
-  background-color: green;
+  background-color: #B78ED2;
   border: 0.1rem solid white;
 }
 
@@ -545,7 +545,7 @@ form.open #add {
 }
 
 .publish:hover {
-  background-color: fuchsia;
+  background-color: #B78ED2;
   border: 0.2rem solid white;
 }
 
