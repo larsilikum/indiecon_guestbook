@@ -17,9 +17,9 @@ body {
 }
 
 @font-face {
-  font-family: "NeueMontreal";
-  src: url("/public/fonts/PPNeueMontreal-Medium.woff"),
-    url("/public/fonts/PPNeueMontreal-Medium.woff2");
+  font-family: "AuthenticSans";
+  src: url("/public/fonts/AUTHENTICSans-90.woff"),
+    url("/public/fonts/AUTHENTICSans-90.woff2");
 }
 
 .flexbox-container {
@@ -216,7 +216,7 @@ form.open #add {
   padding: 1%;
   border: none;
   font-size: 2vw;
-  font-family: "a";
+  font-family: "AuthenticSans", sans-serif !important;
   border: 0.1rem solid black;
   cursor: pointer;
 }
@@ -528,6 +528,7 @@ form.open #add {
 }
 
 .publish {
+  font-family: "AUTHENTICSans", sans-serif !important;
   font-size: 3vw;
   width: 100%;
   border-radius: 1rem;
