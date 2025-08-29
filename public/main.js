@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: false,
+    posted: true,
     hoveredAuthor: null,
   });
 
@@ -93,54 +93,54 @@ document.addEventListener("alpine:init", () => {
     };
   });
 
-  Alpine.data("audio", (src, id) => ({  
+  Alpine.data("audio", (src, id) => ({
     src,
     id,
-    duration: '0:00',
+    duration: "0:00",
     audioRef: null,
     seekRef: null,
     playState: false,
-    currentTime: '0:00',
+    currentTime: "0:00",
     volume: 100,
     // store audio ref for other functions to use
     setAudioRef(el) {
-      this.audioRef = el
+      this.audioRef = el;
     },
     setSeekRef(el) {
-      this.seekRef = el
+      this.seekRef = el;
     },
     // calculate duration of audio to display
     onLoadedMetadata(el) {
-      if(el.readyState === 0) return
-      const secs = el.duration
-      this.seekRef.max = Math.floor(secs)
-      this.duration = this.formatSeconds(secs)
+      if (el.readyState === 0) return;
+      const secs = el.duration;
+      this.seekRef.max = Math.floor(secs);
+      this.duration = this.formatSeconds(secs);
     },
     // when seeking through the audio
     seekInput(el) {
-      this.currentTime = this.formatSeconds(el.value)
-      this.updateSeekStyle()
+      this.currentTime = this.formatSeconds(el.value);
+      this.updateSeekStyle();
     },
     // when seeking is done and mouse is lifted
     seekChange(el) {
-      this.audioRef.currentTime = el.value
+      this.audioRef.currentTime = el.value;
       // this.updateSeekStyle()
     },
     // when clicking play button
     playPauseAudio() {
-      if(!this.playState) {
-        this.audioRef.play()
-        this.playState = true
+      if (!this.playState) {
+        this.audioRef.play();
+        this.playState = true;
       } else {
-        this.audioRef.pause()
-        this.playState = false
+        this.audioRef.pause();
+        this.playState = false;
       }
     },
     // when audio is playing and time gets updated
     onTimeUpdate() {
-      this.seekRef.value = Math.floor(this.audioRef.currentTime)
-      this.updateSeekStyle()
-      this.currentTime = this.formatSeconds(this.audioRef.currentTime)
+      this.seekRef.value = Math.floor(this.audioRef.currentTime);
+      this.updateSeekStyle();
+      this.currentTime = this.formatSeconds(this.audioRef.currentTime);
     },
     // helper function to format seconds into (m)m:ss format
     formatSeconds(secs) {
@@ -151,9 +151,11 @@ document.addEventListener("alpine:init", () => {
     },
 
     updateSeekStyle() {
-      this.seekRef.style = `--val: ${(this.seekRef.value / this.seekRef.max) * 100}%; --per: ${this.seekRef.value / this.seekRef.max};`
-    }
-  }))
+      this.seekRef.style = `--val: ${
+        (this.seekRef.value / this.seekRef.max) * 100
+      }%; --per: ${this.seekRef.value / this.seekRef.max};`;
+    },
+  }));
 
   Alpine.store("treeData", {
     entries: [],

@@ -431,7 +431,7 @@ form.open #add {
 
 .image-part {
   display: inline;
-  max-height: .8em;
+  max-height: 0.8em;
 }
 .image-part.big {
   max-height: 70dvh;
@@ -624,7 +624,7 @@ label {
 }
 
 #help-container ul {
-  font-family: "NeueMontreal", sans-serif;
+  font-family: "a", sans-serif;
   margin: 0.5rem 0;
   padding-left: 1rem;
   line-height: 1.5rem;
@@ -644,9 +644,10 @@ label {
 }
 
 #help-container li::before {
-  content: "~~~~~~";
+  content: "—";
   position: absolute;
   left: 0;
+  font-family: "b";
   top: 0;
   color: black;
 }
@@ -654,21 +655,21 @@ label {
 .sound-part {
   display: inline-flex;
   align-items: center;
-  transform: translateY(-.5rem);
+  transform: translateY(-0.5rem);
 }
 
 .audio-player {
   font-size: 1.5rem;
   display: inline;
   color: black;
-  padding: 0 .8rem 0 .2rem;
+  padding: 0 0.8rem 0 0.2rem;
 }
 
 .audio-player .controls {
   display: inline-flex;
   flex-direction: row;
   align-items: center;
-  gap: .4rem;
+  gap: 0.4rem;
 }
 
 .audio-player button {
@@ -690,13 +691,13 @@ label {
 .audio-progress {
   display: flex;
   align-items: center;
-  gap: .6rem;
+  gap: 0.6rem;
 }
 
 .audio-time {
   font-size: 1em;
   line-height: 1.5;
-  margin-top: .15em;
+  margin-top: 0.15em;
 }
 
 .audio-progress-bar {
@@ -706,7 +707,7 @@ label {
 
 input[type="range"] {
   position: relative;
-  height: .7em;
+  height: 0.7em;
   background-color: transparent;
   -webkit-appearance: none;
   margin: 0;
@@ -749,7 +750,7 @@ input[type="range"]::before {
   content: "";
   top: 15%;
   left: 0;
-  width: calc(var(--val) - var(--per) * 1rem - .1rem);
+  width: calc(var(--val) - var(--per) * 1rem - 0.1rem);
   height: 70%;
   cursor: pointer;
   background: url("./assets/slider-squiggly.svg");
@@ -761,26 +762,32 @@ input[type="range"]::-moz-range-progress {
   height: 70%;
   background: url("./assets/slider-squiggly.svg");
   background-repeat: no-repeat;
-  background-size: calc(100% - var(--per) * 1rem - .1rem) 100%;
+  background-size: calc(100% - var(--per) * 1rem - 0.1rem) 100%;
 }
 
-
 input[type="range"]::-moz-range-track {
-  --point: calc(var(--val) + (1 - var(--per)) * 1rem + .1rem);
+  --point: calc(var(--val) + (1 - var(--per)) * 1rem + 0.1rem);
   width: 100%;
-  height: .18em;
+  height: 0.18em;
   cursor: pointer;
-  background: linear-gradient(to right, transparent var(--point), black var(--point));
+  background: linear-gradient(
+    to right,
+    transparent var(--point),
+    black var(--point)
+  );
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
-  --point: calc(var(--val) + (1 - var(--per)) * 1rem + .1rem);
+  --point: calc(var(--val) + (1 - var(--per)) * 1rem + 0.1rem);
   width: 100%;
-  height: .18em;
+  height: 0.18em;
   cursor: pointer;
-  background: linear-gradient(to right, transparent var(--point), black var(--point));
+  background: linear-gradient(
+    to right,
+    transparent var(--point),
+    black var(--point)
+  );
 }
-
 
 @media (max-width: 768px) {
   .logo-container {
