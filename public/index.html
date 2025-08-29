@@ -22,30 +22,30 @@
   </a>
 
   <div class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
-    <div class="stories open" x-data @click="$store.ui.storyOpen = true"
-      :class="{ 'locked': !$store.ui.posted }">
+    <div class="stories open" x-data @click="$store.ui.storyOpen = true" :class="{ 'locked': !$store.ui.posted }">
       <template x-if="$store.story.entries">
         <div class="test-div">
           <template x-for="entry in $store.story.entries" :key="entry.id">
-            <a 
-            @mouseover="$store.ui.hoveredAuthor = entry.id;
+            <a @mouseover="$store.ui.hoveredAuthor = entry.id;
             document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-            @mouseout="$store.ui.hoveredAuthor = null"
-            @click.prevent="document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-            >
+              @mouseout="$store.ui.hoveredAuthor = null"
+              @click.prevent="document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })">
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
                   :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
               <template x-if="entry.type === 'image'">
-                <img :class="{ 'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id, 'big': big }"
+                <img
+                  :class="{ 'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id, 'big': big }"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id" :src="BaseURL + entry.content"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }" @click="big = !big" />
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }"
+                  @click="big = !big" />
               </template>
               <template x-ref="audioPlayer">
                 <div class="audio-player" x-data="audio(src, id)">
-                  <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)" @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
+                  <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)"
+                    @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
                     <source :src="BaseURL + src">
                   </audio>
                   <div class="controls">
@@ -58,7 +58,9 @@
                       </template>
                     </button>
                     <div class="audio-progress">
-                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)" :style="`--val: 0%; --per: 0;`">
+                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0"
+                        x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)"
+                        :style="`--val: 0%; --per: 0;`">
                       <div class="audio-time">
                         <span class="audio-current" x-text="currentTime"></span> /
                         <span class="audio-duration" x-text="duration"></span>
@@ -69,12 +71,12 @@
               </template>
               <template x-if="entry.type === 'sound'">
                 <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
-                    :data-user="entry.author + entry.id" :id="entry.author + entry.id"
-                    :style="`background-color: ${$store.colors.getEntryColor(entry)};`">
-                    <template x-template-outlet="$refs.audioPlayer" x-data="{ src: entry.content, id: entry.id }">
+                  :data-user="entry.author + entry.id" :id="entry.author + entry.id"
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)};`">
+                  <template x-template-outlet="$refs.audioPlayer" x-data="{ src: entry.content, id: entry.id }">
 
-                    </template>
-                  </span>
+                  </template>
+                </span>
               </template>
             </a>
           </template>
@@ -89,19 +91,17 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
-                  <a  :id="'@tree%' + entry.author + entry.id"
-                  :class="{
+                <a :id="'@tree%' + entry.author + entry.id" :class="{
                     'tree-entry': true,
                     'notFetched': !$store.story.existsInStory(entry.id),
                     'hovered': $store.ui.hoveredAuthor === entry.id}"
                   @mouseover="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-                  @mouseout="$store.ui.hoveredAuthor = null"
-                  @click="$store.treeData.switchBranch(entry)"
+                  @mouseout="$store.ui.hoveredAuthor = null" @click="$store.treeData.switchBranch(entry)"
                   @click.prevent="document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`"
-                  >
-                  <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`" :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
+                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`">
+                  <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
+                    :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
                 </a>
               </template>
               <template x-if="Array.isArray(entry)">
@@ -125,7 +125,7 @@
     <div id="treeZoom"><img src="/public/logo/Asset 2.svg" id="slider"></div>
     <template x-if="!$store.ui.posted && $store.story.entries.length">
       <div>
-        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>  
+        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>
       </div>
     </template>
     <template x-if="$store.ui.posted && $store.treeData.tree.length">
@@ -139,9 +139,10 @@
 
 
   <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry" @click="$store.story.handleFormClick()">
-    
-  <button id="add">+</button>
+  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry"
+    @click="$store.story.handleFormClick()">
+
+    <button id="add">+</button>
     <p id="formIntro">Führe die Geschichte fort:</p><br>
     <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
@@ -195,29 +196,33 @@
     <div id="help" :class="{ 'open': open }">
       <div id="help-container">
         <p>Bei Co~o–Pub entsteht gemeinschaftlich eine forlaufende, mehrstimmige Geschichte zur Indiecon –
-          dokumentarisch, spekulativ, absurd oder emotional. Werde ganz einfach Teil davon indem du...</p>
+          dokumentarisch, spekulativ, absurd oder emotional. Werde ganz einfach Teil davon:</p>
 
         <ul>
-          <li>Einen Namen für deinen Beitrag wählst</li>
-          <li>Den Inhaltstyp festlegst: Text, Foto, Zeichnung oder Sound</li>
-          <li>Einen Beitrag gestaltest der an den vorherigen anknüpft<br> (Der Rest der Geschichte ist bis dahin
-            unsichtbar)</li>
-          <li>Klicke auf "Publish" um deinen Beitrag der Geschichte hinzuzufügen</li>
-          <li>Dein Beitrag wird automatisch mit den vorherigen verknüpft und du kannst nun die ganze Geschichte sehen
+          <li>Name wählen <span>— für deinen Beitrag</span></li>
+          <li>Inhaltstyp festlegen <span>— Text, Foto, Zeichnung oder Sound</span></li>
+          <li>Beitrag erstellen <span>— soll an den vorherigen anknüpfen<br>(dieser Beitrag ist sichtbar,
+              der Rest
+              der Geschichte erstmal unkenntlich)</span></li>
+          <li>"Publish" klicken <span>— zum Hinzufügen zur Geschichte</span>
           </li>
-          <li>Über die Baumstruktur, die rechts erscheint, ist es möglich sich durch die Geschichte und ihre
-            verschiedenen Stränge zu navigieren</li>
-          <li>Du kannst das schwarze Eingabe Fenster am Rand erneut öffnen um einen weiteren Beitrag zu verfassen
+          <li>Komplette Geschichte ansehen <span>— nach automatischer Verknüpfung verschwindet der Blurr der
+              restlichen Beiträge</span></li>
+          <li>Navigation über die Baumstruktur <span>— rechts durch alle Erzählstränge</span>
           </li>
+          <li>Weitere Beiträge erstellen <span>— über das schwarze Eingabefenster am Rand (+)</span></li>
         </ul>
 
         <p>
           Konzept, Gestaltung & Entwickung: Eva Richter, Julika Hother, Lars Hembacher, Max Lambrecht<br><br>
-          Ein Projekt  im Rahmen des <a href="https://www.indiecon-festival.com/" target="_blank">Indiecon Festivals 2025</a> <br>konzipiert von Masterstudierenden aus <a href="www.burg-halle.de/design/visual-strategies-and-stories-ma?fbclid=PAZXh0bgNhZW0CMTEAAac3d7syQHoPVkz-9lCND0g-aTnPbb4kxdg8aXqhexq2CDAw_2Lcg_q28TwICw_aem_939_kz9EyuTrVEafKDm0dg" target="_blank">Visual Strategies & Stories</a> – Intermediale Gestaltung, <br>
-        Burg Giebichenstein Kunsthochschule Halle
-        
-        <br><br><a href="https://www.burg-halle.de/institution/impressum" target="_blank">Impressum</a>
-  </p>
+          Ein Projekt im Rahmen des <a href="https://www.indiecon-festival.com/" target="_blank">Indiecon Festivals
+            2025</a> <br>konzipiert von Masterstudierenden aus <a
+            href="www.burg-halle.de/design/visual-strategies-and-stories-ma?fbclid=PAZXh0bgNhZW0CMTEAAac3d7syQHoPVkz-9lCND0g-aTnPbb4kxdg8aXqhexq2CDAw_2Lcg_q28TwICw_aem_939_kz9EyuTrVEafKDm0dg"
+            target="_blank">Visual Strategies & Stories</a> – Intermediale Gestaltung, <br>
+          Burg Giebichenstein Kunsthochschule Halle
+
+          <br><br><a href="https://www.burg-halle.de/institution/impressum" target="_blank">Impressum</a>
+        </p>
       </div>
     </div>
   </div>

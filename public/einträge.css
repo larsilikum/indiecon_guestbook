@@ -409,6 +409,7 @@ form.open #add {
   box-shadow: none;
   border-left: 0.2rem dashed rgb(255, 255, 255);
 }
+
 .split-branches {
   display: flex;
   flex-direction: row;
@@ -433,6 +434,7 @@ form.open #add {
   display: inline;
   max-height: .8em;
 }
+
 .image-part.big {
   max-height: 70dvh;
   max-width: 100%;
@@ -584,7 +586,7 @@ label {
   box-shadow: -4px 0px 20px rgba(0, 0, 0, 0.3);
 }
 
-.help-icon:hover + #help:not(.open) {
+.help-icon:hover+#help:not(.open) {
   transform: translateX(calc(100% - 4rem));
 }
 
@@ -605,7 +607,6 @@ label {
   padding-right: 8rem;
   color: black;
   font-family: "a", sans-serif;
-  /* font-family: Arial, sans-serif; */
   line-height: 2rem;
   font-size: 1.8rem;
   opacity: 0;
@@ -643,8 +644,14 @@ label {
   max-width: 60%;
 }
 
+#help-container li span {
+  color: rgb(115, 142, 159);
+}
+
+
 #help-container li::before {
-  content: "~~~~~~";
+  content: "\2014";
+  font-family: "b";
   position: absolute;
   left: 0;
   top: 0;
@@ -756,6 +763,7 @@ input[type="range"]::before {
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
+
 /* firefox */
 input[type="range"]::-moz-range-progress {
   height: 70%;
@@ -786,6 +794,7 @@ input[type="range"]::-webkit-slider-runnable-track {
   .logo-container {
     padding: 2%;
   }
+
   .logo-container img {
     height: 8.7vw;
     padding-right: 1.3vw;
