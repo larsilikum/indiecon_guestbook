@@ -334,6 +334,7 @@ form.open #add {
 #treeZoom {
   display: flex;
   position: fixed;
+  justify-content: space-between;
   bottom: 0;
   left: 50vw;
   z-index: 8;
@@ -346,14 +347,13 @@ form.open #add {
   width: 10rem;
   object-fit: scale-down;
   height: 4rem;
-  transform: scaleX(100%);
+  transform: scaleX(50%);
   transition: 0.4s ease;
   cursor: grab;
   transform-origin: left;
 }
 
 #treePlus {
-  margin-left: 75%;
   user-select: none;
 }
 
