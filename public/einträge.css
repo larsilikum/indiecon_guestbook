@@ -339,18 +339,19 @@ form.open #add {
   left: 50vw;
   z-index: 8;
   line-height: 140%;
-  font-size: 3vw;
+  font-size: 3rem;
   color: white;
 }
 
 #slider {
-  width: 10rem;
+  width: 11rem;
   object-fit: scale-down;
-  height: 4rem;
   transform: scaleX(50%);
   transition: 0.4s ease;
   cursor: grab;
+  margin-top: -0.4rem;
   transform-origin: left;
+  align-items: center;
 }
 
 #treePlus {
@@ -358,7 +359,7 @@ form.open #add {
 }
 
 #treeMinus {
-  margin-right: 5%;
+  margin-right: 0.2rem;
   user-select: none;
 }
 
