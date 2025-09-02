@@ -5,7 +5,7 @@ function scaleMap() {
   const minusBtn = document.getElementById("treeMinus");
 
   const scales = [0.25, 0.5, 1];
-  let currentIndex = 2; // start at 1
+  let currentIndex = 1;
 
   function updateScale(index) {
     currentIndex = Math.max(0, Math.min(scales.length - 1, index));

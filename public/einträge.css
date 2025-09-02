@@ -285,7 +285,6 @@ form.open #add {
   width: 5%;
   font-size: 5rem;
   cursor: pointer;
-  padding: 0% 2% 2% 2%;
   overflow: hidden;
   transition: 0.2s ease;
   pointer-events: all;
@@ -317,18 +316,16 @@ form.open #add {
   pointer-events: none;
 }
 
-.tree-entry:not(.notFetched) {
-  position: relative;
-  z-index: 10 !important;
-}
-
-.notFetched {
+.tree-entry.notFetched {
   border-left: none;
   color: white !important;
   filter: blur(5px) grayscale(1) !important;
   opacity: 0.3;
   position: relative;
-  z-index: -10 !important;
+}
+
+.notFetched .fullname {
+  display: none;
 }
 
 #treeZoom {
@@ -336,7 +333,9 @@ form.open #add {
   position: fixed;
   justify-content: space-between;
   bottom: 0;
-  left: 50vw;
+  left: 52vw;
+  width: 100%;
+  width: auto;
   z-index: 8;
   line-height: 140%;
   font-size: 3rem;
@@ -345,7 +344,7 @@ form.open #add {
 
 #slider {
   width: 11rem;
-  object-fit: scale-down;
+  height: auto;
   transform: scaleX(50%);
   transition: 0.4s ease;
   cursor: grab;
@@ -415,8 +414,8 @@ form.open #add {
   box-shadow: 1px 1px 10px rgb(255, 255, 255);
 }
 
-.tree-entry:hover,
-.tree-entry.hovered {
+.tree-entry:not(.notFetched):hover,
+.tree-entry:not(.notFetched).hovered {
   border-radius: 0;
   padding: 0rem;
   border: none;
@@ -431,7 +430,7 @@ form.open #add {
   text-transform: uppercase;
   width: 4.5rem;
   transform: scale(1.15);
-  margin-left: 2re;
+  margin-left: 2rem;
   text-decoration: none;
   border-radius: 0rem 1rem 1rem 0rem;
   border-left: 0.2vw dashed rgb(255, 255, 255);
@@ -439,6 +438,35 @@ form.open #add {
   justify-content: start;
   transition: 0.2s ease;
   scroll-snap-align: end;
+}
+
+/* Ensure all tree-entries are positioned for z-index to work */
+.tree-entry {
+  position: relative;
+  z-index: 5;
+}
+
+.tree-entry.notFetched {
+  z-index: 1 !important;
+  position: relative;
+}
+
+.tree-entry:not(.notFetched) {
+  z-index: 10 !important;
+  position: relative;
+}
+
+.tree-entry:not(.notFetched) .fullname {
+  z-index: 20 !important;
+  position: relative;
+}
+
+/* Hovered fullname is always on top */
+.fullname.hovered {
+  z-index: 30 !important;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 
 .tree.small .tree-entry {
@@ -455,9 +483,12 @@ form.open #add {
   color: rgb(0, 0, 0);
   font-size: 0rem;
   position: relative;
-  z-index: 20;
   transition: font-size 0.3s ease;
   transform: translateX(-1rem);
+}
+
+.notFetched .fullname {
+  display: none;
 }
 
 .tree.big .fullname {
