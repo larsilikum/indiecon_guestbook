@@ -185,7 +185,18 @@
     </template>
     
     <template x-if="selectedType === 'sketch'">
-   
+      <div>
+        
+        <canvas id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown="drawing = true" @pointerup="cancelDraw()" @pointercancel="cancelDraw()" @pointermove="drawCanvas($event)"></canvas>
+        <div class="drawing-inputs">
+          <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;" value="black"/>
+          <div class="pen-size-range">
+            <div id="pen-size-small-label" :style="`background-color: ${color};`"></div>
+            <input type="range" value="5" @input="changeRangeStyle($el)" @change="penSize = $el.value" max="40" min="5" value="5" :style="`--val: ${(($el.value - 5) / ($el.max - 5)) * 100}%; --per: ${(($el.value - 5) / ($el.max - 5))};`">
+            <div id="pen-size-big-label" :style="`background-color: ${color};`"></div>
+          </div>
+        </div>
+      </div>
     </template>
 
   
