@@ -123,7 +123,7 @@
   </template>
 
   <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
-    <div id="treeZoom"><img src="/public/logo/Asset 2.svg" id="slider"></div>
+    <div id="treeZoom"><span id="treeMinus">-</span><img src="/public/logo/Asset 2.svg" id="slider"><span  id="treePlus">+</span></div>
     <template x-if="!$store.ui.posted && $store.story.entries.length">
       <div>
         <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>

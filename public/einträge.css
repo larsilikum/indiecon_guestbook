@@ -210,14 +210,14 @@ form.open #add {
   width: 100%;
   height: 100%;
   background-color: white;
-  padding: 1vw;
+  padding: 1rem;
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.8rem;
   font-family: "AuthenticSans", sans-serif !important;
-  border: 0.1rem solid black;
+  border: 0.06rem solid black;
   cursor: pointer;
 }
 
@@ -337,7 +337,9 @@ form.open #add {
   bottom: 0;
   left: 50vw;
   z-index: 8;
+  line-height: 140%;
   font-size: 3vw;
+  color: white;
 }
 
 #slider {
@@ -348,6 +350,16 @@ form.open #add {
   transition: 0.4s ease;
   cursor: grab;
   transform-origin: left;
+}
+
+#treePlus {
+  margin-left: 75%;
+  user-select: none;
+}
+
+#treeMinus {
+  margin-right: 5%;
+  user-select: none;
 }
 
 .story-part {
@@ -721,13 +733,14 @@ label {
 .sound-part {
   display: inline-flex;
   align-items: center;
-  transform: translateY(-0.5rem);
+  transform: translateY(-0rem);
 }
 
 .audio-player {
   font-size: 1.5rem;
   display: inline;
   color: black;
+  line-height: 120%;
   padding: 0 0.8rem 0 0.2rem;
 }
 
