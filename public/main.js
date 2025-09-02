@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: false,
+    posted: true,
     hoveredAuthor: null,
   });
 
@@ -267,6 +267,10 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("useForm", () => ({
     selectedType: "text",
     isSubmitting: false,
+    imageFile: "",
+    imagePreview: false,
+    soundFile: "",
+    soundPreview: false,
 
     getData() {
       const inputs = Array.from(
@@ -321,6 +325,7 @@ document.addEventListener("alpine:init", () => {
 
           // Add file based on type
           if (this.selectedType === "image") {
+            console.log(this.$refs.imageFile);
             const fileInput = this.$refs.imageFile;
             formData.append("image", fileInput.files[0]);
           } else if (this.selectedType === "sound") {
@@ -380,6 +385,7 @@ function scrollDownContainer() {
   }, 500);
 }
 scrollDownContainer();
+window.addEventListener("resize", scrollDownContainer);
 
 // HELPER
 function getRandomEntryFromArray(arr) {

@@ -49,8 +49,8 @@ body {
 }
 
 .logo-container img {
-  height: 3.5rem;
-  padding-right: 0.7rem;
+  height: 3.5vw;
+  padding-right: 0.7vw;
   width: auto;
   transition: transform 0.35s ease-in-out, margin 0.4s ease-in-out,
     height 0.2s ease;
@@ -62,27 +62,25 @@ body {
 }
 
 #logo-form2 {
-  height: 0.9rem;
+  height: 0.9vw;
   width: auto;
   transform-origin: left;
   transform: translateY(25%);
 }
 
 .logo-container.open #logo-form2 {
-  height: 0.8rem;
   width: auto;
   transform: translateY(25%) scaleX(164%);
 }
 
 .logo-container.open #logo-form3 {
-  margin-left: 22%;
+  margin-left: 24%;
   transition: transform 0.4s ease-in-out, margin 0.4s ease-in-out,
     height 0.2s ease;
 }
 
 .logo-container:hover #logo-form2 {
   transform: translateY(25%) scaleX(90%);
-  height: 0.8rem;
   transition: transform 0.4s ease-in-out, margin 0.4s ease-in-out,
     height 0.2s ease;
 }
@@ -142,26 +140,24 @@ form {
   width: 45%;
   padding: 1.5%;
   transform: translateX(calc(100% - 4rem));
-  display: flex;
-  flex-direction: column;
   box-shadow: 1px 1px 10px black;
   justify-content: end;
-  overflow: hidden;
+  overflow: auto;
   background-color: rgb(0, 0, 0);
-  transition: 0.2s ease;
 }
 
 form:not(.open):hover {
   transform: translateX(calc(100% - 6rem));
+  transition: transform 0.2s ease;
   cursor: pointer;
 }
 
 #formIntro {
-  margin-top: 3rem;
-  margin-bottom: 0.5rem;
+  margin-top: 5rem;
+  margin-bottom: 0rem;
   color: white;
-  font-size: 3rem;
-  font-family: 'AuthenticSans' !important;
+  font-size: 2.4rem;
+  font-family: "AuthenticSans" !important;
   line-height: 100%;
 }
 
@@ -207,38 +203,81 @@ form.open #add {
 #radio-group {
   display: flex;
   gap: 0;
+  margin-bottom: 0.6rem;
 }
 
 #radio-group button {
   width: 100%;
   height: 100%;
   background-color: white;
-  border-radius: 1rem;
-  padding: 1%;
+  padding: 1vw;
   border: none;
-  font-size: 2vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
   font-family: "AuthenticSans", sans-serif !important;
   border: 0.1rem solid black;
   cursor: pointer;
 }
 
+#radio-group button:first-child {
+  border-radius: 1rem 0 0 1rem;
+}
+
+#radio-group button:last-child {
+  border-radius: 0vw 1vw 1vw 0vw;
+}
+
 #radio-group button.active,
 #radio-group button:hover {
-  background-color: #B78ED2;
-  border: 0.1rem solid white;
+  background-color: #b78ed2;
 }
 
 #content-input {
   height: 0vh;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #content-input.active {
-  height: 50%;
-  transition: 0.7s ease;
+  height: 25rem;
+  margin-bottom: 1rem;
+}
+
+#content-input button {
+  font-family: "b";
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 2.1rem;
+  height: 100%;
+  padding: 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+}
+
+#content-input button:hover {
+  background-color: #66ff8a;
+}
+
+.clearPreview {
+  margin-top: 0rem;
+}
+
+.clearPreview:hover {
+  background-color: #ff8366 !important;
+}
+
+.image-upload-preview img {
+  max-height: 40vh;
+  object-fit: contain;
+  display: flex;
+  margin: 1vh;
+  justify-content: center;
+  width: 100%;
 }
 
 .tree {
@@ -278,11 +317,18 @@ form.open #add {
   pointer-events: none;
 }
 
+.tree-entry:not(.notFetched) {
+  position: relative;
+  z-index: 10 !important;
+}
+
 .notFetched {
   border-left: none;
   color: white !important;
-  filter: blur(8px) grayscale(1) !important;
-  opacity: 0.2;
+  filter: blur(5px) grayscale(1) !important;
+  opacity: 0.3;
+  position: relative;
+  z-index: -10 !important;
 }
 
 #treeZoom {
@@ -314,10 +360,11 @@ form.open #add {
 
 .entry {
   color: rgb(0, 0, 0);
-  font-size: 3.1rem;
+  font-size: 2.7rem;
   line-height: 125%;
   cursor: pointer;
   pointer-events: auto;
+  hyphens: auto;
   border-radius: 1rem 1rem 1rem 1rem;
 }
 
@@ -369,15 +416,16 @@ form.open #add {
   padding: 0.8rem;
   font-family: "b";
   text-transform: uppercase;
-  width: 4rem;
+  width: 4.5rem;
   transform: scale(1.15);
+  margin-left: 2re;
   text-decoration: none;
   border-radius: 0rem 1rem 1rem 0rem;
-  border-left: 0.2rem dashed rgb(255, 255, 255);
+  border-left: 0.2vw dashed rgb(255, 255, 255);
   color: rgb(255, 255, 255);
   justify-content: start;
-  transition: all 0.2s ease;
-  scroll-snap-align: center;
+  transition: 0.2s ease;
+  scroll-snap-align: end;
 }
 
 .tree.small .tree-entry {
@@ -395,7 +443,7 @@ form.open #add {
   font-size: 0rem;
   position: relative;
   z-index: 20;
-  transition: 0.3s ease;
+  transition: font-size 0.3s ease;
   transform: translateX(-1rem);
 }
 
@@ -408,7 +456,7 @@ form.open #add {
   padding: 0.5rem;
   font-size: 2.8rem;
   box-shadow: none;
-  border-left: 0.2rem dashed rgb(255, 255, 255);
+  border-left: 0.2vw dashed rgb(255, 255, 255);
 }
 
 .split-branches {
@@ -416,8 +464,8 @@ form.open #add {
   flex-direction: row;
   justify-content: center;
   width: auto;
-  scroll-snap-align: center;
-  border-top: 0.2rem dashed rgb(255, 255, 255);
+  scroll-snap-align: end;
+  border-top: 0.2vw dashed rgb(255, 255, 255);
 }
 
 .branch {
@@ -436,7 +484,8 @@ form.open #add {
   max-height: 0.8em;
 }
 
-.image-part.big {
+.image-part.big,
+.locked a:nth-last-child(1) .image-part {
   max-height: 70dvh;
   max-width: 100%;
 }
@@ -452,8 +501,9 @@ form.open #add {
 }
 
 .input-name {
-  border-radius: 1rem;
+  border-radius: 1vw;
   width: 75%;
+  margin-bottom: 2rem;
   font-family: "b";
   text-transform: uppercase;
   font-size: 4rem;
@@ -487,7 +537,7 @@ form.open #add {
   padding: 3%;
   border-radius: 10px;
   font-size: 1rem;
-  font-size: 2.7rem !important;
+  font-size: 2.4rem !important;
   font-family: "a";
   box-sizing: border-box;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
@@ -498,16 +548,23 @@ form.open #add {
   outline: none;
 }
 
-.input-foto,
-.audio-recorder {
-  width: 100%;
-  height: auto;
-  border: none;
-  resize: none;
-  padding: 1em;
-  border-radius: 10px;
-  box-sizing: border-box;
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+.text-sm {
+  position: absolute;
+  bottom: 0rem;
+  right: 1rem;
+  font-size: 1.2vw;
+}
+
+.word-counter {
+  font-size: 0.9rem;
+  margin-top: 4px;
+  color: #555;
+  text-align: right;
+}
+
+.word-counter.over-limit {
+  color: red;
+  font-weight: bold;
 }
 
 .image-preview img {
@@ -531,22 +588,18 @@ form.open #add {
 
 .publish {
   font-family: "AUTHENTICSans", sans-serif !important;
-  font-size: 3vw;
-  width: 100%;
+  font-size: 2.8rem;
+  width: auto;
   border-radius: 1rem;
-  margin-top: 0.1vh;
-  margin-bottom: 10vh;
-  align-items: center;
-  justify-content: center;
-  display: flex;
+  line-height: 200%;
+  width: 90%;
   border: 0.2rem solid black;
   background-color: white;
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .publish:hover {
-  background-color: #B78ED2;
-  border: 0.2rem solid white;
+  background-color: #66ff8a;
 }
 
 label {
@@ -589,7 +642,7 @@ label {
   box-shadow: -4px 0px 20px rgba(0, 0, 0, 0.3);
 }
 
-.help-icon:hover+#help:not(.open) {
+.help-icon:hover + #help:not(.open) {
   transform: translateX(calc(100% - 4rem));
 }
 
@@ -609,9 +662,8 @@ label {
   padding-bottom: 0rem;
   padding-right: 8rem;
   color: black;
-  font-family: "AUTHENTICSANS", sans-serif;
-  line-height: 2rem;
-  font-size: 1.8rem;
+  font-family: "b", sans-serif;
+  font-size: 2.7rem;
   opacity: 0;
   overflow-y: auto;
   box-sizing: border-box;
@@ -629,9 +681,9 @@ label {
 
 #help-container ul {
   margin: 0.5rem 0;
+  font-family: "AUTHENTICSANS", sans-serif;
   padding-left: 1rem;
-  line-height: 1.4rem;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
 }
 
 #help-container a {
@@ -643,7 +695,7 @@ label {
   list-style: none;
   position: relative;
   padding-left: 4rem;
-  max-width: 60%;
+  max-width: 70%;
 }
 
 #help-container li span {
@@ -660,9 +712,10 @@ label {
 }
 
 #credits {
-  font-size: 0.8rem;
+  font-size: 1rem;
   padding: 0rem;
   line-height: 1.3rem;
+  font-family: "AUTHENTICSANS", sans-serif;
 }
 
 .sound-part {
@@ -723,8 +776,19 @@ input[type="range"] {
   height: 0.7em;
   background-color: transparent;
   -webkit-appearance: none;
+  height: 100%;
+  display: inline;
+  width: auto;
   margin: 0;
   padding: 0;
+}
+
+.audio-upload-play .audio-progress {
+  width: 100% !important;
+}
+
+.audio-upload-play .audio-progress-bar {
+  width: 90% !important;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -784,9 +848,11 @@ input[type="range"]::-moz-range-track {
   width: 100%;
   height: 0.18em;
   cursor: pointer;
-  background: linear-gradient(to right,
-      transparent var(--point),
-      black var(--point));
+  background: linear-gradient(
+    to right,
+    transparent var(--point),
+    black var(--point)
+  );
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
@@ -794,12 +860,14 @@ input[type="range"]::-webkit-slider-runnable-track {
   width: 100%;
   height: 0.18em;
   cursor: pointer;
-  background: linear-gradient(to right,
-      transparent var(--point),
-      black var(--point));
+  background: linear-gradient(
+    to right,
+    transparent var(--point),
+    black var(--point)
+  );
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
   .logo-container {
     padding: 2%;
   }
@@ -815,5 +883,27 @@ input[type="range"]::-webkit-slider-runnable-track {
 
   .logo-container.open #logo-form2 {
     height: 1.9vw;
+  }
+
+  .flexbox-container,
+  .flexbox-container.open {
+    width: 100vw;
+    scroll-snap-type: x mandatory;
+  }
+
+  form {
+    width: 100vw;
+    transform: translateX(0) translateY(calc(100% - 4rem));
+  }
+  form:not(.open):hover {
+    transform: translateX(0) translateY(calc(100% - 6rem));
+  }
+
+  form.open {
+    transform: translateX(0) translateY(0);
+    top: 30vh;
+  }
+  .stories.locked {
+    height: 20vh;
   }
 }

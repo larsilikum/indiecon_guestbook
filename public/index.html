@@ -8,6 +8,7 @@
   <script src="./outlet.js" defer></script>
   <script src="./main.js" defer></script>
   <script src="./zoomtree.js" defer></script>
+  <script src="./animateTextarea.js" defer></script>
   <script src="./logoSVG.js" defer></script>
   <script src="//unpkg.com/alpinejs" defer></script> <!-- defer all and keep alpine.js last! -->
   <link rel="stylesheet" href="einträge.css" />
@@ -136,57 +137,151 @@
   </div>
 
 
+<!--========================================================= Upload Form ==============================================================-->
+<form x-ref="form" 
+      x-data="useForm" 
+      :class="{ 'open': !$store.ui.posted }" 
+      x-on:submit.prevent="submitEntry"
+      @click="$store.story.handleFormClick()">
 
+  <button id="add">+</button>
+  <p id="formIntro">Führe die Geschichte fort:</p><br>
+  <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
-  <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="useForm" :class="{ 'open': !$store.ui.posted }" x-on:submit.prevent="submitEntry"
-    @click="$store.story.handleFormClick()">
+  <!-- choose File type -->
+  <div id="radio-group">
+    <button type="button" @click="selectedType = 'text'" :class="selectedType === 'text' ? 'active' : ''">Text</button>
+    <button type="button" @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">Image</button>
+    <button type="button" @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">Sketch</button>
+    <button type="button" @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">Sound</button>
+  </div>
 
-    <button id="add">+</button>
-    <p id="formIntro">Führe die Geschichte fort:</p><br>
-    <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
+  <!-- content input -->
+  <div id="content-input" :class="{ 'active': selectedType !== null }">
 
-    <!-- choose File type -->
-    <div id="radio-group">
-      <button @click="selectedType = 'text'" :class="selectedType === 'text' ? 'active' : ''">
-        Text
-      </button>
+    <!-- text -->
+    <template x-if="selectedType === 'text'">
+      <div x-data="{ text: '' }">
+        <textarea 
+          name="content" 
+          id="body-input" 
+          cols="40" 
+          rows="7" 
+          class="textfeld"
+          placeholder="Füge hier deinen Text-Beitrag hinzu..." 
+          x-model="text"
+          x-effect="$store.ui.posted === false && loopTextContent();" 
+          @input="
+            if (text.length > 150) {
+              text = text.slice(0, 150);
+            }
+          "
+          required
+        ></textarea>
+        <p class="text-sm text-gray-500 mt-2">
+          <span x-text="text.length" style="color: grey"></span>/150 Zeichen
+        </p>
+      </div>
+    </template>
+    
+    <template x-if="selectedType === 'sketch'">
+   
+    </template>
 
-      <button @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">
-        Image
-      </button>
+  
+    <!-- image -->
+    <template x-if="selectedType === 'image'">
+      <div>
+    
+        <div class="custom-upload" >
+          <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp"
+            x-ref="imageFile" hidden
+            @change="
+              let file = $event.target.files[0]; 
+              if(file) {
+                imagePreview = URL.createObjectURL(file);
+                imageName = file.name;
+              }
+            " 
+          />
+          <button x-show="!imagePreview" type="button" @click="$refs.imageFile.click()">+ Bild hinzuzufügen</button>
+        </div>
 
-      <button @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">
-        Sketch
-      </button>
+        <!-- preview -->
+        <template x-if="imagePreview">
+          <div class="image-upload-preview">
+            <button class="clearPreview" type="button" @click="imagePreview = ''; $refs.imageFile.value = null" x-show="imagePreview">- Bild entfernen</button>
+          <img :src="imagePreview" alt="Preview"/>
 
-      <button @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">
-        Sound
-      </button>
+          </div>
+        </template>
+      </div>
+    </template>
+
+<!-- sound -->
+<template x-if="selectedType === 'sound'">
+  <div>
+
+    <!-- Upload button, only visible if no file selected -->
+    <div class="custom-upload" x-show="!soundPreview">
+      <input type="file" name="sound" class="file-input"  
+             accept="audio/*"
+             x-ref="soundFile" hidden
+             @change="
+               let file = $event.target.files[0]; 
+               if(file) {
+                 soundPreview = URL.createObjectURL(file);
+                 soundName = file.name;
+               }
+             " />
+      <button type="button" @click="$refs.soundFile.click()">+ Sound hinzuzufügen</button>
     </div>
 
-    <!-- general content input container -->
-    <div id="content-input" :class="{ 'active': selectedType !== null }">
-      <!-- depending on which type is selected we show the correct input field -->
-      <template x-if="selectedType === 'text'">
-        <textarea name="content" id="body-input" cols="40" rows="20" class="textfeld"
-          placeholder="Füge hier deinen Text hinzu..." required></textarea>
-      </template>
-      <template x-if="selectedType === 'image'">
-        <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp"
-          x-ref="imageFile" required />
-      </template>
-      <template x-if="selectedType === 'sound'">
-        <input type="file" name="sound" class="file-input" accept="audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/webm"
-          x-ref="soundFile" required />
-      </template>
-    </div>
+    <!-- preview -->
+    <template x-if="soundPreview">
+      <div class="audio-upload-preview">
+        <button type="button" class="clearPreview" @click="soundPreview = ''; $refs.soundFile.value = null">- Sound entfernen</button>
 
-    <button type="submit" class="publish" x-bind:disabled="isSubmitting">
-      <span x-show="!isSubmitting">Publish</span>
-      <span x-show="isSubmitting">Uploading...</span>
-    </button>
-  </form>
+        <!-- Custom audio player -->
+        <div class="audio-preview" x-data="audio(soundPreview, 'preview')">
+          <audio preload="metadata" :id="`audio-preview`" x-init="onLoadedMetadata($el); setAudioRef($el)"
+                 @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
+            <source :src="soundPreview">
+          </audio>
+            <button class="audio-upload-play" @click.prevent="playPauseAudio()">
+              <template x-if="!playState">
+                <img src="./assets/play.svg" alt="Play">
+              </template>
+              <template x-if="playState">
+                <img src="./assets/pause.svg" alt="Pause">
+              </template>
+              <div class="audio-progress">
+                <input class="audio-progress-bar" type="range" max="100" value="0"
+                       x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)"
+                       :style="`--val: 0%; --per: 0;`">
+                <div class="audio-time">
+                  <span class="audio-current" x-text="currentTime"></span> /
+                  <span class="audio-duration" x-text="duration"></span>
+                </div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </template>
+
+  </div>
+</template>
+
+
+  </div>
+
+  <button type="submit" class="publish" x-bind:disabled="isSubmitting">
+    <span x-show="!isSubmitting">Publish</span>
+    <span x-show="isSubmitting">Uploading...</span>
+  </button>
+</form>
+
 
   <div x-data="{open: false}">
     <!-- Help Button ? -->
