@@ -34,7 +34,7 @@ func main() {
 			Author: "coopub",
 			Parent: 0,
 			Type: "text",
-			Content: "This is the first entry. You are the happy person to start the story. Have fun",
+			Content: "Niemand wusste genau, wer den Umschlag zuerst gefunden hatte. Er lag einfach da, mitten auf dem Boden der Halle, ohne Absender, ohne Adresse – nur ein kleines Symbol auf der Vorderseite, das aussah wie eine Mischung aus einem Baum und einer Landkarte.",
 		}
 		database.InsertPost(p)
 	} 
