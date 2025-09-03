@@ -1,5 +1,5 @@
-// const BaseURL = "https://staging.co-o-pub.space";
-const BaseURL = ""
+const BaseURL = "https://staging.co-o-pub.space";
+//const BaseURL = ""
 
 const ApiURL = BaseURL + "/api/";
 
@@ -62,9 +62,8 @@ document.addEventListener("alpine:init", () => {
               Alpine.store("colors").setEntryColor(entry);
             });
           });
-      }
-      catch(e) {
-        console.error(e)
+      } catch (e) {
+        console.error(e);
       }
     },
     existsInStory(id) {
@@ -243,11 +242,15 @@ document.addEventListener("alpine:init", () => {
         this.searchEntryInTree(this.tree, entry)
       );
       Alpine.nextTick(() => {
-        console.log(document.getElementById(entry.author + entry.id))
-        document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
+        console.log(document.getElementById(entry.author + entry.id));
+        document.getElementById(entry.author + entry.id)?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest",
+        });
         // setTimeout(() => {
         // }, 100)
-      })
+      });
     },
 
     searchEntryInTree(branch, entry) {
