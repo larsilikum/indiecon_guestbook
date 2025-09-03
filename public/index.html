@@ -9,7 +9,7 @@
   <script src="./main.js" defer></script>
   <script src="./zoomtree.js" defer></script>
   <script src="./animateTextarea.js" defer></script>
-  <script src="./logoSVG.js" defer></script>
+  <!-- <script src="./logoSVG.js" defer></script> -->
   <script src="//unpkg.com/alpinejs" defer></script> <!-- defer all and keep alpine.js last! -->
   <link rel="stylesheet" href="./einträge.css" />
 </head>
@@ -157,8 +157,8 @@
       x-on:submit.prevent="submitEntry"
       @click="$store.story.handleFormClick()">
 
-  <button id="add" @click="mobileOpen = true">+</button>
-  <a id="close" @click="mobileOpen = !mobileOpen">✕</a>
+  <button id="add" @click.prevent="mobileOpen = !mobileOpen">+</button>
+  <a id="close" @click.prevent="mobileOpen = !mobileOpen">✕</a>
   <p id="formIntro">Führe die Geschichte fort:</p><br>
   <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
@@ -180,20 +180,20 @@
           name="content" 
           id="body-input" 
           cols="40" 
-          rows="8" 
+          rows="9" 
           class="textfeld"
           placeholder="Füge hier deinen Text-Beitrag hinzu..." 
           x-model="text"
           x-effect="$store.ui.posted === false && loopTextContent();" 
           @input="
-            if (text.length > 200) {
-              text = text.slice(0, 200);
+            if (text.length > 300) {
+              text = text.slice(0, 300);
             }
           "
           required
         ></textarea>
         <p class="text-sm text-gray-500 mt-2">
-          <span x-text="text.length" style="color: grey"></span>/200 Zeichen
+          <span x-text="text.length" style="color: grey"></span>/300 Zeichen
         </p>
       </div>
     </template>

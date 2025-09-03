@@ -1122,6 +1122,7 @@ input[type="color"]::-moz-color-swatch {
     font-size: 6.5vw !important;
     font-family: "AUTHENTICSANS", sans-serif !important;
     transform: translateX(-50%) !important;
+    z-index: 5000000;
   }
 
   #formIntro {
@@ -1227,5 +1228,13 @@ input[type="color"]::-moz-color-swatch {
 
   #help * :first-child {
     font-size: 1.4rem;
+  }
+
+  .help-icon:hover + #help:not(.open) {
+    transform: translateX(100%);
+  }
+  
+  .fullname {
+    transform: translateX(-0.8rem);
   }
 }
