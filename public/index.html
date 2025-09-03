@@ -95,11 +95,18 @@
       <template x-if="$store.story.entries">
         <div class="entry-wrapper">
           <template x-for="entry in $store.story.entries" :key="entry.id">
-            <a @mouseover="
+              <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <a  @mouseup="
             $store.ui.hoveredAuthor = entry.id;
             document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-          " @mouseout="$store.ui.hoveredAuthor = null" @click.prevent>
-              <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+          "
+          @mouseout="$store.ui.hoveredAuthor = null"
+          @mouseover="
+          $store.ui.hoveredAuthor = entry.id;
+          document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+        "
+       @touchstart="envent." 
+          @click.prevent>
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
@@ -145,64 +152,72 @@
     </div>
   </main>
 
+<!--========================================================= Upload Form ==============================================================-->
+<form x-ref="form" 
+      x-data="() => ({ ...useForm(), mobileOpen: false })"
+      :class="{ 'open': !$store.ui.posted, 'mobile-open': mobileOpen }" 
+      x-on:submit.prevent="submitEntry"
+      @click="$store.story.handleFormClick()">
 
-  <!--========================================================= Upload Form ==============================================================-->
-  <form x-ref="form" x-data="() => ({ ...useForm(), mobileOpen: false })"
-    :class="{ 'open': !$store.ui.posted, 'mobile-open': mobileOpen }" x-on:submit.prevent="submitEntry"
-    @click="$store.story.handleFormClick()">
+  <button id="add" @click="mobileOpen = !mobileOpen">+</button>
+  <a id="close" @click="mobileOpen = !mobileOpen">✕</a>
+  <p id="formIntro">Führe die Geschichte fort:</p><br>
+  <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
-    <button id="add" @click="mobileOpen = !mobileOpen">+</button>
-    <a id="close" @click="mobileOpen = !mobileOpen">-</a>
-    <p id="formIntro">Führe die Geschichte fort:</p><br>
-    <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
+  <!-- choose File type -->
+  <div id="radio-group">
+    <button type="button" @click="selectedType = 'text'" :class="selectedType === 'text' ? 'active' : ''">Text</button>
+    <button type="button" @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">Foto</button>
+    <button type="button" @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">Zeichnen</button>
+    <button type="button" @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">Audio</button>
+  </div>
 
-    <!-- choose File type -->
-    <div id="radio-group">
-      <button type="button" @click="selectedType = 'text'"
-        :class="selectedType === 'text' ? 'active' : ''">Text</button>
-      <button type="button" @click="selectedType = 'image'"
-        :class="selectedType === 'image' ? 'active' : ''">Foto</button>
-      <button type="button" @click="selectedType = 'sketch'"
-        :class="selectedType === 'sketch' ? 'active' : ''">Zeichen</button>
-      <button type="button" @click="selectedType = 'sound'"
-        :class="selectedType === 'sound' ? 'active' : ''">Audio</button>
-    </div>
+  <!-- content input -->
+  <div id="content-input" :class="{ 'active': selectedType !== null }">
 
-    <!-- content input -->
-    <div id="content-input" :class="{ 'active': selectedType !== null }">
-
-      <!-- text -->
-      <template x-if="selectedType === 'text'">
-        <div x-data="{ text: '' }">
-          <textarea name="content" id="body-input" cols="40" rows="7" class="textfeld"
-            placeholder="Füge hier deinen Text-Beitrag hinzu..." x-model="text"
-            x-effect="$store.ui.posted === false && loopTextContent();" @input="
+    <!-- text -->
+    <template x-if="selectedType === 'text'">
+      <div x-data="{ text: '' }">
+        <textarea 
+          name="content" 
+          id="body-input" 
+          cols="40" 
+          rows="8" 
+          class="textfeld"
+          placeholder="Füge hier deinen Text-Beitrag hinzu..." 
+          x-model="text"
+          x-effect="$store.ui.posted === false && loopTextContent();" 
+          @input="
             if (text.length > 200) {
               text = text.slice(0, 200);
             }
-          " required></textarea>
-          <p class="text-sm text-gray-500 mt-2">
-            <span x-text="text.length" style="color: grey"></span>/200 Zeichen
-          </p>
-        </div>
-      </template>
+          "
+          required
+        ></textarea>
+        <p class="text-sm text-gray-500 mt-2">
+          <span x-text="text.length" style="color: grey"></span>/200 Zeichen
+        </p>
+      </div>
+    </template>
+    
+    <template x-if="selectedType === 'sketch'">
+      <div>
+        
+        <canvas  
+        @touchstart="
+        $refs.form.style.overflow = 'hidden'
+        "
+        @touchend="
+        $refs.form.style.overflow = ''
+        "
 
-      <template x-if="selectedType === 'sketch'">
-        <div>
-
-          <canvas id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas"
-            @pointerdown="drawing = true" @pointerup="cancelDraw()" @pointercancel="cancelDraw()"
-            @pointermove="drawCanvas($event)"></canvas>
-          <div class="drawing-inputs">
-            <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;"
-              value="black" />
-            <div class="pen-size-range">
-              <div id="pen-size-small-label" :style="`background-color: ${color};`"></div>
-              <input type="range" value="5" @input="changeRangeStyle($el)" @change="penSize = $el.value" max="40"
-                min="5" value="5"
-                :style="`--val: ${(($el.value - 5) / ($el.max - 5)) * 100}%; --per: ${(($el.value - 5) / ($el.max - 5))};`">
-              <div id="pen-size-big-label" :style="`background-color: ${color};`"></div>
-            </div>
+        @click="document.event.prevent.default()"id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
+        <div class="drawing-inputs">
+          <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;" value="black"/>
+          <div class="pen-size-range">
+            <div id="pen-size-small-label" :style="`background-color: ${color};`"></div>
+            <input type="range" value="5" @input="changeRangeStyle($el)" @change="penSize = $el.value" max="40" min="5" value="5" :style="`--val: ${(($el.value - 5) / ($el.max - 5)) * 100}%; --per: ${(($el.value - 5) / ($el.max - 5))};`">
+            <div id="pen-size-big-label" :style="`background-color: ${color};`"></div>
           </div>
         </div>
       </template>
