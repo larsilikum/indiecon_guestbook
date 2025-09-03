@@ -204,14 +204,9 @@
       <div>
         
         <canvas  
-        @touchstart="
-        $refs.form.style.overflow = 'hidden'
-        "
-        @touchend="
-        $refs.form.style.overflow = ''
-        "
-
-        @click="document.event.prevent.default()"id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
+        @touchstart=""
+        @touchend=""
+        id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
         <div class="drawing-inputs">
           <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;" value="black"/>
           <div class="pen-size-range">
