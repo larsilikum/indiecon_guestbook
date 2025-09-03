@@ -11,33 +11,108 @@
   <script src="./animateTextarea.js" defer></script>
   <script src="./logoSVG.js" defer></script>
   <script src="//unpkg.com/alpinejs" defer></script> <!-- defer all and keep alpine.js last! -->
-  <link rel="stylesheet" href="einträge.css" />
+  <link rel="stylesheet" href="./einträge.css" />
 </head>
 
 <body x-data>
+  <!-- ======================================= COMPONENTS ==================================================== -->
+  <!-- -------------------------------------- audio player --------------------------------------------------- -->
+  <template x-ref="audioPlayer">
+    <div class="audio-player" x-data="audio(src, id)">
+      <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)"
+        @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
+        <source :src="BaseURL + src">
+      </audio>
+      <div class="controls">
+        <button class="audio-play" @click.prevent="playPauseAudio()">
+          <template x-if="!playState">
+            <img src="./assets/play.svg" alt="">
+          </template>
+          <template x-if="playState">
+            <img src="./assets/pause.svg" alt="">
+          </template>
+        </button>
+        <div class="audio-progress">
+          <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0" x-init="setSeekRef($el)"
+            @input="seekInput($el)" @change="seekChange($el)" :style="`--val: 0%; --per: 0;`">
+          <div class="audio-time">
+            <span class="audio-current" x-text="currentTime"></span> /
+            <span class="audio-duration" x-text="duration"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
 
+  <!-- ------------------------------------------------ branch ------------------------------------------------ -->
+  <template x-ref="br">
+    <div x-data="branch( branchData )" class="branch">
+      <template x-if="branch.length">
+        <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
+          <div class="content">
+            <template x-if="entry.id">
+              <a :id="'@tree%' + entry.author + entry.id" :class="{
+                  'tree-entry': true,
+                  'notFetched': !$store.story.existsInStory(entry.id),
+                  'hovered': $store.ui.hoveredAuthor === entry.id
+                }" @mouseover="
+                  $store.ui.hoveredAuthor = entry.id;
+                  document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+                " @mouseout="$store.ui.hoveredAuthor = null" @click="$store.treeData.switchBranch(entry)" :data-user="entry.author + entry.id"
+                :data-parent="entry.parent_id" :data-entry="entryIndex"
+                :style="`background-color: ${$store.colors.getEntryColor(entry)}`">
+                <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
+                  :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
+              </a>
+            </template>
+            <template x-if="Array.isArray(entry)">
+              <div class="split-branches">
+                <template x-for="b in entry">
+                  <div class="content">
+                    <template x-template-outlet="$refs.br" x-data="{ branchData: b }"></template>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
+        </template>
+      </template>
+    </div>
+  </template>
+
+  <!-- ========================================= LOGO ======================================================== -->
   <a class="logo-container" href="" x-data :class="{ 'open': $store.ui.posted }">
     <img src="./logo/Asset 1.svg" id="logo-form1">
     <img src="./logo/Asset 2.svg" id="logo-form2">
     <img src="./logo/Asset 3.svg" id="logo-form3">
   </a>
 
-  <div class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
+  <!-- ===================================== MAIN CONTENT ==================================================== -->
+  <main class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
+
+    <!-- --------------------------------------------- Story ------------------------------------------------- -->
     <div class="stories open" x-data @click="$store.ui.storyOpen = true" :class="{ 'locked': !$store.ui.posted }">
       <template x-if="$store.story.entries">
-        <div class="test-div">
+        <div class="entry-wrapper">
           <template x-for="entry in $store.story.entries" :key="entry.id">
-            <a  @mouseover="
+              <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <a  @mouseup="
             $store.ui.hoveredAuthor = entry.id;
             document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
           "
           @mouseout="$store.ui.hoveredAuthor = null"
+          @mouseover="
+          $store.ui.hoveredAuthor = entry.id;
+          document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+        "
+       @touchstart="" 
           @click.prevent>
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
                   :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
               </template>
+              <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Image Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
               <template x-if="entry.type === 'image'">
                 <img
                   :class="{ 'entry': true, 'image-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id, 'big': big }"
@@ -45,40 +120,13 @@
                   :style="`background-color: ${$store.colors.getEntryColor(entry)};`" alt="" x-data="{ big: false }"
                   @click="big = !big" />
               </template>
-              <template x-ref="audioPlayer">
-                <div class="audio-player" x-data="audio(src, id)">
-                  <audio preload="metadata" :id="`audio-${id}`" x-init="onLoadedMetadata($el); setAudioRef($el)"
-                    @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
-                    <source :src="BaseURL + src">
-                  </audio>
-                  <div class="controls">
-                    <button class="audio-play" @click.prevent="playPauseAudio()">
-                      <template x-if="!playState">
-                        <img src="./assets/play.svg" alt="">
-                      </template>
-                      <template x-if="playState">
-                        <img src="./assets/pause.svg" alt="">
-                      </template>
-                    </button>
-                    <div class="audio-progress">
-                      <input class="audio-progress-bar" type="range" name="seek-slider" max="100" value="0"
-                        x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)"
-                        :style="`--val: 0%; --per: 0;`">
-                      <div class="audio-time">
-                        <span class="audio-current" x-text="currentTime"></span> /
-                        <span class="audio-duration" x-text="duration"></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
+              <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Sound Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
               <template x-if="entry.type === 'sound'">
                 <span :class="{'entry': true, 'sound-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)};`">
-                  <template x-template-outlet="$refs.audioPlayer" x-data="{ src: entry.content, id: entry.id }">
-
-                  </template>
+                  <template x-template-outlet="$refs.audioPlayer"
+                    x-data="{ src: entry.content, id: entry.id }"></template>
                 </span>
               </template>
             </a>
@@ -87,63 +135,22 @@
       </template>
     </div>
 
-    <!--========================================================= Tree ==============================================================-->
-    <template x-ref="br">
-      <div x-data="branch( branchData )" class="branch">
-        <template x-if="branch.length">
-          <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
-            <div class="content">
-              <template x-if="entry.id">
-                <a   :id="'@tree%' + entry.author + entry.id"
-                :class="{
-                  'tree-entry': true,
-                  'notFetched': !$store.story.existsInStory(entry.id),
-                  'hovered': $store.ui.hoveredAuthor === entry.id
-                }"
-                @mouseover="
-                  $store.ui.hoveredAuthor = entry.id;
-                  document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-                "
-                @mouseout="$store.ui.hoveredAuthor = null"
-                @click.prevent
-                  :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
-                  :style="`background-color: ${$store.colors.getEntryColor(entry)}`">
-                  <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
-                    :class="{'hovered': $store.ui.hoveredAuthor === entry.id}" x-text="entry.author"></span>
-                </a>
-              </template>
-              <template x-if="Array.isArray(entry)">
-                <div class="split-branches">
-                  <template x-for="b in entry">
-                    <div class="content">
-                      <template x-template-outlet="$refs.br" x-data="{ branchData: b }"></template>
-                    </div>
-                  </template>
-                </div>
-              </template>
-            </div>
-      </div>
-    </template>
-    </template>
-
-  </div>
-  </template>
-
-  <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
-    <div id="treeZoom"><span id="treeMinus">-</span><img src="/public/logo/Asset 2.svg" id="slider"><span  id="treePlus">+</span></div>
-    <template x-if="!$store.ui.posted && $store.story.entries.length">
-      <div>
-        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>
-      </div>
-    </template>
-    <template x-if="$store.ui.posted && $store.treeData.tree.length">
-      <div>
-        <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
-      </div>
-    </template>
-  </div>
-</div>
-
+    <!-- --------------------------------------------------- Tree --------------------------------------------------- -->
+    <div class="tree open" x-data="{}" :class="{ locked: !$store.ui.posted, open: $store.ui.posted }">
+      <div id="treeZoom"><span id="treeMinus">-</span><img src="./logo/Asset 2.svg" id="slider"><span
+          id="treePlus">+</span></div>
+      <template x-if="!$store.ui.posted && $store.story.entries.length">
+        <div>
+          <template x-template-outlet="$refs.br" x-data="{ branchData: $store.story.entries }"></template>
+        </div>
+      </template>
+      <template x-if="$store.ui.posted && $store.treeData.tree.length">
+        <div>
+          <template x-template-outlet="$refs.br" x-data="{ branchData: $store.treeData.tree }"></template>
+        </div>
+      </template>
+    </div>
+  </main>
 
 <!--========================================================= Upload Form ==============================================================-->
 <form x-ref="form" 
@@ -196,7 +203,15 @@
     <template x-if="selectedType === 'sketch'">
       <div>
         
-        <canvas id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
+        <canvas  
+        @touchstart="
+        $refs.form.style.overflow = 'hidden'
+        "
+        @touchend="
+        $refs.form.style.overflow = ''
+        "
+
+        @click="document.event.prevent.default()"id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
         <div class="drawing-inputs">
           <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;" value="black"/>
           <div class="pen-size-range">
@@ -205,77 +220,73 @@
             <div id="pen-size-big-label" :style="`background-color: ${color};`"></div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
 
-  
-    <!-- image -->
-    <template x-if="selectedType === 'image'">
-      <div>
-    
-        <div class="custom-upload" >
-          <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp"
-            x-ref="imageFile" hidden
-            @change="
+
+      <!-- image -->
+      <template x-if="selectedType === 'image'">
+        <div>
+
+          <div class="custom-upload">
+            <input type="file" name="image" class="file-input" accept="image/jpeg,image/png,image/gif,image/webp"
+              x-ref="imageFile" hidden @change="
               let file = $event.target.files[0]; 
               if(file) {
                 imagePreview = URL.createObjectURL(file);
                 imageName = file.name;
               }
-            " 
-          />
-          <button x-show="!imagePreview" type="button" @click="$refs.imageFile.click()">+ Bild hinzuzufügen</button>
-        </div>
-
-        <!-- preview -->
-        <template x-if="imagePreview">
-          <div class="image-upload-preview">
-            <button class="clearPreview" type="button" @click="imagePreview = ''; $refs.imageFile.value = null" x-show="imagePreview">- Bild entfernen</button>
-          <img :src="imagePreview" alt="Preview"/>
-
+            " />
+            <button x-show="!imagePreview" type="button" @click="$refs.imageFile.click()">+ Bild hinzuzufügen</button>
           </div>
-        </template>
-      </div>
-    </template>
 
-<!-- sound -->
-<template x-if="selectedType === 'sound'">
-  <div>
+          <!-- preview -->
+          <template x-if="imagePreview">
+            <div class="image-upload-preview">
+              <button class="clearPreview" type="button" @click="imagePreview = ''; $refs.imageFile.value = null"
+                x-show="imagePreview">- Bild entfernen</button>
+              <img :src="imagePreview" alt="Preview" />
 
-    <!-- Upload button, only visible if no file selected -->
-    <div class="custom-upload" x-show="!soundPreview">
-      <input type="file" name="sound" class="file-input"  
-             accept="audio/*"
-             x-ref="soundFile" hidden
-             @change="
+            </div>
+          </template>
+        </div>
+      </template>
+
+      <!-- sound -->
+      <template x-if="selectedType === 'sound'">
+        <div>
+
+          <!-- Upload button, only visible if no file selected -->
+          <div class="custom-upload" x-show="!soundPreview">
+            <input type="file" name="sound" class="file-input" accept="audio/*" x-ref="soundFile" hidden @change="
                let file = $event.target.files[0]; 
                if(file) {
                  soundPreview = URL.createObjectURL(file);
                  soundName = file.name;
                }
              " />
-      <button type="button" @click="$refs.soundFile.click()">+ Audio hinzuzufügen</button>
-    </div>
+            <button type="button" @click="$refs.soundFile.click()">+ Audio hinzuzufügen</button>
+          </div>
 
-    <!-- preview -->
-    <template x-if="soundPreview">
-      <div class="audio-upload-preview">
-        <button type="button" class="clearPreview" @click="soundPreview = ''; $refs.soundFile.value = null">- Audio entfernen</button>
+          <!-- preview -->
+          <template x-if="soundPreview">
+            <div class="audio-upload-preview">
+              <button type="button" class="clearPreview" @click="soundPreview = ''; $refs.soundFile.value = null">-
+                Audio entfernen</button>
 
-        <!-- Custom audio player -->
-        <div class="audio-preview" x-data="audio(soundPreview, 'preview')">
-          <audio preload="metadata" :id="`audio-preview`" x-init="onLoadedMetadata($el); setAudioRef($el)"
-                 @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
-            <source :src="soundPreview">
-          </audio>
-            <button class="audio-upload-play" @click.prevent="playPauseAudio()">
-              <template x-if="!playState">
-                <img src="./assets/play.svg" alt="Play">
-              </template>
-              <template x-if="playState">
-                <img src="./assets/pause.svg" alt="Pause">
-              </template>
-          <!--     <div class="audio-progress">
+              <!-- Custom audio player -->
+              <div class="audio-preview" x-data="audio(soundPreview, 'preview')">
+                <audio preload="metadata" :id="`audio-preview`" x-init="onLoadedMetadata($el); setAudioRef($el)"
+                  @loadedmetadata="onLoadedMetadata($el)" @timeupdate="onTimeUpdate">
+                  <source :src="soundPreview">
+                </audio>
+                <button class="audio-upload-play" @click.prevent="playPauseAudio()">
+                  <template x-if="!playState">
+                    <img src="./assets/play.svg" alt="Play">
+                  </template>
+                  <template x-if="playState">
+                    <img src="./assets/pause.svg" alt="Pause">
+                  </template>
+                  <!--     <div class="audio-progress">
                 <input class="audio-progress-bar" type="range" max="100" value="0"
                        x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)"
                        :style="`--val: 0%; --per: 0;`">
@@ -283,24 +294,24 @@
                   <span class="audio-current" x-text="currentTime"></span> /
                   <span class="audio-duration" x-text="duration"></span>
                 </div> -->
-            </button>
-          </div>
-        </div>
+                </button>
+              </div>
+            </div>
 
-      </div>
+        </div>
+      </template>
+
+    </div>
     </template>
 
-  </div>
-</template>
 
+    </div>
 
-  </div>
-
-  <button type="submit" class="publish" x-bind:disabled="isSubmitting">
-    <span x-show="!isSubmitting">Veröffentlichen</span>
-    <span x-show="isSubmitting">lädt hoch...</span>
-  </button>
-</form>
+    <button type="submit" class="publish" x-bind:disabled="isSubmitting">
+      <span x-show="!isSubmitting">Veröffentlichen</span>
+      <span x-show="isSubmitting">lädt hoch...</span>
+    </button>
+  </form>
   <div x-data="{open: false}">
     <!-- Help Button ? -->
     <div class="help-icon" @click="open = !open" x-text="open ? '×' : '?'"></div>
@@ -336,49 +347,6 @@
       </div>
     </div>
   </div>
-
-
-
-  <!-- <div class="flexbox-container">
-
-    <div class="storys"></div>
-
-
-    <div class="tree"></div>
-
-    <div class="main">
-
-      <div class="wahlfeld">
-        <label>Wie möchtest du die Geschichte fortsetzen?</label>
-
-        <div class="wahl-buttons">
-          <button data-type="text">Text</button>
-          <button data-type="image">Foto</button>
-          <button data-type="sketch">Skizze</button>
-          <button data-type="audio">Audio</button>
-        </div>
-      </div>
-
-      <input type="text" class="input-name" placeholder="Dein Name">
-
-      <textarea class="textfeld" placeholder="Führe die Geschichte fort..."></textarea>
-
-      <input type="file" class="input-foto" accept="image/*">
-      <div class="image-preview"></div>
-
-      <canvas class="skizze-canvas"></canvas>
-
-      <div class="audio-recorder">
-        <button class="start-audio">Start Aufnahme</button>
-        <button class="stop-audio" disabled>Stop</button>
-        <audio controls class="audio-preview"></audio>
-      </div>
-
-
-      <button class="publish">Publish</button>
-
-    </div>
-  </div> -->
 </body>
 
 </html>

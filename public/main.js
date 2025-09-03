@@ -242,6 +242,12 @@ document.addEventListener("alpine:init", () => {
       Alpine.store("story").switchBranch(
         this.searchEntryInTree(this.tree, entry)
       );
+      Alpine.nextTick(() => {
+        console.log(document.getElementById(entry.author + entry.id))
+        document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' })
+        // setTimeout(() => {
+        // }, 100)
+      })
     },
 
     searchEntryInTree(branch, entry) {
