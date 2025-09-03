@@ -1,11 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #7f7f7f;
-  height: 100%;
-  font-family: "a";
-}
-
 @font-face {
   font-family: "a";
   src: url("./fonts/HealTheWebA-Regular.otf");
@@ -18,20 +10,19 @@ body {
 
 @font-face {
   font-family: "AuthenticSans";
-  src: url("/public/fonts/AUTHENTICSans-90.woff"),
-    url("/public/fonts/AUTHENTICSans-90.woff2");
+  src: url("./fonts/AUTHENTICSans-90.woff"),
+    url("./fonts/AUTHENTICSans-90.woff2");
 }
 
-.flexbox-container {
-  display: flex;
-  width: 85vw;
-  height: 100vh;
-  overflow: hidden;
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #7f7f7f;
+  height: 100%;
+  font-family: "a";
 }
 
-.flexbox-container.open {
-  width: calc(100% - 4rem);
-}
+/* ======================================= LOGO ========================================== */
 
 .logo-container {
   display: flex;
@@ -88,6 +79,20 @@ body {
 .logo-container:hover #logo-form3 {
   margin-left: -3.5%;
 }
+
+/* ================================== MAIN CONTENT ===================================== */
+
+.flexbox-container {
+  display: flex;
+  width: 85vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.flexbox-container.open {
+  width: calc(100% - 4rem);
+}
+
 
 .stories {
   width: 100%;
@@ -985,32 +990,6 @@ input[type="color"]::-moz-color-swatch {
 #close {
   display: none;
 }
-
-/* .drawing-inputs {
-  display: flex;
-  flex-direction: row;
-  gap: 0;
-  height: 4rem !important;
-}
-
-#content-input .drawing-inputs > * {
-  width: 100%;
-  height: 100%;
-  border: 0.1rem solid black !important;
-  border-radius: 0;
-}
-
-#content-input .drawing-inputs > *:first-child {
-  border-radius: 1rem 0 0 1rem;
-}
-
-#content-input .drawing-inputs > *:last-child {
-  border-radius: 0 1rem 1rem 0;
-}
-
-.size-picker.active, .size-picker:hover {
-  background-color: #b78ed2 !important;
-} */
 
 @media (max-width: 768px) {
   .logo-container {
