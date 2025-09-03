@@ -157,7 +157,7 @@
       x-on:submit.prevent="submitEntry"
       @click="$store.story.handleFormClick()">
 
-  <button id="add" @click="mobileOpen = !mobileOpen">+</button>
+  <button id="add" @click="mobileOpen = true">+</button>
   <a id="close" @click="mobileOpen = !mobileOpen">✕</a>
   <p id="formIntro">Führe die Geschichte fort:</p><br>
   <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
