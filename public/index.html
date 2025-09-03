@@ -153,7 +153,7 @@
       @click="$store.story.handleFormClick()">
 
   <button id="add" @click="mobileOpen = !mobileOpen">+</button>
-  <a id="close" @click="mobileOpen = !mobileOpen">-</a>
+  <a id="close" @click="mobileOpen = !mobileOpen">✕</a>
   <p id="formIntro">Führe die Geschichte fort:</p><br>
   <input type="text" name="author" id="author-input" class="input-name" placeholder="Name" required />
 
@@ -161,7 +161,7 @@
   <div id="radio-group">
     <button type="button" @click="selectedType = 'text'" :class="selectedType === 'text' ? 'active' : ''">Text</button>
     <button type="button" @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">Foto</button>
-    <button type="button" @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">Zeichen</button>
+    <button type="button" @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">Zeichnen</button>
     <button type="button" @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">Audio</button>
   </div>
 
@@ -175,7 +175,7 @@
           name="content" 
           id="body-input" 
           cols="40" 
-          rows="7" 
+          rows="8" 
           class="textfeld"
           placeholder="Füge hier deinen Text-Beitrag hinzu..." 
           x-model="text"
@@ -196,7 +196,7 @@
     <template x-if="selectedType === 'sketch'">
       <div>
         
-        <canvas id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown="drawing = true" @pointerup="cancelDraw()" @pointercancel="cancelDraw()" @pointermove="drawCanvas($event)"></canvas>
+        <canvas id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
         <div class="drawing-inputs">
           <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;" value="black"/>
           <div class="pen-size-range">

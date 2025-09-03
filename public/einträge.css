@@ -168,6 +168,7 @@ form.open {
 
 form * {
   opacity: 0;
+  color: black;
   overflow: hidden;
   cursor: pointer;
 }
@@ -210,6 +211,7 @@ form.open #add {
   width: 100%;
   height: 100%;
   background-color: white;
+  color: black;
   padding: 1rem;
   border: none;
   display: flex;
@@ -380,15 +382,22 @@ form.open #add {
 }
 
 .locked .entry {
-  pointer-events: none;
   opacity: 0.4;
   filter: blur(15px);
   transition: filter 0.3s, opacity 0.3s;
 }
 
+.locked * {
+  pointer-events: none;
+}
+
 .locked a:nth-last-child(1) .entry {
   filter: blur(0);
   opacity: 1;
+}
+
+.locked a:nth-last-child(1) .sound-part * {
+  pointer-events: all;
 }
 
 .locked a:nth-last-child(2) .entry {
@@ -435,7 +444,6 @@ form.open #add {
   border-left: 0.2rem dashed rgb(255, 255, 255);
   color: rgb(255, 255, 255);
   justify-content: start;
-  transition: 0.2s ease;
   scroll-snap-align: end;
 }
 
@@ -491,7 +499,6 @@ form.open #add {
   color: rgb(0, 0, 0);
   font-size: 0rem;
   position: relative;
-  transition: font-size 0.3s ease;
   transform: translateX(-0.9rem);
 }
 
@@ -604,7 +611,7 @@ form.open #add {
   position: absolute;
   bottom: 0rem;
   right: 1rem;
-  font-size: 1.2vw;
+  font-size: 1.2rem;
 }
 
 .word-counter {
@@ -1030,16 +1037,21 @@ input[type="color"]::-moz-color-swatch {
   .flexbox-container {
     display: flex;
     flex-direction: row;
-    overflow-x: auto;
+    overflow-x: hidden;
     width: 100vw !important;
+    height: calc(100vh - 6rem);
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
   }
 
+  .flexbox-container.open {
+    overflow-x: auto;
+  }
+
   .stories,
   .tree {
-    width: 95vw !important;
-    min-width: 95vw;
+    width: 92vw !important;
+    min-width: 92vw;
     flex-shrink: 0;
     scroll-snap-align: start;
     display: block;
@@ -1053,6 +1065,8 @@ input[type="color"]::-moz-color-swatch {
 
   form {
     width: 100vw;
+    padding-top: 0rem !important;
+    height: auto;
     transform: translateX(0) translateY(calc(100% - 6rem));
     transition: 0s;
   }
@@ -1061,17 +1075,20 @@ input[type="color"]::-moz-color-swatch {
     width: 96vw;
     padding: 2vw;
     transform: translateX(0) translateY(0) !important;
-    top: 30vh !important;
+    top: 15vw !important;
   }
 
   form.open {
-    transform: translateX(0) translateY(calc(100% - 6rem));
+    transform: translateX(0) translateY(calc(100% - 23vw));
   }
 
   form.open *:not(#add) {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s;
+  }
+
+  .input-name {
   }
 
   form.mobile-open *:not(#add) {
@@ -1084,12 +1101,12 @@ input[type="color"]::-moz-color-swatch {
     display: block;
   }
 
-  form .mobile-open #add {
-    display: none;
+  .mobile-open #add {
+    display: none !important;
   }
 
   form:not(.open):hover {
-    transform: translateX(0) translateY(calc(100% - 6rem));
+    transform: translateX(0) translateY(calc(100% - 5rem));
   }
 
   #add {
@@ -1112,8 +1129,16 @@ input[type="color"]::-moz-color-swatch {
   }
 
   #close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0.7rem;
+    text-align: right;
+    font-size: 1.4rem;
+    z-index: 1000;
     display: block;
     color: white;
+    cursor: pointer;
   }
 
   #add:after {
@@ -1121,9 +1146,43 @@ input[type="color"]::-moz-color-swatch {
   }
 
   .help-icon {
-    font-size: 7vw;
-    padding: 1.5vw !important;
+    font-size: 8vw;
+    padding: 2vw !important;
     width: auto;
     height: auto;
+  }
+
+  #radio-group button {
+    font-size: 4vw;
+    border: 0.06vw solid black;
+  }
+
+  #content-input button {
+    font-size: 5vw;
+  }
+
+  .textfeld {
+    font-size: 1.4rem !important;
+  }
+
+  .text-sm {
+    font-size: 1rem;
+  }
+
+  .input-name {
+    font-size: 2.6rem;
+    border-radius: 0.5rem;
+  }
+
+  .publish {
+    font-size: 7vw;
+    color: black;
+  }
+
+  .entry,
+  .tree-entry,
+  .hovered .fullname {
+    font-size: 1.8rem;
+    color: black;
   }
 }
