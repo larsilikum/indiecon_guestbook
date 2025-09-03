@@ -52,15 +52,20 @@ document.addEventListener("alpine:init", () => {
       await this.fetch();
     },
     async fetch() {
-      await fetch(`${ApiURL}post`)
-        .then((r) => r.json())
-        .then((d) => {
-          this.entries = d.data;
-          Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
-          this.entries.forEach((entry) => {
-            Alpine.store("colors").setEntryColor(entry);
+      try {
+        await fetch(`${ApiURL}post`)
+          .then((r) => r.json())
+          .then((d) => {
+            this.entries = d.data;
+            Alpine.store("currentEntry").setEntry(d.data[d.data.length - 1]);
+            this.entries.forEach((entry) => {
+              Alpine.store("colors").setEntryColor(entry);
+            });
           });
-        });
+      }
+      catch(e) {
+        console.error(e)
+      }
     },
     existsInStory(id) {
       return this.entries.findIndex((el) => el.id === id) >= 0;
