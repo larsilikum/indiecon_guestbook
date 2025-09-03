@@ -451,6 +451,7 @@ form.open #add {
 .tree-entry {
   position: relative;
   z-index: 5;
+  transition: .2s ease;
 }
 
 .tree-entry.notFetched {
