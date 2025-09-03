@@ -93,7 +93,6 @@ body {
   width: calc(100% - 4rem);
 }
 
-
 .stories {
   width: 100%;
   padding: 2%;
@@ -995,10 +994,11 @@ input[type="color"]::-moz-color-swatch {
 @media (max-width: 768px) {
   .logo-container {
     padding: 2%;
+    margin-top: 1%;
   }
 
   .logo-container img {
-    height: 8.7vw;
+    height: 9vw;
     padding-right: 1.3vw;
   }
 
@@ -1010,32 +1010,53 @@ input[type="color"]::-moz-color-swatch {
     height: 1.9vw;
   }
 
+  .logo-container.open #logo-form3 {
+    margin-left: 21.5%;
+  }
+
+  .logo-container:hover #logo-form3 {
+    margin-left: -3.5%;
+  }
+
   .flexbox-container {
     display: flex;
     flex-direction: row;
     overflow-x: hidden;
     height: calc(100dvh - 6rem);
-    width: 100vw !important;
+    width: auto !important;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    scroll-padding-left: 0vw;
   }
 
   .flexbox-container.open {
     overflow-x: auto;
   }
 
-  .stories,
-  .tree {
-    width: 90vw;
-    min-width: 90vw;
+  .stories {
+    width: 85vw;
+    min-width: 85vw;
     flex-shrink: 0;
-    scroll-snap-align: start;
+    scroll-padding-left: 15vw;
     display: block;
+    scroll-snap-align: start;
+  }
+
+  .tree {
+    max-width: 90vw;
+    flex-shrink: 0;
+    scroll-padding-right: 15vw;
+    display: block;
+    scroll-snap-align: end;
+  }
+
+  .stories {
+    padding-top: 16vw;
   }
 
   .tree.locked {
-    width: 5vw !important;
-    min-width: 5vw;
+    width: 10vw !important;
+    min-width: 10vw;
   }
 
   /* Optional: hide vertical scrollbars */
@@ -1088,7 +1109,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   form:not(.open):hover {
-    transform: translateX(0) translateY(calc(100% - 2rem));
+    transform: translateX(0) translateY(calc(100% - 6rem));
   }
 
   #add {
@@ -1097,7 +1118,7 @@ input[type="color"]::-moz-color-swatch {
     height: auto !important;
     top: 0% !important;
     padding-top: 1rem;
-    font-size: 6vw !important;
+    font-size: 6.5vw !important;
     font-family: "AUTHENTICSANS", sans-serif !important;
     transform: translateX(-50%) !important;
   }
@@ -1136,10 +1157,12 @@ input[type="color"]::-moz-color-swatch {
 
   #radio-group button {
     font-size: 4vw;
+    padding: 0.7rem;
     border: 0.06vw solid black;
   }
 
   #content-input button {
+    padding: 0.7rem;
     font-size: 5vw;
   }
 
@@ -1152,12 +1175,18 @@ input[type="color"]::-moz-color-swatch {
   }
 
   .input-name {
-    font-size: 2.4rem;
+    font-size: 2rem;
+    width: 66%;
     border-radius: 0.5rem;
   }
 
+  .textfeld,
+  .canvas {
+    border-radius: 0.5rem !important;
+  }
+
   .publish {
-    font-size: 7vw;
+    font-size: 6.3vw;
     color: black;
   }
 
@@ -1169,6 +1198,33 @@ input[type="color"]::-moz-color-swatch {
   }
 
   .audio-player {
+    font-size: 1.2rem;
+  }
+
+  .tree-entry {
+    width: 2.5rem;
+    padding: 0.7rem;
+  }
+
+  #treeZoom {
+    display: none;
+  }
+
+  #help {
+    width: 100%;
+  }
+  #help-container {
+    left: 0;
+    padding: 1rem;
+    padding-top: 13vw;
+  }
+
+  #help *:not(#credits, * :first-child) {
+    font-size: 1.2rem;
+    line-height: 130%;
+  }
+
+  #help * :first-child {
     font-size: 1.4rem;
   }
 }
