@@ -58,7 +58,7 @@
                 }" @mouseover="
                   $store.ui.hoveredAuthor = entry.id;
                   document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-                " @mouseout="$store.ui.hoveredAuthor = null" @click.prevent :data-user="entry.author + entry.id"
+                " @mouseout="$store.ui.hoveredAuthor = null" @click.prevent="$store.treeData.switchBranch(entry)" :data-user="entry.author + entry.id"
                 :data-parent="entry.parent_id" :data-entry="entryIndex"
                 :style="`background-color: ${$store.colors.getEntryColor(entry)}`">
                 <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
