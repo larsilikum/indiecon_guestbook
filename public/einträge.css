@@ -388,7 +388,7 @@ form.open #add {
 }
 
 .locked * {
-  pointer-events: none;
+  pointer-events: none !important;
 }
 
 .locked a:nth-last-child(1) .entry {
@@ -1075,7 +1075,7 @@ input[type="color"]::-moz-color-swatch {
     width: 96vw;
     padding: 2vw;
     transform: translateX(0) translateY(0) !important;
-    top: 15vw !important;
+    top: 14vw !important;
   }
 
   form.open {
@@ -1106,7 +1106,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   form:not(.open):hover {
-    transform: translateX(0) translateY(calc(100% - 5rem));
+    transform: translateX(0) translateY(calc(100% - 7rem));
   }
 
   #add {

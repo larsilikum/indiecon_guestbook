@@ -27,7 +27,7 @@
       <template x-if="$store.story.entries">
         <div class="test-div">
           <template x-for="entry in $store.story.entries" :key="entry.id">
-            <a  @mouseover="
+            <a  @mouseup="
             $store.ui.hoveredAuthor = entry.id;
             document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
           "
@@ -196,7 +196,15 @@
     <template x-if="selectedType === 'sketch'">
       <div>
         
-        <canvas id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
+        <canvas  
+        @touchstart="
+        $refs.form.style.overflow = 'hidden'
+        "
+        @touchend="
+        $refs.form.style.overflow = ''
+        "
+
+        @click="document.event.prevent.default()"id="drawing-canvas" width="auto" height="auto" x-init="initCanvas" x-ref="canvas" @pointerdown.prevent="drawing = true" @pointerup.prevent="cancelDraw()" @pointercancel.prevent="cancelDraw()" @pointermove.prevent="drawCanvas($event)"></canvas>
         <div class="drawing-inputs">
           <input type="color" name="color" @change="color = $el.value; $el.style.backgroundColor = $el.value;" value="black"/>
           <div class="pen-size-range">
