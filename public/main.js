@@ -1,5 +1,5 @@
-// const BaseURL = "https://staging.co-o-pub.space";
-const BaseURL = ""
+const BaseURL = "https://staging.co-o-pub.space";
+// const BaseURL = ""
 
 const ApiURL = BaseURL + "/api/";
 
@@ -277,6 +277,7 @@ document.addEventListener("alpine:init", () => {
 
   Alpine.data("useForm", () => ({
     selectedType: "text",
+    mobileOpen: false,
     isSubmitting: false,
     imageFile: "",
     imagePreview: false,
@@ -382,6 +383,7 @@ document.addEventListener("alpine:init", () => {
         alert("Network error: " + error.message);
       } finally {
         this.isSubmitting = false;
+        this.mobileOpen = false
       }
     },
 

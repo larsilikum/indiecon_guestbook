@@ -96,21 +96,19 @@
         <div class="entry-wrapper">
           <template x-for="entry in $store.story.entries" :key="entry.id">
               <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-            <a  @mouseup="
-            $store.ui.hoveredAuthor = entry.id;
-            document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-          "
+            <a
           @mouseout="$store.ui.hoveredAuthor = null"
           @mouseover="
           $store.ui.hoveredAuthor = entry.id;
           document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
         "
-       @touchstart="" 
           @click.prevent>
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
-                  :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"></span>
+                  :style="`color: ${$store.colors.getEntryColor(entry)};`" x-text="entry.content + ' '"
+                  @mouseup="document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })">
+                </span>
               </template>
               <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Image Entry ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
               <template x-if="entry.type === 'image'">
@@ -154,7 +152,7 @@
 
 <!--========================================================= Upload Form ==============================================================-->
 <form x-ref="form" 
-      x-data="() => ({ ...useForm(), mobileOpen: false })"
+      x-data="useForm"
       :class="{ 'open': !$store.ui.posted, 'mobile-open': mobileOpen }" 
       x-on:submit.prevent="submitEntry"
       @click="$store.story.handleFormClick()">
