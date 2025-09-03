@@ -1,4 +1,4 @@
-const BaseURL = "https://staging.co-o-pub.space";
+const BaseURL = "https://co-o-pub.space";
 // const BaseURL = ""
 
 const ApiURL = BaseURL + "/api/";
