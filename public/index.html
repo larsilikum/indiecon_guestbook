@@ -32,6 +32,11 @@
             document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
           "
           @mouseout="$store.ui.hoveredAuthor = null"
+          @mouseover="
+          $store.ui.hoveredAuthor = entry.id;
+          document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+        "
+       @touchstart="envent." 
           @click.prevent>
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"

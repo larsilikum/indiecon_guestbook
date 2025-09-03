@@ -387,10 +387,6 @@ form.open #add {
   transition: filter 0.3s, opacity 0.3s;
 }
 
-.locked * {
-  pointer-events: none !important;
-}
-
 .locked a:nth-last-child(1) .entry {
   filter: blur(0);
   opacity: 1;
@@ -1038,8 +1034,8 @@ input[type="color"]::-moz-color-swatch {
     display: flex;
     flex-direction: row;
     overflow-x: hidden;
-    width: 100vw !important;
     height: calc(100vh - 6rem);
+    width: 100vw !important;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
   }
@@ -1050,11 +1046,16 @@ input[type="color"]::-moz-color-swatch {
 
   .stories,
   .tree {
-    width: 92vw !important;
-    min-width: 92vw;
+    width: 90vw;
+    min-width: 90vw;
     flex-shrink: 0;
     scroll-snap-align: start;
     display: block;
+  }
+
+  .tree.locked {
+    width: 5vw !important;
+    min-width: 5vw;
   }
 
   /* Optional: hide vertical scrollbars */
@@ -1065,6 +1066,7 @@ input[type="color"]::-moz-color-swatch {
 
   form {
     width: 100vw;
+    bottom: 0;
     padding-top: 0rem !important;
     height: auto;
     transform: translateX(0) translateY(calc(100% - 6rem));
@@ -1079,7 +1081,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   form.open {
-    transform: translateX(0) translateY(calc(100% - 23vw));
+    transform: translateX(0) translateY(calc(100% - 6rem));
   }
 
   form.open *:not(#add) {
@@ -1106,7 +1108,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   form:not(.open):hover {
-    transform: translateX(0) translateY(calc(100% - 7rem));
+    transform: translateX(0) translateY(calc(100% - 2rem));
   }
 
   #add {
@@ -1115,7 +1117,7 @@ input[type="color"]::-moz-color-swatch {
     height: auto !important;
     top: 0% !important;
     padding-top: 1rem;
-    font-size: 7vw !important;
+    font-size: 6vw !important;
     font-family: "AUTHENTICSANS", sans-serif !important;
     transform: translateX(-50%) !important;
   }
@@ -1142,7 +1144,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   #add:after {
-    content: " Führe die Geschite fort";
+    content: " Führe die Geschichte fort";
   }
 
   .help-icon {
@@ -1162,7 +1164,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   .textfeld {
-    font-size: 1.4rem !important;
+    font-size: 1.3rem !important;
   }
 
   .text-sm {
@@ -1170,7 +1172,7 @@ input[type="color"]::-moz-color-swatch {
   }
 
   .input-name {
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     border-radius: 0.5rem;
   }
 
@@ -1182,7 +1184,11 @@ input[type="color"]::-moz-color-swatch {
   .entry,
   .tree-entry,
   .hovered .fullname {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     color: black;
+  }
+
+  .audio-player {
+    font-size: 1.4rem;
   }
 }
