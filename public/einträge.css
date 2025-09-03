@@ -226,7 +226,7 @@ form.open #add {
 }
 
 #radio-group button:last-child {
-  border-radius: 0vw 1vw 1vw 0vw;
+  border-radius: 0vw 1rem 1rem 0vw;
 }
 
 #radio-group button.active,
@@ -290,8 +290,6 @@ form.open #add {
   pointer-events: all;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-snap-type: y mandatory;
-  scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
 }
 
@@ -314,6 +312,7 @@ form.open #add {
 
 .tree.locked * {
   pointer-events: none;
+  width: 100%;
 }
 
 .tree-entry.notFetched {
@@ -417,7 +416,7 @@ form.open #add {
 .tree-entry:not(.notFetched):hover,
 .tree-entry:not(.notFetched).hovered {
   border-radius: 0;
-  padding: 0rem;
+  padding: 0rem !important;
   border: none;
   color: black;
 }
@@ -433,7 +432,7 @@ form.open #add {
   margin-left: 2rem;
   text-decoration: none;
   border-radius: 0rem 1rem 1rem 0rem;
-  border-left: 0.2vw dashed rgb(255, 255, 255);
+  border-left: 0.2rem dashed rgb(255, 255, 255);
   color: rgb(255, 255, 255);
   justify-content: start;
   transition: 0.2s ease;
@@ -474,9 +473,18 @@ form.open #add {
   width: 2rem;
 }
 
+.tree.small .fullname {
+  transform: translateX(-0.5rem);
+}
+
 .tree.big .tree-entry {
   padding: 1.6rem;
   width: 8rem;
+}
+
+.tree.big .fullname {
+  transform: translateX(-1.8rem);
+  border-left: 0.2rem dashed rgb(255, 255, 255) !important;
 }
 
 .fullname {
@@ -484,7 +492,7 @@ form.open #add {
   font-size: 0rem;
   position: relative;
   transition: font-size 0.3s ease;
-  transform: translateX(-1rem);
+  transform: translateX(-0.9rem);
 }
 
 .notFetched .fullname {
@@ -498,9 +506,9 @@ form.open #add {
 .fullname.hovered {
   text-align: left;
   padding: 0.5rem;
-  font-size: 2.8rem;
+  font-size: 2.7rem;
   box-shadow: none;
-  border-left: 0.2vw dashed rgb(255, 255, 255);
+  border-left: 0.2rem dashed rgb(255, 255, 255);
 }
 
 .split-branches {
@@ -509,7 +517,7 @@ form.open #add {
   justify-content: center;
   width: auto;
   scroll-snap-align: end;
-  border-top: 0.2vw dashed rgb(255, 255, 255);
+  border-top: 0.2rem dashed rgb(255, 255, 255);
 }
 
 .branch {
@@ -619,11 +627,6 @@ form.open #add {
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
 }
 
-.audio-preview {
-  margin-top: 1em;
-  border-radius: 20px;
-}
-
 .input-foto,
 .skizze-canvas,
 .audio-recorder {
@@ -635,13 +638,14 @@ form.open #add {
   font-size: 2.8rem;
   width: auto;
   border-radius: 1rem;
+  margin-top: 1.5rem;
   line-height: 200%;
   width: calc((100% - 64px) - 2rem);
   border: 0.2rem solid black;
   background-color: white;
   cursor: pointer !important;
-  position: absolute;
-  bottom: .7rem;
+  bottom: 0.7rem;
+  position: relative;
 }
 
 .publish:hover {
@@ -830,12 +834,22 @@ input[type="range"] {
   padding: 0;
 }
 
-.audio-upload-play .audio-progress {
-  width: 100% !important;
+.audio-preview {
+  margin-top: 0.5em;
+  border-radius: 20px;
 }
 
-.audio-upload-play .audio-progress-bar {
-  width: 90% !important;
+.audio-upload-play {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  width: 100%;
+  background-color: #b78ed2 !important;
+}
+
+.audio-upload-play .audio-progress {
+  width: 100% !important;
+  height: auto;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -928,13 +942,13 @@ canvas {
   align-items: center;
   padding: 1rem;
   border-radius: 1rem;
-  margin-top: .6rem;
+  margin-top: 0rem;
 }
 
 input[type="color"] {
   -webkit-appearance: none;
   background-color: black;
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   border: 1px solid black;
   cursor: pointer;
 }
@@ -951,17 +965,18 @@ input[type="color"]::-moz-color-swatch {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  height: 1rem;
   align-items: center;
 }
 
-#pen-size-small-label{
+#pen-size-small-label {
   width: 5px;
   height: 5px;
-} 
+}
 
 #pen-size-big-label {
   width: 40px;
-  height: 40px
+  height: 40px;
 }
 
 /* .drawing-inputs {
@@ -990,7 +1005,7 @@ input[type="color"]::-moz-color-swatch {
   background-color: #b78ed2 !important;
 } */
 
-@media (max-width: 1080px) {
+@media (max-width: 768px) {
   .logo-container {
     padding: 2%;
   }
@@ -1008,16 +1023,41 @@ input[type="color"]::-moz-color-swatch {
     height: 1.9vw;
   }
 
-  .flexbox-container,
-  .flexbox-container.open {
-    width: 100vw;
+  .flexbox-container {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100vw !important;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
+  }
+
+  .stories,
+  .tree {
+    width: 95vw !important;
+    min-width: 95vw;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    display: block;
+  }
+
+  /* Optional: hide vertical scrollbars */
+  .stories::-webkit-scrollbar,
+  .tree::-webkit-scrollbar {
+    display: none;
   }
 
   form {
     width: 100vw;
-    transform: translateX(0) translateY(calc(100% - 4rem));
+    transform: translateX(0) translateY(calc(100% - 6rem));
   }
+
+  form.open {
+    width: 96vw;
+    padding: 2vw;
+    transform: translateX(0) translateY(calc(0));
+  }
+
   form:not(.open):hover {
     transform: translateX(0) translateY(calc(100% - 6rem));
   }
@@ -1026,7 +1066,34 @@ input[type="color"]::-moz-color-swatch {
     transform: translateX(0) translateY(0);
     top: 30vh;
   }
-  .stories.locked {
-    height: 20vh;
+
+  #add {
+    left: 47vw !important;
+    width: 100% !important;
+    height: auto !important;
+    top: 0% !important;
+    padding-top: 1rem;
+    font-size: 7vw !important;
+    font-family: "AUTHENTICSANS", sans-serif !important;
+    transform: translateX(-50%) !important;
+  }
+
+  #formIntro {
+    display: none;
+  }
+
+  #help {
+    font-size: 1rem !important;
+  }
+
+  #add:after {
+    content: " Führe die Geschite fort";
+  }
+
+  .help-icon {
+    font-size: 7vw;
+    padding: 1.5vw !important;
+    width: auto;
+    height: auto;
   }
 }

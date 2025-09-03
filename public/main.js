@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: false,
+    posted: true,
     hoveredAuthor: null,
   });
 
@@ -273,10 +273,10 @@ document.addEventListener("alpine:init", () => {
     soundPreview: false,
     ctx: null,
     drawing: false,
-    color: 'black',
+    color: "black",
     penSizes: [5, 10, 20],
     penSize: 5,
-    lastDrawPos: {x: 0, y: 0},
+    lastDrawPos: { x: 0, y: 0 },
 
     getData() {
       const inputs = Array.from(
@@ -338,11 +338,11 @@ document.addEventListener("alpine:init", () => {
             const fileInput = this.$refs.soundFile;
             formData.append("sound", fileInput.files[0]);
           } else if (this.selectedType === "sketch") {
-            const blob = await new Promise(resolve => {
+            const blob = await new Promise((resolve) => {
               this.$refs.canvas.toBlob(resolve, "image/png");
             });
             formData.append("image", blob, "sketch.png");
-            formData.set("type", "image")
+            formData.set("type", "image");
           }
 
           response = await fetch(`${ApiURL}posts`, {
@@ -375,42 +375,54 @@ document.addEventListener("alpine:init", () => {
     },
 
     initCanvas() {
-      const cvs = this.$refs.canvas
-      const rect = cvs.getBoundingClientRect()
-      cvs.width = rect.width
-      cvs.height = rect.height
-      this.ctx = cvs.getContext("2d")
-      this.ctx.fillStyle = "white"
-      this.ctx.fillRect(0, 0, rect.width, rect.height)
+      const cvs = this.$refs.canvas;
+      const rect = cvs.getBoundingClientRect();
+      cvs.width = rect.width;
+      cvs.height = rect.height;
+      this.ctx = cvs.getContext("2d");
+      this.ctx.fillStyle = "white";
+      this.ctx.fillRect(0, 0, rect.width, rect.height);
     },
 
     cancelDraw() {
-      this.drawing = false
-      this.lastDrawPos = { x: 0, y: 0 }
+      this.drawing = false;
+      this.lastDrawPos = { x: 0, y: 0 };
     },
 
     drawCanvas(e) {
-      if(!this.drawing) return
-      this.ctx.fillStyle = this.color
-      if(!(this.lastDrawPos.x === 0 && this.lastDrawPos.y === 0)) {
-        const deltaX = this.lastDrawPos.x - e.layerX
-        const deltaY = this.lastDrawPos.y - e.layerY
-        const dist = Math.sqrt(deltaX ** 2 + deltaY ** 2)
-        const steps = Math.floor(dist / this.penSize * 2)
-        for(let i = 0; i < steps; i++) {
-          const x = (e.layerX - this.lastDrawPos.x) * (i / steps) + this.lastDrawPos.x
-          const y = (e.layerY - this.lastDrawPos.y) * (i / steps) + this.lastDrawPos.y
-          this.ctx.fillRect(x - this.penSize / 2, y - this.penSize / 2, this.penSize, this.penSize)
+      if (!this.drawing) return;
+      this.ctx.fillStyle = this.color;
+      if (!(this.lastDrawPos.x === 0 && this.lastDrawPos.y === 0)) {
+        const deltaX = this.lastDrawPos.x - e.layerX;
+        const deltaY = this.lastDrawPos.y - e.layerY;
+        const dist = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+        const steps = Math.floor((dist / this.penSize) * 2);
+        for (let i = 0; i < steps; i++) {
+          const x =
+            (e.layerX - this.lastDrawPos.x) * (i / steps) + this.lastDrawPos.x;
+          const y =
+            (e.layerY - this.lastDrawPos.y) * (i / steps) + this.lastDrawPos.y;
+          this.ctx.fillRect(
+            x - this.penSize / 2,
+            y - this.penSize / 2,
+            this.penSize,
+            this.penSize
+          );
         }
       }
-      this.ctx.fillRect(e.layerX - this.penSize / 2, e.layerY - this.penSize / 2, this.penSize, this.penSize)
-      this.lastDrawPos = {x: e.layerX, y: e.layerY}
+      this.ctx.fillRect(
+        e.layerX - this.penSize / 2,
+        e.layerY - this.penSize / 2,
+        this.penSize,
+        this.penSize
+      );
+      this.lastDrawPos = { x: e.layerX, y: e.layerY };
     },
 
     changeRangeStyle(el) {
-      el.style = `--val: ${
-        ((el.value - 5) / (el.max - 5)) * 100
-      }%; --per: ${(el.value - 5) / (el.max - 5)};`;
+      el.style = `--val: ${((el.value - 5) / (el.max - 5)) * 100}%; --per: ${
+        (el.value - 5) / (el.max - 5)
+      };`;
     },
   }));
 });

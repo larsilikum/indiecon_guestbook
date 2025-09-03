@@ -27,10 +27,12 @@
       <template x-if="$store.story.entries">
         <div class="test-div">
           <template x-for="entry in $store.story.entries" :key="entry.id">
-            <a @mouseover="$store.ui.hoveredAuthor = entry.id;
-            document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-              @mouseout="$store.ui.hoveredAuthor = null"
-              @click.prevent="document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })">
+            <a  @mouseover="
+            $store.ui.hoveredAuthor = entry.id;
+            document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+          "
+          @mouseout="$store.ui.hoveredAuthor = null"
+          @click.prevent>
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
                   :data-user="entry.author + entry.id" :id="entry.author + entry.id"
@@ -92,13 +94,18 @@
           <template x-for="(entry, entryIndex) in branch" :key="entryIndex">
             <div class="content">
               <template x-if="entry.id">
-                <a :id="'@tree%' + entry.author + entry.id" :class="{
-                    'tree-entry': true,
-                    'notFetched': !$store.story.existsInStory(entry.id),
-                    'hovered': $store.ui.hoveredAuthor === entry.id}"
-                  @mouseover="$store.ui.hoveredAuthor = entry.id;document.getElementById(entry.author + entry.id) ?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
-                  @mouseout="$store.ui.hoveredAuthor = null" @click="$store.treeData.switchBranch(entry)"
-                  @click.prevent="document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })"
+                <a   :id="'@tree%' + entry.author + entry.id"
+                :class="{
+                  'tree-entry': true,
+                  'notFetched': !$store.story.existsInStory(entry.id),
+                  'hovered': $store.ui.hoveredAuthor === entry.id
+                }"
+                @mouseover="
+                  $store.ui.hoveredAuthor = entry.id;
+                  document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
+                "
+                @mouseout="$store.ui.hoveredAuthor = null"
+                @click.prevent
                   :data-user="entry.author + entry.id" :data-parent="entry.parent_id" :data-entry="entryIndex"
                   :style="`background-color: ${$store.colors.getEntryColor(entry)}`">
                   <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
@@ -135,6 +142,7 @@
       </div>
     </template>
   </div>
+</div>
 
 
 <!--========================================================= Upload Form ==============================================================-->
@@ -151,9 +159,9 @@
   <!-- choose File type -->
   <div id="radio-group">
     <button type="button" @click="selectedType = 'text'" :class="selectedType === 'text' ? 'active' : ''">Text</button>
-    <button type="button" @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">Image</button>
-    <button type="button" @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">Sketch</button>
-    <button type="button" @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">Sound</button>
+    <button type="button" @click="selectedType = 'image'" :class="selectedType === 'image' ? 'active' : ''">Foto</button>
+    <button type="button" @click="selectedType = 'sketch'" :class="selectedType === 'sketch' ? 'active' : ''">Zeichen</button>
+    <button type="button" @click="selectedType = 'sound'" :class="selectedType === 'sound' ? 'active' : ''">Audio</button>
   </div>
 
   <!-- content input -->
@@ -172,14 +180,14 @@
           x-model="text"
           x-effect="$store.ui.posted === false && loopTextContent();" 
           @input="
-            if (text.length > 150) {
-              text = text.slice(0, 150);
+            if (text.length > 200) {
+              text = text.slice(0, 200);
             }
           "
           required
         ></textarea>
         <p class="text-sm text-gray-500 mt-2">
-          <span x-text="text.length" style="color: grey"></span>/150 Zeichen
+          <span x-text="text.length" style="color: grey"></span>/200 Zeichen
         </p>
       </div>
     </template>
@@ -245,13 +253,13 @@
                  soundName = file.name;
                }
              " />
-      <button type="button" @click="$refs.soundFile.click()">+ Sound hinzuzufügen</button>
+      <button type="button" @click="$refs.soundFile.click()">+ Audio hinzuzufügen</button>
     </div>
 
     <!-- preview -->
     <template x-if="soundPreview">
       <div class="audio-upload-preview">
-        <button type="button" class="clearPreview" @click="soundPreview = ''; $refs.soundFile.value = null">- Sound entfernen</button>
+        <button type="button" class="clearPreview" @click="soundPreview = ''; $refs.soundFile.value = null">- Audio entfernen</button>
 
         <!-- Custom audio player -->
         <div class="audio-preview" x-data="audio(soundPreview, 'preview')">
@@ -266,14 +274,14 @@
               <template x-if="playState">
                 <img src="./assets/pause.svg" alt="Pause">
               </template>
-              <div class="audio-progress">
+          <!--     <div class="audio-progress">
                 <input class="audio-progress-bar" type="range" max="100" value="0"
                        x-init="setSeekRef($el)" @input="seekInput($el)" @change="seekChange($el)"
                        :style="`--val: 0%; --per: 0;`">
                 <div class="audio-time">
                   <span class="audio-current" x-text="currentTime"></span> /
                   <span class="audio-duration" x-text="duration"></span>
-                </div>
+                </div> -->
             </button>
           </div>
         </div>
@@ -288,12 +296,10 @@
   </div>
 
   <button type="submit" class="publish" x-bind:disabled="isSubmitting">
-    <span x-show="!isSubmitting">Publish</span>
-    <span x-show="isSubmitting">Uploading...</span>
+    <span x-show="!isSubmitting">Veröffentlichen</span>
+    <span x-show="isSubmitting">lädt hoch...</span>
   </button>
 </form>
-
-
   <div x-data="{open: false}">
     <!-- Help Button ? -->
     <div class="help-icon" @click="open = !open" x-text="open ? '×' : '?'"></div>
