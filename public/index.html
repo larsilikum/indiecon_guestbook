@@ -91,7 +91,7 @@
   <main class="flexbox-container open" :class="{ 'open': $store.ui.posted }">
 
     <!-- --------------------------------------------- Story ------------------------------------------------- -->
-    <div class="stories open" x-data @click="$store.ui.storyOpen = true" :class="{ 'locked': !$store.ui.posted }">
+    <div class="stories open" x-data @click="$el.scrollIntoView({ behavior: 'smooth'})" :class="{ 'locked': !$store.ui.posted }">
       <template x-if="$store.story.entries">
         <div class="entry-wrapper">
           <template x-for="entry in $store.story.entries" :key="entry.id">
