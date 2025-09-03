@@ -1,4 +1,5 @@
 .vscode
 sqlite-data.db
+./sqlite-data.db
 public/sounds/*
 public/images/*
