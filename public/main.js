@@ -1,5 +1,5 @@
-const BaseURL = "https://co-o-pub.space";
-// const BaseURL = ""
+// const BaseURL = "https://co-o-pub.space";
+const BaseURL = ""
 
 const ApiURL = BaseURL + "/api/";
 
