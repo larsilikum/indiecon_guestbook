@@ -11,7 +11,7 @@
   <script src="./animateTextarea.js" defer></script>
   <script src="./logoSVG.js" defer></script>
   <script src="//unpkg.com/alpinejs" defer></script> <!-- defer all and keep alpine.js last! -->
-  <link rel="stylesheet" href="einträge.css" />
+  <link rel="stylesheet" href="./einträge.css" />
 </head>
 
 <body x-data>
@@ -58,7 +58,7 @@
                 }" @mouseover="
                   $store.ui.hoveredAuthor = entry.id;
                   document.getElementById(entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
-                " @mouseout="$store.ui.hoveredAuthor = null" @click.prevent="$store.treeData.switchBranch(entry)" :data-user="entry.author + entry.id"
+                " @mouseout="$store.ui.hoveredAuthor = null" @click="$store.treeData.switchBranch(entry)" :data-user="entry.author + entry.id"
                 :data-parent="entry.parent_id" :data-entry="entryIndex"
                 :style="`background-color: ${$store.colors.getEntryColor(entry)}`">
                 <span class="fullname" :style="`background-color: ${$store.colors.getEntryColor(entry)};`"
@@ -105,7 +105,7 @@
           $store.ui.hoveredAuthor = entry.id;
           document.getElementById('@tree%' + entry.author + entry.id)?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
         "
-       @touchstart="envent." 
+       @touchstart="" 
           @click.prevent>
               <template x-if="entry.type === 'text'">
                 <span :class="{'entry': true, 'story-part': true, 'hovered': $store.ui.hoveredAuthor === entry.id}"
