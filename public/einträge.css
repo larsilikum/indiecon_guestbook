@@ -979,6 +979,10 @@ input[type="color"]::-moz-color-swatch {
   height: 40px;
 }
 
+#close {
+  display: none;
+}
+
 /* .drawing-inputs {
   display: flex;
   flex-direction: row;
@@ -1050,21 +1054,42 @@ input[type="color"]::-moz-color-swatch {
   form {
     width: 100vw;
     transform: translateX(0) translateY(calc(100% - 6rem));
+    transition: 0s;
+  }
+
+  form.mobile-open {
+    width: 96vw;
+    padding: 2vw;
+    transform: translateX(0) translateY(0) !important;
+    top: 30vh !important;
   }
 
   form.open {
-    width: 96vw;
-    padding: 2vw;
-    transform: translateX(0) translateY(calc(0));
+    transform: translateX(0) translateY(calc(100% - 6rem));
+  }
+
+  form.open *:not(#add) {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  form.mobile-open *:not(#add) {
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity 0.3s;
+  }
+
+  form.open #add {
+    display: block;
+  }
+
+  form .mobile-open #add {
+    display: none;
   }
 
   form:not(.open):hover {
     transform: translateX(0) translateY(calc(100% - 6rem));
-  }
-
-  form.open {
-    transform: translateX(0) translateY(0);
-    top: 30vh;
   }
 
   #add {
@@ -1084,6 +1109,11 @@ input[type="color"]::-moz-color-swatch {
 
   #help {
     font-size: 1rem !important;
+  }
+
+  #close {
+    display: block;
+    color: white;
   }
 
   #add:after {
