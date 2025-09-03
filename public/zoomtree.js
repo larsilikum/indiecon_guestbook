@@ -1,58 +1,62 @@
 function scaleMap() {
   const slider = document.getElementById("slider");
-  let isDragging = false;
-  let currentScale = 1;
-  let lastMouseX = 0;
+  const tree = document.querySelector(".tree");
+  const plusBtn = document.getElementById("treePlus");
+  const minusBtn = document.getElementById("treeMinus");
 
+  const scales = [0.25, 0.5, 1];
+  let currentIndex = 1;
+
+  function updateScale(index) {
+    currentIndex = Math.max(0, Math.min(scales.length - 1, index));
+    const currentScale = scales[currentIndex];
+
+    tree.classList.remove("big", "small");
+    if (currentScale === 1) {
+      tree.classList.add("big");
+    } else if (currentScale === 0.25) {
+      tree.classList.add("small");
+    }
+
+    slider.style.transform = `scaleX(${currentScale})`;
+    console.log(currentScale);
+  }
+
+  // drag logic
   slider.addEventListener("mousedown", (e) => {
     e.preventDefault();
-    isDragging = true;
-    lastMouseX = e.clientX;
+    slider.dataset.dragging = "true";
+    slider.dataset.startX = e.clientX;
+    slider.dataset.startIndex = currentIndex;
   });
 
   document.addEventListener("mousemove", (e) => {
-    if (!isDragging) return;
-
-    const deltaX = e.clientX - lastMouseX;
-    lastMouseX = e.clientX;
-
-    currentScale += deltaX / 5;
-
-    // clamp
-    currentScale = Math.min(Math.max(currentScale, 0.5), 2);
-
-    if (currentScale >= 1.75) {
-      currentScale = 2;
-    } else if (currentScale <= 0.4) {
-      currentScale = 0.25;
-    } else if (currentScale > 0.5 && currentScale < 1.7) {
-      currentScale = 1;
-    }
-
-    slider.classList.remove("big", "small");
-
-    const tree = document.querySelector(".tree");
-
-    if (currentScale === 2) {
-      tree.classList.add("big");
-      tree.classList.remove("small");
-    } else if (currentScale === 0.5) {
-      tree.classList.add("small");
-      tree.classList.remove("big");
-    } else if (currentScale < 2 && currentScale > 0.5) {
-      tree.classList.remove("big", "small");
-    }
-    slider.style.transform = `scaleX(${currentScale})`;
-    console.log(currentScale);
+    if (slider.dataset.dragging !== "true") return;
+    const startX = Number(slider.dataset.startX);
+    const startIndex = Number(slider.dataset.startIndex);
+    const deltaX = e.clientX - startX;
+    // drag right increases index, left decreases
+    let newIndex = startIndex + (deltaX > 30 ? 1 : deltaX < -30 ? -1 : 0);
+    updateScale(newIndex);
   });
 
   document.addEventListener("mouseup", () => {
-    isDragging = false;
+    slider.dataset.dragging = "false";
+  });
+  document.addEventListener("mouseleave", () => {
+    slider.dataset.dragging = "false";
   });
 
-  document.addEventListener("mouseleave", () => {
-    isDragging = false;
+  // button logic
+  plusBtn.addEventListener("click", () => {
+    updateScale(currentIndex + 1);
   });
+
+  minusBtn.addEventListener("click", () => {
+    updateScale(currentIndex - 1);
+  });
+
+  updateScale(currentIndex);
 }
 
 scaleMap();

@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: false,
+    posted: true,
     hoveredAuthor: null,
   });
 
@@ -93,54 +93,54 @@ document.addEventListener("alpine:init", () => {
     };
   });
 
-  Alpine.data("audio", (src, id) => ({  
+  Alpine.data("audio", (src, id) => ({
     src,
     id,
-    duration: '0:00',
+    duration: "0:00",
     audioRef: null,
     seekRef: null,
     playState: false,
-    currentTime: '0:00',
+    currentTime: "0:00",
     volume: 100,
     // store audio ref for other functions to use
     setAudioRef(el) {
-      this.audioRef = el
+      this.audioRef = el;
     },
     setSeekRef(el) {
-      this.seekRef = el
+      this.seekRef = el;
     },
     // calculate duration of audio to display
     onLoadedMetadata(el) {
-      if(el.readyState === 0) return
-      const secs = el.duration
-      this.seekRef.max = Math.floor(secs)
-      this.duration = this.formatSeconds(secs)
+      if (el.readyState === 0) return;
+      const secs = el.duration;
+      this.seekRef.max = Math.floor(secs);
+      this.duration = this.formatSeconds(secs);
     },
     // when seeking through the audio
     seekInput(el) {
-      this.currentTime = this.formatSeconds(el.value)
-      this.updateSeekStyle()
+      this.currentTime = this.formatSeconds(el.value);
+      this.updateSeekStyle();
     },
     // when seeking is done and mouse is lifted
     seekChange(el) {
-      this.audioRef.currentTime = el.value
+      this.audioRef.currentTime = el.value;
       // this.updateSeekStyle()
     },
     // when clicking play button
     playPauseAudio() {
-      if(!this.playState) {
-        this.audioRef.play()
-        this.playState = true
+      if (!this.playState) {
+        this.audioRef.play();
+        this.playState = true;
       } else {
-        this.audioRef.pause()
-        this.playState = false
+        this.audioRef.pause();
+        this.playState = false;
       }
     },
     // when audio is playing and time gets updated
     onTimeUpdate() {
-      this.seekRef.value = Math.floor(this.audioRef.currentTime)
-      this.updateSeekStyle()
-      this.currentTime = this.formatSeconds(this.audioRef.currentTime)
+      this.seekRef.value = Math.floor(this.audioRef.currentTime);
+      this.updateSeekStyle();
+      this.currentTime = this.formatSeconds(this.audioRef.currentTime);
     },
     // helper function to format seconds into (m)m:ss format
     formatSeconds(secs) {
@@ -151,9 +151,11 @@ document.addEventListener("alpine:init", () => {
     },
 
     updateSeekStyle() {
-      this.seekRef.style = `--val: ${(this.seekRef.value / this.seekRef.max) * 100}%; --per: ${this.seekRef.value / this.seekRef.max};`
-    }
-  }))
+      this.seekRef.style = `--val: ${
+        (this.seekRef.value / this.seekRef.max) * 100
+      }%; --per: ${this.seekRef.value / this.seekRef.max};`;
+    },
+  }));
 
   Alpine.store("treeData", {
     entries: [],
@@ -265,6 +267,16 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("useForm", () => ({
     selectedType: "text",
     isSubmitting: false,
+    imageFile: "",
+    imagePreview: false,
+    soundFile: "",
+    soundPreview: false,
+    ctx: null,
+    drawing: false,
+    color: "black",
+    penSizes: [5, 10, 20],
+    penSize: 5,
+    lastDrawPos: { x: 0, y: 0 },
 
     getData() {
       const inputs = Array.from(
@@ -319,11 +331,18 @@ document.addEventListener("alpine:init", () => {
 
           // Add file based on type
           if (this.selectedType === "image") {
+            console.log(this.$refs.imageFile);
             const fileInput = this.$refs.imageFile;
             formData.append("image", fileInput.files[0]);
           } else if (this.selectedType === "sound") {
             const fileInput = this.$refs.soundFile;
             formData.append("sound", fileInput.files[0]);
+          } else if (this.selectedType === "sketch") {
+            const blob = await new Promise((resolve) => {
+              this.$refs.canvas.toBlob(resolve, "image/png");
+            });
+            formData.append("image", blob, "sketch.png");
+            formData.set("type", "image");
           }
 
           response = await fetch(`${ApiURL}posts`, {
@@ -354,6 +373,57 @@ document.addEventListener("alpine:init", () => {
         this.isSubmitting = false;
       }
     },
+
+    initCanvas() {
+      const cvs = this.$refs.canvas;
+      const rect = cvs.getBoundingClientRect();
+      cvs.width = rect.width;
+      cvs.height = rect.height;
+      this.ctx = cvs.getContext("2d");
+      this.ctx.fillStyle = "white";
+      this.ctx.fillRect(0, 0, rect.width, rect.height);
+    },
+
+    cancelDraw() {
+      this.drawing = false;
+      this.lastDrawPos = { x: 0, y: 0 };
+    },
+
+    drawCanvas(e) {
+      if (!this.drawing) return;
+      this.ctx.fillStyle = this.color;
+      if (!(this.lastDrawPos.x === 0 && this.lastDrawPos.y === 0)) {
+        const deltaX = this.lastDrawPos.x - e.layerX;
+        const deltaY = this.lastDrawPos.y - e.layerY;
+        const dist = Math.sqrt(deltaX ** 2 + deltaY ** 2);
+        const steps = Math.floor((dist / this.penSize) * 2);
+        for (let i = 0; i < steps; i++) {
+          const x =
+            (e.layerX - this.lastDrawPos.x) * (i / steps) + this.lastDrawPos.x;
+          const y =
+            (e.layerY - this.lastDrawPos.y) * (i / steps) + this.lastDrawPos.y;
+          this.ctx.fillRect(
+            x - this.penSize / 2,
+            y - this.penSize / 2,
+            this.penSize,
+            this.penSize
+          );
+        }
+      }
+      this.ctx.fillRect(
+        e.layerX - this.penSize / 2,
+        e.layerY - this.penSize / 2,
+        this.penSize,
+        this.penSize
+      );
+      this.lastDrawPos = { x: e.layerX, y: e.layerY };
+    },
+
+    changeRangeStyle(el) {
+      el.style = `--val: ${((el.value - 5) / (el.max - 5)) * 100}%; --per: ${
+        (el.value - 5) / (el.max - 5)
+      };`;
+    },
   }));
 });
 
@@ -378,6 +448,7 @@ function scrollDownContainer() {
   }, 500);
 }
 scrollDownContainer();
+window.addEventListener("resize", scrollDownContainer);
 
 // HELPER
 function getRandomEntryFromArray(arr) {
