@@ -570,6 +570,7 @@ form.open #add {
   background-color: #ffffff;
   border: none;
   text-align: center;
+  padding: .6rem 0 0 0;
 }
 
 .input-name::-webkit-input-placeholder {
@@ -1226,9 +1227,6 @@ input[type="color"]::-moz-color-swatch {
     line-height: 130%;
   }
 
-  #help * :first-child {
-    font-size: 1.4rem;
-  }
 
   .help-icon:hover + #help:not(.open) {
     transform: translateX(100%);

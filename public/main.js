@@ -13,7 +13,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: true,
+    posted: false,
     hoveredAuthor: null,
   });
 
