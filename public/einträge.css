@@ -1093,9 +1093,6 @@ input[type="color"]::-moz-color-swatch {
     transition: opacity 0.3s;
   }
 
-  .input-name {
-  }
-
   form.mobile-open *:not(#add) {
     opacity: 1;
     pointer-events: all;
@@ -1181,6 +1178,7 @@ input[type="color"]::-moz-color-swatch {
     font-size: 2rem;
     width: 66%;
     border-radius: 0.5rem;
+    padding: .5rem 0 .3rem 0;
   }
 
   .textfeld,
@@ -1191,6 +1189,7 @@ input[type="color"]::-moz-color-swatch {
   .publish {
     font-size: 6.3vw;
     color: black;
+    padding-top: .5rem;
   }
 
   .entry,
@@ -1216,6 +1215,7 @@ input[type="color"]::-moz-color-swatch {
   #help {
     width: 100%;
   }
+
   #help-container {
     left: 0;
     padding: 1rem;
@@ -1226,7 +1226,6 @@ input[type="color"]::-moz-color-swatch {
     font-size: 1.2rem;
     line-height: 130%;
   }
-
 
   .help-icon:hover + #help:not(.open) {
     transform: translateX(100%);
