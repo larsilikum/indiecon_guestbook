@@ -17,7 +17,7 @@ const textContent = [
   "Welche Publikation gefällt dir besonders gut?",
   "Was versteckt sich in den Ecken der Halle?",
   "Wie stellst du dir die indiecon in 100 Jahren vor?",
-  "Füge hier deinen Text-Beitrag hinzu...",
+  "Füge hier deinen Text-Beitrag hinzu …",
   "Wie würden Publikationen von nicht-menschlichen Wesen aussehen?",
   "Ein Virus breitet sich auf der Indiecon aus, der alle Publikationen durchfrisst, welche Spuren hinterlässt er?",
   "Es existieren nur noch ausschließlich KI generierte Publikationen … doch dann hörst du von einem geheimen Festival in Hamburg …",
@@ -27,6 +27,7 @@ const textContent = [
   "Du findest eine Publikation aus dem Jahr 2225 …",
   "Du findest eine Publikation aus dem Jahr 1525 …",
   "Eine Publikation von der Indiecon wird in einem anderen Jahrhundert gefunden …",
+  "……",
 ];
 
 let isRunning = false;
@@ -39,7 +40,9 @@ function loopTextContent() {
     setTimeout(() => {
       animatePlaceholder(text);
       if (i === textContent.length - 1) {
+        console.log("hello")
         isRunning = false;
+        loopTextContent();
       }
     }, totalDelay);
     totalDelay += text.length * 50 + 3000;

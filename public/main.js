@@ -1,6 +1,10 @@
 // const BaseURL = "https://co-o-pub.space";
 const BaseURL = ""
 
+const params = new URLSearchParams(location.search)
+const viewMode = params.get("view")
+console.log(viewMode)
+
 const ApiURL = BaseURL + "/api/";
 
 document.addEventListener("alpine:init", () => {
@@ -13,7 +17,7 @@ document.addEventListener("alpine:init", () => {
   });
 
   Alpine.store("ui", {
-    posted: false,
+    posted: viewMode,
     hoveredAuthor: null,
   });
 
